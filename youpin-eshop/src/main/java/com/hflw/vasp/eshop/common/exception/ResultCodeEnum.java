@@ -30,6 +30,7 @@ public enum ResultCodeEnum {
     USERNAME_NOT_EXIST(300, "手机号不存在"),
     SMS_VERIFY_CODE_TIMEOUT(301, "短信验证码已过期"),
     SMS_VERIFY_CODE_NOT_RIGHT(302, "短信验证码错误"),
+    SMS_VERIFY_CODE_SEND_FAIL(303, "短信验证码发送失败"),
 
     /***************************业务相关******************************/
     //门店

@@ -1,9 +1,9 @@
 package com.hflw.vasp.modules.dao;
 
 import com.hflw.vasp.modules.entity.StoreOrder;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.hflw.vasp.repository.BaseRepository;
 
 import java.io.Serializable;
 
-public interface IStoreOrderDao extends JpaRepository<StoreOrder, Long>, Serializable {
+public interface IStoreOrderDao extends BaseRepository<StoreOrder, Long>, Serializable {
 }

@@ -1,12 +1,11 @@
 package com.hflw.vasp.framework.exception;
 
-import com.hflw.vasp.framework.config.ThreadPoolConfig;
 import com.hflw.vasp.entity.BaseEntity;
 import com.hflw.vasp.enums.ExceptionLevel;
 import com.hflw.vasp.exception.BusinessException;
-import com.hflw.vasp.exception.ExceptionModel;
 import com.hflw.vasp.exception.SystemMessage;
 import com.hflw.vasp.exception.ValidateException;
+import com.hflw.vasp.framework.config.ThreadPoolConfig;
 import com.hflw.vasp.utils.SessionUtils;
 import com.hflw.vasp.web.R;
 import org.apache.commons.lang.ArrayUtils;
@@ -44,7 +43,7 @@ public class GlobalExceptionHandler {
 
     protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @Value("${project.package.prefix:com.hflw}")
+    @Value("${project.package.prefix:com.hflw.vasp}")
     protected String packagePrefix;
 
     @Value("${spring.application.name}")
@@ -173,19 +172,19 @@ public class GlobalExceptionHandler {
 
         final BaseEntity finalBaseEntity = baseEntity;
 
-        executor.execute(() -> {
-            ExceptionModel exceptionModel = new ExceptionModel(modulName, exceptionLevel);
-            exceptionModel.setException(e, packagePrefix);
-            try {
-                exceptionModel.setRequest(request);
-            } catch (IOException e1) {
-                logger.error("记录异常请求内容时出异常... " + e.getMessage());
-            }
-            if (finalBaseEntity != null) {
-                exceptionModel.setOperator(finalBaseEntity.getId());
-            }
-            //保存数据
-//            mongoTemplate.insert(exceptionModel);
-        });
+//        executor.execute(() -> {
+//            ExceptionModel exceptionModel = new ExceptionModel(modulName, exceptionLevel);
+//            exceptionModel.setException(e, packagePrefix);
+//            try {
+//                exceptionModel.setRequest(request);
+//            } catch (IOException e1) {
+//                logger.error("记录异常请求内容时出异常... " + e.getMessage());
+//            }
+//            if (finalBaseEntity != null) {
+//                exceptionModel.setOperator(finalBaseEntity.getId());
+//            }
+//            //保存数据
+////            mongoTemplate.insert(exceptionModel);
+//        });
     }
 }

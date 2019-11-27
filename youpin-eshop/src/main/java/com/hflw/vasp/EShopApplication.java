@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @Import({ImportBeansConfigs.class})
 @EnableJpaRepositories(basePackages = "com.hflw.vasp.*.dao")
-@ComponentScan(value = {"com.hflw.vasp.eshop", "com.hflw.vasp.framework.components", "com.hflw.vasp.entity"})
+@ComponentScan(value = {
+        "com.hflw.vasp.eshop",
+        "com.hflw.vasp.framework.components",
+        "com.hflw.vasp.entity"})
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 public class EShopApplication {

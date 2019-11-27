@@ -1,4 +1,4 @@
-package com.hflw.vasp.framework.repository;
+package com.hflw.vasp.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +10,6 @@ import java.util.List;
 @NoRepositoryBean
 public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
-    List<Object[]> listBySQL(String sql);
+//    List<Object[]> listBySQL(String sql);
 
 }

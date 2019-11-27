@@ -71,7 +71,7 @@ public class UserController extends AbstractController {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("user", user);
         resultMap.put("sessionId", session.getId());
-        return R.ok().put("result", resultMap);
+        return R.ok().data(resultMap);
     }
 
     @AuthCheck

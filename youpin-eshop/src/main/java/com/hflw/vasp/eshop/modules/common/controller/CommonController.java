@@ -31,22 +31,10 @@ public class CommonController {
     @RequestMapping(value = "/sendVerifyCode")
     public R sendVerifyCode(String phone) {
         if (StringUtils.isEmpty(phone)) return R.error("手机号码不能为空!");
-        try {
-            String verifyCode = commonService.sendVerifyCode(phone);
-            logger.info("手机号：" + phone + "的短信验证码：" + verifyCode);
-            return R.ok();
-        } catch (RedisSystemException e) {
-            logger.error("获取验证码redis异常" + e.getMessage(), e);
-            /*
-             * 测试环境redis连接总被重试异常重试
-             */
-            String verifyCode = commonService.sendVerifyCode(phone);
-            logger.info("手机号：" + phone + "的短信验证码：" + verifyCode);
-            return R.ok();
-        } catch (Exception e) {
-            logger.error("获取验证码失败" + e.getMessage(), e);
-            return R.error(ResultCodeEnum.ERROR.getCode(), ResultCodeEnum.ERROR.getMsg());
-        }
+
+        String verifyCode = commonService.sendVerifyCode(phone);
+        logger.info("手机号：" + phone + "的短信验证码：" + verifyCode);
+        return R.ok();
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)
