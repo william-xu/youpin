@@ -100,11 +100,11 @@ public class WeiXinController extends AbstractController {
 
     @RequestMapping("unifiedOrder")
     public R unifiedOrder(UnifiedOrderModel model) throws WxPayException {
-        Customer user = userService.getUserByPhone(getAccount());
+        Customer user = getSessionUser();
         if (StringUtils.isNullOrEmpty(user.getWxOpenId()))
             throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
 
-        String notifyUrl = PropertiesUtils.getProperty("weixin.repayment.notifyUrl").replace("$userId$", "" + user.getId());
+        String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl").replace("$userId$", "" + user.getId());
         logger.info("支付成功通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
         String tradeNo = user.getPhone() + System.currentTimeMillis();

@@ -55,12 +55,12 @@ public class LoginController extends AbstractController {
         user.setPhone(phone);
         if (StringUtils.isNotEmpty(openId)) {
             //如果用户换手机号，miniopenid也要绑定到新手机号，并取消旧号码的关联
-            Customer existUser = userService.getUserByMiniOpenId(openId);
+            Customer existUser = userService.findByWxOpenId(openId);
             if (existUser != null && !phone.equals(existUser.getPhone())) {
-                existUser.setMiniOpenId(null);
-                userService.updateMiniOpenIdByPrimaryKey(existUser);
+                existUser.setWxOpenId(null);
+                userService.updateByPrimaryKey(existUser);
             }
-            user.setMiniOpenId(openId);
+            user.setWxOpenId(openId);
         }
         Long id = userService.saveOrUpdate(user);
         user.setId(id);
@@ -76,7 +76,7 @@ public class LoginController extends AbstractController {
     @AccessNoSession
     @RequestMapping(value = "/loginByOpenId")
     public R loginOpenId(@NotBlank(message = "openId不能为空") String openId) {
-        Customer dbUser = userService.getUserByMiniOpenId(openId);
+        Customer dbUser = userService.findByWxOpenId(openId);
         //判断数据库是否存在
         if (dbUser == null)
             return R.error(ResultCodeEnum.USER_NOT_EXIST.getCode(), ResultCodeEnum.USER_NOT_EXIST.getMsg());

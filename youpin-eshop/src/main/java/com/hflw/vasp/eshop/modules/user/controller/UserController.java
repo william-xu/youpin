@@ -39,7 +39,7 @@ public class UserController extends AbstractController {
     private RedisCacheUtils redisCacheUtil;
 
     @Autowired
-    private UserService storeUserService;
+    private UserService userService;
 
     @AccessNoSession
     @PostMapping(value = "/login")
@@ -52,19 +52,19 @@ public class UserController extends AbstractController {
         if (!verifyCode.equals(realVerifyCode))
             return R.error(ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getMsg());
 
-        Customer user = storeUserService.getUserByPhone(phone);
+        Customer user = userService.getUserByPhone(phone);
         if (user == null) user = new Customer();
         user.setPhone(phone);
         if (StringUtils.isNotEmpty(openId)) {
             //如果用户换手机号，miniopenid也要绑定到新手机号，并取消旧号码的关联
-            Customer existUser = storeUserService.getUserByMiniOpenId(openId);
+            Customer existUser = userService.findByWxOpenId(openId);
             if (existUser != null && !phone.equals(existUser.getPhone())) {
                 existUser.setMiniOpenId(null);
-                storeUserService.updateMiniOpenIdByPrimaryKey(existUser);
+                userService.updateByPrimaryKey(existUser);
             }
             user.setMiniOpenId(openId);
         }
-        Long id = storeUserService.saveOrUpdate(user);
+        Long id = userService.saveOrUpdate(user);
         user.setId(id);
         //miniOpenId保存到redis做免登录使用
         UserUtils.putSessionUser(session, user);
@@ -78,7 +78,7 @@ public class UserController extends AbstractController {
     @AccessNoSession
     @RequestMapping(value = "/loginByOpenId")
     public R loginOpenId(@NotBlank(message = "openId不能为空") String openId) {
-        Customer dbUser = storeUserService.getUserByMiniOpenId(openId);
+        Customer dbUser = userService.findByWxOpenId(openId);
         //判断数据库是否存在
         if (dbUser == null)
             return R.error(ResultCodeEnum.USER_NOT_EXIST.getCode(), ResultCodeEnum.USER_NOT_EXIST.getMsg());

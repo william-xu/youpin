@@ -10,6 +10,8 @@
  */
 package com.hflw.vasp.eshop.modules.weixin.model;
 
+import lombok.Data;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈微信支付预订单Model〉
@@ -18,43 +20,12 @@ package com.hflw.vasp.eshop.modules.weixin.model;
  * @create 2018/5/17
  * @since 1.0.0
  */
+@Data
 public class UnifiedOrderModel {
 
-    private String loanNo;
     private String body;
     private Integer totalFee;
+
     private String notifyUrl;
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Integer getTotalFee() {
-        return totalFee;
-    }
-
-    public void setTotalFee(Integer totalFee) {
-        this.totalFee = totalFee;
-    }
-
-    public String getLoanNo() {
-        return loanNo;
-    }
-
-    public void setLoanNo(String loanNo) {
-        this.loanNo = loanNo;
-    }
-
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
-
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
-    }
 
 }

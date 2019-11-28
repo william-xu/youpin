@@ -9,6 +9,8 @@ public interface IUserDao extends BaseRepository<Customer, Long>, Serializable {
 
     Customer findByPhone(String phone);
 
+    Customer findByWxOpenId(String wxOpenId);
+
     Customer findByMiniOpenId(String miniOpenId);
 
 }

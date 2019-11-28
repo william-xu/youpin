@@ -38,15 +38,18 @@ public class UserService {
         return u.getId();
     }
 
-    public Customer getUserByMiniOpenId(String miniOpenId) {
+    public Customer findByWxOpenId(String wxOpenId) {
+        return userDao.findByWxOpenId(wxOpenId);
+    }
+
+    public Customer findByMiniOpenId(String miniOpenId) {
         return userDao.findByMiniOpenId(miniOpenId);
     }
 
-    public int updateMiniOpenIdByPrimaryKey(Customer u) {
+    public int updateByPrimaryKey(Customer u) {
         userDao.save(u);
         return 1;
     }
-
 
     public Customer findById(Long id) {
         Optional<Customer> optional = userDao.findById(id);
