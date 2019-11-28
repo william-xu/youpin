@@ -70,7 +70,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean sessionVerifyStore(HttpServletRequest request, Customer user) {
+    private boolean sessionVerify(HttpServletRequest request, Customer user) {
         HttpSession session = request.getSession();
         if (user.getDelFlag() == Constants.NOT_DEL && user.getEnableStatus() != Constants.ENABLE_STATUS_INVALID) {
             logger.info(user.getId() + "状态正常");
