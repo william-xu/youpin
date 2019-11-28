@@ -17,10 +17,10 @@ import java.util.List;
 /**
  * 
  * @Title WebConfig.java
- * @Package com.qurong.credit.sp.config
+ * @Package com.hflw.vasp.credit.sp.config
  * @Description TODO 系统的配置相关文件，比如拦截器，过滤器
- * @author qurong
- * @date 2018年7月18日 下午4:45:06
+ * @author liuyf
+ * @date 2019年7月18日 下午4:45:06
  * @version
  */
 @Configuration

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * 通用请求处理
  *
- * @author qurong
+ * @author liuyf
  */
 @Api
 @RestController

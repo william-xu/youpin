@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpSession;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title UserUtils.java
- * @Package com.qurong.credit.sp.utils
+ * @Package com.hflw.vasp.credit.sp.utils
  * @Description 获取当前用户工具类
- * @date 2018年7月16日 下午4:35:03
+ * @date 2019年7月16日 下午4:35:03
  */
 @Component
 public class UserUtils {

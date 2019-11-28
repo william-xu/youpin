@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title AuthInterceptor.java
- * @Package com.qurong.credit.sp.interceptor
+ * @Package com.hflw.vasp.credit.sp.interceptor
  * @Description 登录校验拦截器
- * @date 2018年7月18日 下午4:20:58
+ * @date 2019年7月18日 下午4:20:58
  */
 @Component
 public class AuthInterceptor implements HandlerInterceptor {

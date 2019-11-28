@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title BaseController.java
- * @Package com.qurong.controller
+ * @Package com.hflw.vasp.controller
  * @Description
- * @date 2018年10月24日 下午2:24:00
+ * @date 2019年10月24日 下午2:24:00
  */
 @Controller
 public class AbstractController extends BaseController {

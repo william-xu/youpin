@@ -21,10 +21,7 @@ import com.hflw.vasp.web.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -32,7 +29,7 @@ import java.util.Map;
  * @author Zheng Xiajun
  * @ClassName: WxPayController
  * @Description:
- * @date 2018年10月23日
+ * @date 2019年10月23日
  */
 @RestController
 @RequestMapping("weixin")
@@ -98,7 +95,7 @@ public class WeiXinController extends AbstractController {
     }
 
 
-    @RequestMapping("unifiedOrder")
+    @PostMapping("unifiedOrder")
     public R unifiedOrder(UnifiedOrderModel model) throws WxPayException {
         Customer user = getSessionUser();
         if (StringUtils.isNullOrEmpty(user.getWxOpenId()))

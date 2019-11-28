@@ -1,11 +1,11 @@
 package com.hflw.vasp.eshop.common.exception;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title ResultCodeEnum.java
- * @Package com.qurong.constants
+ * @Package com.hflw.vasp.constants
  * @Description 结果集
- * @date 2018年10月22日 上午10:51:53
+ * @date 2019年10月22日 上午10:51:53
  */
 
 public enum ResultCodeEnum {

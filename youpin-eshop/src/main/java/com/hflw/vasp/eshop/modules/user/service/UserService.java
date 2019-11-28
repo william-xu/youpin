@@ -10,11 +10,11 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title UserServiceImpl.java
- * @Package com.qurong.service.impl
+ * @Package com.hflw.vasp.service.impl
  * @Description 用户信息
- * @date 2018年10月24日 下午2:37:40
+ * @date 2019年10月24日 下午2:37:40
  */
 @Service
 public class UserService {

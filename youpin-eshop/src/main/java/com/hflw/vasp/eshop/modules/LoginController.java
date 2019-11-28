@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title UserController.java
- * @Package com.qurong.controller
+ * @Package com.hflw.vasp.controller
  * @Description 登录
- * @date 2018年10月24日 下午2:02:54
+ * @date 2019年10月24日 下午2:02:54
  */
 @RestController
 @Validated

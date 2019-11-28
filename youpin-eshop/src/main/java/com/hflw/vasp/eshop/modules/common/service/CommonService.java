@@ -14,11 +14,11 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author qurong
+ * @author liuyf
  * @Title CommonServiceImpl.java
- * @Package com.qurong.service.impl
+ * @Package com.hflw.vasp.service.impl
  * @Description TODO
- * @date 2018年10月22日 下午3:01:25
+ * @date 2019年10月22日 下午3:01:25
  */
 @Service
 public class CommonService {
