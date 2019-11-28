@@ -1,11 +1,10 @@
-package com.hflw.vasp.eshop.modules.user.controller;
+package com.hflw.vasp.eshop.modules;
 
 
 import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
-import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
 import com.hflw.vasp.modules.entity.Customer;
@@ -30,16 +29,15 @@ import java.util.concurrent.TimeUnit;
  * @date 2018年10月24日 下午2:02:54
  */
 @RestController
-@RequestMapping(value = "/user")
 @Validated
-public class UserController extends AbstractController {
+public class LoginController extends AbstractController {
 
     @SuppressWarnings("rawtypes")
     @Autowired
     private RedisCacheUtils redisCacheUtil;
 
     @Autowired
-    private UserService storeUserService;
+    private UserService userService;
 
     @AccessNoSession
     @PostMapping(value = "/login")
@@ -52,19 +50,19 @@ public class UserController extends AbstractController {
         if (!verifyCode.equals(realVerifyCode))
             return R.error(ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getMsg());
 
-        Customer user = storeUserService.getUserByPhone(phone);
+        Customer user = userService.getUserByPhone(phone);
         if (user == null) user = new Customer();
         user.setPhone(phone);
         if (StringUtils.isNotEmpty(openId)) {
             //如果用户换手机号，miniopenid也要绑定到新手机号，并取消旧号码的关联
-            Customer existUser = storeUserService.getUserByMiniOpenId(openId);
+            Customer existUser = userService.getUserByMiniOpenId(openId);
             if (existUser != null && !phone.equals(existUser.getPhone())) {
                 existUser.setMiniOpenId(null);
-                storeUserService.updateMiniOpenIdByPrimaryKey(existUser);
+                userService.updateMiniOpenIdByPrimaryKey(existUser);
             }
             user.setMiniOpenId(openId);
         }
-        Long id = storeUserService.saveOrUpdate(user);
+        Long id = userService.saveOrUpdate(user);
         user.setId(id);
         //miniOpenId保存到redis做免登录使用
         UserUtils.putSessionUser(session, user);
@@ -78,7 +76,7 @@ public class UserController extends AbstractController {
     @AccessNoSession
     @RequestMapping(value = "/loginByOpenId")
     public R loginOpenId(@NotBlank(message = "openId不能为空") String openId) {
-        Customer dbUser = storeUserService.getUserByMiniOpenId(openId);
+        Customer dbUser = userService.getUserByMiniOpenId(openId);
         //判断数据库是否存在
         if (dbUser == null)
             return R.error(ResultCodeEnum.USER_NOT_EXIST.getCode(), ResultCodeEnum.USER_NOT_EXIST.getMsg());
@@ -101,7 +99,7 @@ public class UserController extends AbstractController {
 
     @RequestMapping(value = "/index")
     public R index() {
-        //登录成功，进入个人中心
+        //登录成功，进入首页
         return R.ok();
     }
 

@@ -1,12 +1,12 @@
 package com.hflw.vasp.eshop.common.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import com.hflw.vasp.eshop.common.annotation.AuthCheck;
+import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
-import com.hflw.vasp.eshop.modules.user.service.StoreUserService;
-import com.hflw.vasp.modules.entity.StoreUser;
+import com.hflw.vasp.eshop.modules.user.service.UserService;
+import com.hflw.vasp.modules.entity.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     @Autowired
-    StoreUserService storeUserService;
+    private UserService userService;
+
     @Autowired
-    UserUtils userUtils;
+    private UserUtils userUtils;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -50,24 +51,26 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
-        //检查方法上是否有校验登陆标注
-        AuthCheck authCheck = handlerMethod.getMethodAnnotation(AuthCheck.class);
-        if (authCheck == null) {
-            if (!sessionVerify(request)) {
-                printNotLogin(response, request);
-                return false;
-            }
-            StoreUser user = storeUserService.findById(userUtils.getSessionUser().getId());
-            if (!sessionVerifyStore(request, user)) {
-                printStoreMessage(response, user);
-                return false;
-            }
-        }
+        boolean needLoginFlag = true;
+        //检查类上是否有校验登陆标注
+        Class<?> targetBean = handlerMethod.getBeanType();
+        AccessNoSession authCheck = targetBean.getAnnotation(AccessNoSession.class);
+        //添加AccessNoSession注解的类，无需登录校验
+        if (authCheck != null) needLoginFlag = !authCheck.value();
 
+        //检查方法上是否有校验登陆标注,方法@AccessNoSession覆盖类@AccessNoSession
+        authCheck = handlerMethod.getMethodAnnotation(AccessNoSession.class);
+        //添加AccessNoSession注解的类，无需登录校验
+        if (authCheck != null) needLoginFlag = !authCheck.value();
+
+        if (needLoginFlag && !sessionVerify(request)) {
+            printNotLogin(response, request);
+            return false;
+        }
         return true;
     }
 
-    private boolean sessionVerifyStore(HttpServletRequest request, StoreUser user) {
+    private boolean sessionVerifyStore(HttpServletRequest request, Customer user) {
         HttpSession session = request.getSession();
         if (user.getDelFlag() == Constants.NOT_DEL && user.getEnableStatus() != Constants.ENABLE_STATUS_INVALID) {
             logger.info(user.getId() + "状态正常");
@@ -79,33 +82,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
     }
 
-    private void printStoreMessage(HttpServletResponse response, StoreUser user) {
-        PrintWriter out = null;
-        Map<String, Object> result = new HashMap<String, Object>();
-        if (user.getDelFlag() == Constants.IS_DEL) {
-            result.put("code", ResultCodeEnum.STORE_IS_DEL.getCode());
-            result.put("msg", ResultCodeEnum.STORE_IS_DEL.getMsg());
-        }
-        if (user.getEnableStatus() == Constants.ENABLE_STATUS_INVALID) {
-            result.put("code", ResultCodeEnum.STORE_IS_STOP.getCode());
-            result.put("msg", ResultCodeEnum.STORE_IS_STOP.getMsg());
-        }
-        try {
-            response.setContentType("application/json;charset=utf-8");
-            out = response.getWriter();
-            out.print(JSON.toJSON(result));
-        } catch (IOException e) {
-            logger.error("获取PrintWriter异常", e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-    }
-
     private boolean sessionVerify(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        StoreUser user = (StoreUser) session.getAttribute(Constants.SESSION_LOGIN_USER);
+        Customer user = (Customer) session.getAttribute(Constants.SESSION_LOGIN_USER);
         if (null != user) {
             return true;
         } else {

@@ -12,14 +12,14 @@ import java.lang.annotation.Target;
  *
  * @Title AuthCheck.java
  * @Package com.qurong.credit.sp.annotation
- * @Description TODO 登陆校验注解
+ * @Description 登陆校验注解  添加注解，无需登录
  * @author qurong
  * @date 2018年7月13日 下午2:39:08
  * @version
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AuthCheck {
+public @interface AccessNoSession {
 
     boolean value() default true;
 

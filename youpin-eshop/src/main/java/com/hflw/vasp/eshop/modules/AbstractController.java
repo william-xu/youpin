@@ -2,13 +2,14 @@ package com.hflw.vasp.eshop.modules;
 
 import com.hflw.vasp.controller.BaseController;
 import com.hflw.vasp.eshop.common.constant.Constants;
-import com.hflw.vasp.modules.entity.StoreUser;
+import com.hflw.vasp.modules.entity.Customer;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -24,6 +25,9 @@ public class AbstractController extends BaseController {
     public Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    protected HttpServletRequest request;
+
+    @Autowired
     protected HttpSession session;
 
     /**
@@ -31,16 +35,16 @@ public class AbstractController extends BaseController {
      *
      * @return
      */
-    public StoreUser getSessionUser() {
-        StoreUser user = (StoreUser) session.getAttribute(Constants.SESSION_LOGIN_USER);
+    public Customer getSessionUser() {
+        Customer user = (Customer) session.getAttribute(Constants.SESSION_LOGIN_USER);
         if (user == null || StringUtils.isBlank(user.getPhone())) {
             return null;
         }
         return user;
     }
 
-    public String getUserName() {
-        StoreUser user = getSessionUser();
+    public String getAccount() {
+        Customer user = getSessionUser();
         if (user != null) {
             return user.getPhone();
         }
@@ -48,7 +52,7 @@ public class AbstractController extends BaseController {
     }
 
     public Long getUserId() {
-        StoreUser user = getSessionUser();
+        Customer user = getSessionUser();
         if (user != null) {
             return user.getId();
         }

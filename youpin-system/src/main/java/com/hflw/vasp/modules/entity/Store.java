@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Data
 @Entity
 @Table(name = "d_store")
-@ApiModel("门店用户")
+@ApiModel("门店")
 public class Store extends BaseEntity {
 
     /**

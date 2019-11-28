@@ -1,8 +1,8 @@
 package com.hflw.vasp.eshop.modules.user.service;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
-import com.hflw.vasp.modules.dao.IStoreUserDao;
-import com.hflw.vasp.modules.entity.StoreUser;
+import com.hflw.vasp.modules.dao.IUserDao;
+import com.hflw.vasp.modules.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,16 @@ import java.util.Optional;
  * @date 2018年10月24日 下午2:37:40
  */
 @Service
-public class StoreUserService {
+public class UserService {
 
     @Autowired
-    private IStoreUserDao userDao;
+    private IUserDao userDao;
 
-    public StoreUser getUserByPhone(String phone) {
+    public Customer getUserByPhone(String phone) {
         return userDao.findByPhone(phone);
     }
 
-    public Long saveOrUpdate(StoreUser u) {
+    public Long saveOrUpdate(Customer u) {
         if (u.getId() != null) {
             userDao.save(u);
         } else {
@@ -38,22 +38,22 @@ public class StoreUserService {
         return u.getId();
     }
 
-    public StoreUser getUserByMiniOpenId(String miniOpenId) {
+    public Customer getUserByMiniOpenId(String miniOpenId) {
         return userDao.findByMiniOpenId(miniOpenId);
     }
 
-    public int updateMiniOpenIdByPrimaryKey(StoreUser u) {
+    public int updateMiniOpenIdByPrimaryKey(Customer u) {
         userDao.save(u);
         return 1;
     }
 
 
-    public StoreUser findById(Long id) {
-        Optional<StoreUser> optional = userDao.findById(id);
+    public Customer findById(Long id) {
+        Optional<Customer> optional = userDao.findById(id);
         return optional.get();
     }
 
-    public void updateByPrimaryKeySelective(StoreUser user) {
+    public void updateByPrimaryKeySelective(Customer user) {
 //        userMapper.updateByPrimaryKeySelective(user);
     }
 

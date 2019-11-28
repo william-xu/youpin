@@ -1,6 +1,5 @@
 package com.hflw.vasp.eshop.modules.areas.controller;
 
-import com.hflw.vasp.eshop.common.annotation.AuthCheck;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.modules.areas.service.BaseAreasService;
 import com.hflw.vasp.system.entity.SysArea;
@@ -46,7 +45,6 @@ public class BaseAreasController {
         return R.ok().put("baseAreas", "");
     }
 
-    @AuthCheck
     @RequestMapping("/seacherByCityCode")
     public R searchByCityCode(@NotBlank(message = "城市编码不能为空")String cityCode) {
         Map<String, String> params = new HashMap<>();

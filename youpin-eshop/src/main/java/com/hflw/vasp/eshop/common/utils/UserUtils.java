@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.common.utils;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
-import com.hflw.vasp.modules.entity.StoreUser;
+import com.hflw.vasp.modules.entity.Customer;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * @author qurong
  * @Title UserUtils.java
  * @Package com.qurong.credit.sp.utils
- * @Description TODO 获取当前用户工具类
+ * @Description 获取当前用户工具类
  * @date 2018年7月16日 下午4:35:03
  */
 @Component
@@ -25,7 +25,7 @@ public class UserUtils {
     @Autowired
     HttpSession session;
 
-    public static void putSessionUser(HttpSession session, StoreUser user) {
+    public static void putSessionUser(HttpSession session, Customer user) {
         session.setAttribute(Constants.SESSION_LOGIN_USER, user);
     }
 
@@ -43,8 +43,8 @@ public class UserUtils {
      *
      * @return
      */
-    public StoreUser getSessionUser() {
-        StoreUser user = (StoreUser) session.getAttribute(Constants.SESSION_LOGIN_USER);
+    public Customer getSessionUser() {
+        Customer user = (Customer) session.getAttribute(Constants.SESSION_LOGIN_USER);
         if (user == null || StringUtils.isBlank(user.getPhone())) {
             return null;
         }

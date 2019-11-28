@@ -17,7 +17,7 @@ public class R extends HashMap<String, Object> {
     private final static String TOTAL_KEY = "total";
 
     public R() {
-        put(CODE_KEY, 0);
+        put(CODE_KEY, 200);
         put(MSG_KEY, "success");
     }
 

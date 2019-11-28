@@ -8,7 +8,7 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package com.hflw.vasp.eshop.common.utils.wechat;
+package com.hflw.vasp.eshop.modules.weixin.model;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -20,10 +20,10 @@ package com.hflw.vasp.eshop.common.utils.wechat;
  */
 public class UnifiedOrderModel {
 
+    private String loanNo;
     private String body;
     private Integer totalFee;
-    private String loanNo;
-    private Integer repaymentPeriod;
+    private String notifyUrl;
 
     public String getBody() {
         return body;
@@ -49,12 +49,12 @@ public class UnifiedOrderModel {
         this.loanNo = loanNo;
     }
 
-    public Integer getRepaymentPeriod() {
-        return repaymentPeriod;
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
 
-    public void setRepaymentPeriod(Integer repaymentPeriod) {
-        this.repaymentPeriod = repaymentPeriod;
+    public void setNotifyUrl(String notifyUrl) {
+        this.notifyUrl = notifyUrl;
     }
 
 }

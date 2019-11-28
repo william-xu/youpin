@@ -39,7 +39,7 @@ public class CommonService {
     public String sendVerifyCode(String phone) {
         String smsCode = StringUtils.generateRandomCode(true, 4);
         logger.info("准备发送手机号phone=" + phone + ">>>smsCode=" + smsCode);
-        smsService.sendVerifyCode(phone, smsCode);
+        //smsService.sendVerifyCode(phone, smsCode);
 
         String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
         redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);

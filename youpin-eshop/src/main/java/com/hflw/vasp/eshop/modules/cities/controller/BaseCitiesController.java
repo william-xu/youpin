@@ -1,6 +1,5 @@
 package com.hflw.vasp.eshop.modules.cities.controller;
 
-import com.hflw.vasp.eshop.common.annotation.AuthCheck;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.modules.cities.service.BaseCitiesService;
 import com.hflw.vasp.system.entity.SysCity;
@@ -34,7 +33,6 @@ public class BaseCitiesController {
     /**
      * 根据条件查询
      */
-    @AuthCheck
     @RequestMapping("/searchByProvinceCode")
     public R searchByProvinceCode(@NotBlank(message = "省份编码不能为空") String provinceCode) {
         Map<String, String> params = new HashMap<>();

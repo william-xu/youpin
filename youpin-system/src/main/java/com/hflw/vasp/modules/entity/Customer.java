@@ -11,9 +11,9 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "d_store_user")
-@ApiModel("门店用户")
-public class StoreUser extends BaseSysUser {
+@Table(name = "d_customer")
+@ApiModel("客户")
+public class Customer extends BaseSysUser {
 
     @ApiModelProperty("手机号")
     @Column(name = "phone", length = 11)
@@ -29,9 +29,8 @@ public class StoreUser extends BaseSysUser {
 
     @Override
     public String toString() {
-        return "StoreUser{" +
-                "id=" + id +
-                ", phone='" + phone + '\'' +
+        return "Customer{" +
+                "phone='" + phone + '\'' +
                 ", wxOpenId='" + wxOpenId + '\'' +
                 ", miniOpenId='" + miniOpenId + '\'' +
                 '}';

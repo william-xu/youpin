@@ -1,6 +1,5 @@
 package com.hflw.vasp.eshop.modules.province.controller;
 
-import com.hflw.vasp.eshop.common.annotation.AuthCheck;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.modules.province.service.BaseProvincesService;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
@@ -32,7 +31,6 @@ public class BaseProvincesController {
     /**
      * 列表
      */
-    @AuthCheck
     @RequestMapping("/list")
     public R list() {
         List<SysProvince> list  = baseProvinceService.list();

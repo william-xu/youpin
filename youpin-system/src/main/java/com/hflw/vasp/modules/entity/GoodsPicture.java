@@ -23,7 +23,7 @@ public class GoodsPicture extends BaseEntity {
     /**
      * 商品id
      */
-    private Integer goodsId;
+    private Long goodsId;
     /**
      * 图片url
      */

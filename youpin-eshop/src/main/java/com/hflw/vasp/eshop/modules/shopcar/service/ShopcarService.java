@@ -3,10 +3,10 @@ package com.hflw.vasp.eshop.modules.shopcar.service;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
+import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.Shopcar;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.modules.entity.Store;
-import com.hflw.vasp.modules.entity.StoreUser;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class ShopcarService {
     public void saveList(List<ShopcarModel> list) {
         if (!CollectionUtils.isEmpty(list)) {
             for (ShopcarModel shopcarModel : list) {
-                StoreUser sessionUser = userUtils.getSessionUser();
+                Customer sessionUser = userUtils.getSessionUser();
                 HashMap<String, Object> params = new HashMap<>();
                 params.put("userId", sessionUser.getId());
                 params.put("goodsId", shopcarModel.getGoodsId());
@@ -86,7 +86,7 @@ public class ShopcarService {
     }
 
     public List<ShopcarDetail> searchShopcarDetail(Map<String, Object> params) {
-        StoreUser sessionUser = userUtils.getSessionUser();
+        Customer sessionUser = userUtils.getSessionUser();
         List<ShopcarDetail> detailList = null;//shopcarMapper.searchShopcarDetail(params);
         for (ShopcarDetail shopcarDetail : detailList) {
             Store store = null;//storeService.selectByPrimaryKey(sessionUser.getStoreId());
