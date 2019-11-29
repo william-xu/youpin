@@ -11,10 +11,7 @@ import com.hflw.vasp.web.R;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,25 +76,28 @@ public class GoodsController extends AbstractController {
     /**
      * 商品详情信息
      */
-    @RequestMapping("/info")
-    public R info(Long id) {
+    @RequestMapping("/info/{id}")
+    public R info(@PathVariable("id") Long id) {
         Goods goods = goodsService.findById(id);
-        Map<String, Object> goodsPicParams = new HashMap<>();
-        //goodsPicParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);
-        goodsPicParams.put("goodsId", goods.getId());
-        GoodsDetailModel goodsDetailModel = new GoodsDetailModel();
-        BeanUtils.copyProperties(goods, goodsDetailModel);
-        //针对多张图片
-        List<GoodsPicture> pictures = goodsPictureService.search(goodsPicParams);
-        List<String> picUrls = new ArrayList<>();
-        if (pictures.size() > 1) {
-            for (GoodsPicture picture : pictures) {
-                picUrls.add(picture.getPicUrl());
+
+        GoodsDetailModel goodsDetailModel = null;
+        if (goods != null) {
+            goodsDetailModel = new GoodsDetailModel();
+
+            //针对多张图片
+            List<GoodsPicture> pictures = goodsPictureService.findByGoodsId(goods.getId());
+            List<String> picUrls = new ArrayList<>();
+            if (pictures.size() > 1) {
+                for (GoodsPicture picture : pictures) {
+                    picUrls.add(picture.getPicUrl());
+                }
+            } else {
+                picUrls.add(goods.getPicUrl());
             }
-        } else {
-            picUrls.add(goods.getPicUrl());
+
+            BeanUtils.copyProperties(goods, goodsDetailModel);
+            goodsDetailModel.setPicUrls(picUrls);
         }
-        goodsDetailModel.setPicUrls(picUrls);
         return R.ok().data(goodsDetailModel);
     }
 

@@ -5,7 +5,7 @@ import com.hflw.vasp.repository.BaseRepository;
 
 import java.io.Serializable;
 
-public interface IUserDao extends BaseRepository<Customer, Long>, Serializable {
+public interface ICustomerDao extends BaseRepository<Customer, Long>, Serializable {
 
     Customer findByPhone(String phone);
 

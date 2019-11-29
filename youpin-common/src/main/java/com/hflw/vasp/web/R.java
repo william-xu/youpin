@@ -13,6 +13,7 @@ public class R extends HashMap<String, Object> {
     private final static String CODE_KEY = "code";
     private final static String MSG_KEY = "msg";
     private final static String DATA_KEY = "data";
+    private final static String LIST_KEY = "list";
     private final static String PAGE_KEY = "page";
     private final static String TOTAL_KEY = "total";
 

@@ -21,22 +21,23 @@ import java.util.List;
  * @date 2019-03-28 10:17:01
  */
 @RestController
-@RequestMapping("sysProvince")
+@RequestMapping("base/province")
 public class BaseProvincesController {
     @Autowired
     private BaseProvincesService baseProvinceService;
 
     @Autowired
     RedisCacheUtils redisCacheUtil;
+
     /**
      * 列表
      */
     @RequestMapping("/list")
     public R list() {
-        List<SysProvince> list  = baseProvinceService.list();
+        List<SysProvince> list = baseProvinceService.list();
         if (CollectionUtils.isEmpty(list))
             R.error(ResultCodeEnum.PROVINCE_NOT_EXIST.getCode(), ResultCodeEnum.PROVINCE_NOT_EXIST.getMsg());
-        return R.ok().put("list", list);
+        return R.ok().data(list);
     }
 
 }

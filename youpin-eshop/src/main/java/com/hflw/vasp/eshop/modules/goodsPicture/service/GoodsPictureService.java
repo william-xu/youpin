@@ -23,4 +23,8 @@ public class GoodsPictureService {
         return goodsPictureDao.findAll(example);
     }
 
+    public List<GoodsPicture> findByGoodsId(Long goodsId) {
+        return null;
+    }
+
 }

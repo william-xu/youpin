@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  * @date 2019-04-02 16:00:37
  */
 public class ShopcarDetail extends Shopcar {
+
 	/**
 	 * 商品全名称
 	 */

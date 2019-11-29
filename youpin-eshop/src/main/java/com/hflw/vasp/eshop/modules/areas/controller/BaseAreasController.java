@@ -6,7 +6,9 @@ import com.hflw.vasp.system.entity.SysArea;
 import com.hflw.vasp.web.R;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
@@ -19,40 +21,20 @@ import java.util.Map;
  * @date 2019-04-03 11:33:49
  */
 @RestController
-@RequestMapping("/sysAreas")
+@RequestMapping("base/area")
 public class BaseAreasController {
+
     @Autowired
     private BaseAreasService baseAreasService;
 
-    /**
-     * 列表
-     */
     @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params) {
-        //PageUtils page = baseAreasService.queryPage(params);
-
-        return R.ok().put("page", "");
-    }
-
-
-    /**
-     * 信息
-     */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Integer id) {
-        //BaseAreasEntity baseAreas = baseAreasService.getById(id);
-
-        return R.ok().put("baseAreas", "");
-    }
-
-    @RequestMapping("/seacherByCityCode")
-    public R searchByCityCode(@NotBlank(message = "城市编码不能为空")String cityCode) {
+    public R list(@NotBlank(message = "城市编码不能为空") String cityCode) {
         Map<String, String> params = new HashMap<>();
         params.put("cityCode", cityCode);
         List<SysArea> list = baseAreasService.searchByCityCode(params);
         if (CollectionUtils.isEmpty(list))
             R.error(ResultCodeEnum.AREAS_NOT_EXIST.getCode(), ResultCodeEnum.AREAS_NOT_EXIST.getMsg());
-        return R.ok().put("list", list);
+        return R.ok().data(list);
     }
 
     /**

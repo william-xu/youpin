@@ -33,14 +33,11 @@ public class ShopcarController extends AbstractController {
     private ShopcarService shopcarService;
 
     /**
-     * 购物车详情列表
+     * 购物车列表
      */
-    @RequestMapping("/shopcarDetailList")
-    public R shopcarDetailList() {
-        Map<String, Object> shopParams = new HashMap<>();
-        shopParams.put("userId", getUserId());
-        shopParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);
-        List<ShopcarDetail> list = shopcarService.searchShopcarDetail(shopParams);
+    @RequestMapping("/list")
+    public R list() {
+        List<ShopcarDetail> list = shopcarService.list(getUserId());
         return R.ok().put("result", list);
     }
 
@@ -101,7 +98,7 @@ public class ShopcarController extends AbstractController {
         shopParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);
         shopParams.put("goodsId", shopcarModel.getGoodsId());
         shopParams.put("userId", getUserId());
-        Shopcar shopcar = shopcarService.search(shopParams).get(0);
+        Shopcar shopcar = shopcarService.search(shopParams);
         shopcar.setGoodsNum(shopcarModel.getGoodsNum() > 10 ? 10 : shopcarModel.getGoodsNum());
         shopcarService.updateById(shopcar);
         return R.ok();

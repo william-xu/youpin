@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 @RequestMapping(value = "/common")
 public class CommonController {
+
     private static final Logger logger = LoggerFactory.getLogger(CommonController.class);
 
     @Autowired
@@ -41,8 +42,7 @@ public class CommonController {
         if (StringUtils.isEmpty(phone)) return R.error("手机号码不能为空!");
 
         String verifyCode = commonService.sendVerifyCode(phone);
-        logger.info("手机号：" + phone + "的短信验证码：" + verifyCode);
-        return R.ok();
+        return R.ok().data(verifyCode);
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.GET)

@@ -30,4 +30,28 @@ public class UserController extends AbstractController {
         return R.ok();
     }
 
+    @RequestMapping(value = "/addresslist")
+    public R addressList() {
+
+        return R.ok();
+    }
+
+    @RequestMapping(value = "/address/add")
+    public R addressAdd() {
+
+        return R.ok();
+    }
+
+    @RequestMapping(value = "/address/update")
+    public R addressUpdate() {
+
+        return R.ok();
+    }
+
+    @RequestMapping(value = "/address/delete")
+    public R addressDel() {
+
+        return R.ok();
+    }
+
 }

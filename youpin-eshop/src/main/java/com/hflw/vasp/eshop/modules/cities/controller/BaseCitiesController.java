@@ -24,22 +24,24 @@ import java.util.Map;
  * @date 2019-03-28 13:49:24
  */
 @RestController
-@RequestMapping("sysCity")
+@RequestMapping("base/city")
 @Validated
 public class BaseCitiesController {
+
     @Autowired
     private BaseCitiesService baseCitiesService;
 
     /**
      * 根据条件查询
      */
-    @RequestMapping("/searchByProvinceCode")
-    public R searchByProvinceCode(@NotBlank(message = "省份编码不能为空") String provinceCode) {
+    @RequestMapping("/list")
+    public R list(@NotBlank(message = "省份编码不能为空") String provinceCode) {
         Map<String, String> params = new HashMap<>();
         params.put("provinceCode", provinceCode);
-        List<SysCity> list = baseCitiesService.searchByProvinceCode(params);
+        List<SysCity> list = baseCitiesService.list(params);
         if (CollectionUtils.isEmpty(list))
             R.error(ResultCodeEnum.CITY_NOT_EXIST.getCode(), ResultCodeEnum.CITY_NOT_EXIST.getMsg());
-        return R.ok().put("list", list);
+        return R.ok().data(list);
     }
+
 }

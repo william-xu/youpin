@@ -25,7 +25,7 @@ public class BaseCitiesService {
     @Autowired
     private RedisCacheUtils redisCacheUtil;
 
-    public List<SysCity> searchByProvinceCode(Map<String, String> params) {
+    public List<SysCity> list(Map<String, String> params) {
         String provinceCode = params.get("provinceCode");
         List<SysCity> list = redisCacheUtil.getListByPrex(CacheConstants.REDIS_CITY_KEY + provinceCode);
         Collections.sort(list, Comparator.comparing(SysCity::getCode));

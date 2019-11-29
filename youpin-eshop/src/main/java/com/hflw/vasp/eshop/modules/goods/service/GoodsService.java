@@ -18,7 +18,7 @@ public class GoodsService {
 
     public Goods findById(Long id) {
         Optional<Goods> optional = goodsDao.findById(id);
-        return optional.get();
+        return optional.orElse(null);
     }
 
     public List<Goods> search(Goods goods) {

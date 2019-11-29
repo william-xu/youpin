@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.modules.user.service;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
-import com.hflw.vasp.modules.dao.IUserDao;
+import com.hflw.vasp.modules.dao.ICustomerDao;
 import com.hflw.vasp.modules.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private IUserDao userDao;
+    private ICustomerDao userDao;
 
     public Customer getUserByPhone(String phone) {
         return userDao.findByPhone(phone);

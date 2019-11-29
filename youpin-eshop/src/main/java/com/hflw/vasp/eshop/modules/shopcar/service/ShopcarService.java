@@ -2,8 +2,12 @@ package com.hflw.vasp.eshop.modules.shopcar.service;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
+import com.hflw.vasp.eshop.modules.common.controller.CommonController;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
+import com.hflw.vasp.modules.dao.IGoodsDao;
+import com.hflw.vasp.modules.dao.IShopcarDao;
 import com.hflw.vasp.modules.entity.Customer;
+import com.hflw.vasp.modules.entity.Goods;
 import com.hflw.vasp.modules.entity.Shopcar;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.modules.entity.Store;
@@ -14,6 +18,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +30,70 @@ public class ShopcarService {
 
     private static final Logger logger = LoggerFactory.getLogger(ShopcarService.class);
 
+    @Resource
+    private IShopcarDao shopcarDao;
+
+    @Resource
+    private IGoodsDao goodsDao;
+
     @Autowired
     private UserUtils userUtils;
+
+    /**
+     * 购物车列表
+     *
+     * @param userId
+     * @return
+     */
+    public List<ShopcarDetail> list(Long userId) {
+        List<Shopcar> list = shopcarDao.findAllByUserId(userId);
+
+        List<ShopcarDetail> detailList = new ArrayList<>(list.size());
+        for (Shopcar shopcar : list) {
+            Goods goods = goodsDao.getOne(shopcar.getGoodsId());
+
+            ShopcarDetail detail = new ShopcarDetail();
+            detail.setUserId(shopcar.getUserId());
+            detail.setName(goods.getName());
+            detail.setGoodsId(shopcar.getGoodsId());
+            detail.setShopPrice(goods.getShopPrice());
+            detail.setGoodsNum(shopcar.getGoodsNum());
+            detailList.add(detail);
+        }
+        return detailList;
+    }
+
+    /**
+     * 初始化购物车，没登录变成登录情况
+     *
+     * @param shopcarModel
+     */
+    public void initShopcar(ShopcarModel shopcarModel) {
+
+    }
+
+    /**
+     * 添加商品到购物车
+     *
+     * @param goodsId
+     */
+    public void addToShopcar(Long goodsId) {
+
+    }
+
+    /**
+     * 更新购物车
+     */
+    public void updateShopcar() {
+
+    }
+
+    /**
+     * 从购物车删除商品
+     */
+    public void delFromShopcar(Long[] goodsIds) {
+
+    }
 
     public void save(ShopcarModel shopcarModel) {
         HashMap<String, Object> params = new HashMap<>();
@@ -85,27 +153,6 @@ public class ShopcarService {
         }
     }
 
-    public List<ShopcarDetail> searchShopcarDetail(Map<String, Object> params) {
-        Customer sessionUser = userUtils.getSessionUser();
-        List<ShopcarDetail> detailList = null;//shopcarMapper.searchShopcarDetail(params);
-        for (ShopcarDetail shopcarDetail : detailList) {
-            Store store = null;//storeService.selectByPrimaryKey(sessionUser.getStoreId());
-            if (store != null && store.getDelFlag() == Constants.NOT_DEL && store.getEnableStatus() == Constants.ENABLE_STATUS_EFFECT) {
-                HashMap<String, Object> goodsParams = new HashMap<>();
-                goodsParams.put("userId", sessionUser.getId());
-                goodsParams.put("baseGoodsId", shopcarDetail.getGoodsId());
-                goodsParams.put("orgId", store.getOrgId());
-                goodsParams.put("delFlag", Constants.NOT_DEL);//未删除
-                goodsParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);//正常
-            }
-        }
-        return detailList;
-    }
-
-    public List<Shopcar> search(Map<String, Object> params) {
-//        return shopcarMapper.search(params);
-        return null;
-    }
 
     public void updateById(Shopcar shopcar) {
         int goodsNum = shopcar.getGoodsNum();
@@ -122,5 +169,9 @@ public class ShopcarService {
         shopcar.setDelFlag(Constants.IS_DEL);
 //        return shopcarMapper.updateByPrimaryKeySelective(shopcar);
         return 1;
+    }
+
+    public Shopcar search(Map<String, Object> shopParams) {
+        return null;
     }
 }
