@@ -16,8 +16,8 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-@Table(name = "d_store_order_goods")
-public class StoreOrderGoods extends BaseEntity {
+@Table(name = "d_order_goods")
+public class OrderGoods extends BaseEntity {
 
     /**
      * 订单流水

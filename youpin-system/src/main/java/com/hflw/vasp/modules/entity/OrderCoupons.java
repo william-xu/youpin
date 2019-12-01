@@ -15,8 +15,8 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "d_store_order_coupons")
-public class StoreOrderCoupons extends BaseEntity {
+@Table(name = "d_order_coupons")
+public class OrderCoupons extends BaseEntity {
 
     /**
      * 订单流水

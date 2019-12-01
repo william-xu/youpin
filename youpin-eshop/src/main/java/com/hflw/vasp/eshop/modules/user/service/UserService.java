@@ -27,14 +27,10 @@ public class UserService {
     }
 
     public Long saveOrUpdate(Customer u) {
-        if (u.getId() != null) {
-            userDao.save(u);
-        } else {
-            u.setCreateTime(new Date());
-            u.setDelFlag(Constants.NOT_DEL);
-            u.setEnableStatus(Constants.ENABLE_STATUS_CHECK);
-//            userMapper.insertUseGeneratedKeys(u);
-        }
+        u.setCreateTime(new Date());
+        u.setDelFlag(Constants.NOT_DEL);
+        u.setEnableStatus(Constants.ENABLE_STATUS_CHECK);
+        userDao.save(u);
         return u.getId();
     }
 

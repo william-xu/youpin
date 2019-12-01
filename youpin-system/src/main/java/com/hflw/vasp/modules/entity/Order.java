@@ -16,14 +16,14 @@ import java.math.BigDecimal;
  */
 @Data
 @Entity
-@Table(name = "d_store_order")
-public class StoreOrder extends BaseEntity {
+@Table(name = "d_order")
+public class Order extends BaseEntity {
 
     /**
-     * 门店id
+     * 用户id
      */
-    @Column(name = "store_user_id")
-    private Integer userId;
+    @Column(name = "user_id")
+    private Long userId;
     /**
      * 订单流水
      */
@@ -39,36 +39,17 @@ public class StoreOrder extends BaseEntity {
      */
     @Column(name = "discount_amount", length = 20)
     private BigDecimal discountAmount;
+
     /**
      * 订单利润
      */
     @Column(name = "profit", length = 20)
     private BigDecimal profit;
+
     /**
-     * 金融订单编号
-     */
-	/*@Column(name = "finance_order_no", length = 32)
-	private String financeOrderNo;
-	*//**
-     * 车架号
-     *//*
-	@Column(name = "vin_no", length = 32)
-	private String vinNo;*/
-    /**
-     * 订单状态：1已下单，2已安装
+     * 订单状态：0已下单，1已支付，2退款
      */
     @Column(name = "status", length = 2)
     private Integer status;
 
-    @Override
-    public String toString() {
-        return "StoreOrder{" +
-                "userId=" + userId +
-                ", orderNo='" + orderNo + '\'' +
-                ", payAmount=" + payAmount +
-                ", discountAmount=" + discountAmount +
-                ", profit=" + profit +
-                ", status='" + status + '\'' +
-                '}';
-    }
 }

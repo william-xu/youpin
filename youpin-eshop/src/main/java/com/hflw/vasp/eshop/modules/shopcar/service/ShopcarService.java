@@ -10,7 +10,6 @@ import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.Goods;
 import com.hflw.vasp.modules.entity.Shopcar;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
-import com.hflw.vasp.modules.entity.Store;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -75,49 +71,47 @@ public class ShopcarService {
     /**
      * 添加商品到购物车
      *
-     * @param goodsId
+     * @param model
      */
-    public void addToShopcar(Long goodsId) {
-
+    public void addToShopcar(ShopcarModel model) {
+        boolean existFlag = false;
+        List<Shopcar> existShopcarList = shopcarDao.findAllByUserId(model.getUserId());
+        for (Shopcar shopcar : existShopcarList) {
+            if (shopcar.getGoodsId().equals(model.getGoodsId())) {
+                shopcar.setGoodsNum(shopcar.getGoodsNum() + model.getGoodsNum());
+                existFlag = true;
+                shopcarDao.save(shopcar);
+                break;
+            }
+        }
+        if (!existFlag) {
+            Shopcar shopcar = new Shopcar();
+            shopcar.setUserId(model.getUserId());
+            shopcar.setGoodsId(model.getGoodsId());
+            shopcar.setGoodsNum(model.getGoodsNum());
+            shopcar.setCreateTime(new Date());
+            shopcarDao.save(shopcar);
+        }
     }
 
     /**
      * 更新购物车
      */
-    public void updateShopcar() {
-
+    public void updateShopcar(ShopcarModel model) {
+        Shopcar shopcar = shopcarDao.findByUserIdAndGoodsId(model.getUserId(), model.getGoodsId());
+        shopcar.setGoodsNum(model.getGoodsNum());
+        shopcar.setUpdateTime(new Date());
+        shopcarDao.save(shopcar);
     }
 
     /**
      * 从购物车删除商品
+     *
+     * @param ids 购物车id
      */
-    public void delFromShopcar(Long[] goodsIds) {
-
-    }
-
-    public void save(ShopcarModel shopcarModel) {
-        HashMap<String, Object> params = new HashMap<>();
-        params.put("userId", userUtils.getSessionUser().getId());
-        params.put("goodsId", shopcarModel.getGoodsId());
-        params.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);//正常
-        List<Shopcar> shopcarList = null;//shopcarMapper.search(params);
-        if (CollectionUtils.isNotEmpty(shopcarList)) {
-            //存在相同商品
-            Shopcar shopcar = shopcarList.get(0);
-            logger.info("新增商品数量:" + shopcarModel.getGoodsNum() + "购物车相同商品数量:" + shopcar.getGoodsNum());
-            int goodsNum = shopcarModel.getGoodsNum() + shopcar.getGoodsNum();
-            shopcar.setGoodsNum(goodsNum > 10 ? 10 : goodsNum);
-//            shopcarMapper.updateByPrimaryKeySelective(shopcar);
-        } else {
-            //没有相同商品
-            logger.info("新增商品数量:" + shopcarModel.getGoodsNum());
-            Shopcar shopcar = new Shopcar();
-            BeanUtils.copyProperties(shopcarModel, shopcar);
-            int goodsNum = shopcar.getGoodsNum();
-            shopcar.setGoodsNum(goodsNum > 10 ? 10 : goodsNum);
-            shopcar.setEnableStatus(Constants.ENABLE_STATUS_EFFECT);
-            shopcar.setUserId(userUtils.getSessionUser().getId());
-//            shopcarMapper.insertSelective(shopcar);
+    public void delFromShopcar(Long[] ids) {
+        for (Long id : ids) {
+            shopcarDao.deleteById(id);
         }
     }
 
@@ -151,27 +145,5 @@ public class ShopcarService {
                 }
             }
         }
-    }
-
-
-    public void updateById(Shopcar shopcar) {
-        int goodsNum = shopcar.getGoodsNum();
-        shopcar.setGoodsNum(goodsNum > 10 ? 10 : goodsNum);
-//        shopcarMapper.updateByPrimaryKeySelective(shopcar);
-    }
-
-    public Shopcar selectByPrimaryKey(Integer id) {
-//        return shopcarMapper.selectByPrimaryKey(id);
-        return null;
-    }
-
-    public int delete(Shopcar shopcar) {
-        shopcar.setDelFlag(Constants.IS_DEL);
-//        return shopcarMapper.updateByPrimaryKeySelective(shopcar);
-        return 1;
-    }
-
-    public Shopcar search(Map<String, Object> shopParams) {
-        return null;
     }
 }

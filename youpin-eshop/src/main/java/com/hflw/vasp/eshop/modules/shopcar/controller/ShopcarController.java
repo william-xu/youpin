@@ -41,31 +41,37 @@ public class ShopcarController extends AbstractController {
         return R.ok().put("result", list);
     }
 
-
-    /**
-     * 信息
-     */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Integer id) {
-        //DShopcarEntity dShopcar = dShopcarService.getById(id);
-
-        return R.ok().put("dShopcar", "");
-    }
-
     /**
      * 购物车保存商品
      */
-    @RequestMapping("/save")
-    public R save(ShopcarModel shopcarModel) {
-        logger.info(shopcarModel.toString());
-        shopcarService.save(shopcarModel);
+    @RequestMapping("/add")
+    public R save(ShopcarModel model) {
+        logger.info(model.toString());
+        model.setUserId(getUserId());
+        shopcarService.addToShopcar(model);
+        return R.ok();
+    }
+
+    /**
+     * 修改商品数量
+     */
+    @RequestMapping("/update")
+    public R update(ShopcarModel model) {
+        model.setUserId(getUserId());
+        shopcarService.updateShopcar(model);
+        return R.ok();
+    }
+
+    @RequestMapping("/delete")
+    public R delete(Long[] ids) {
+        shopcarService.delFromShopcar(ids);
         return R.ok();
     }
 
     /**
      * 购物车批量添加商品
      */
-    @RequestMapping("/saveList")
+    @RequestMapping("/batchAdd")
     public R save(@RequestBody(required = false) List<ShopcarModel> list) {
         logger.info(list.toString());
         shopcarService.saveList(list);
@@ -87,30 +93,6 @@ public class ShopcarController extends AbstractController {
 //        long total = ((Page<ShopcarDetail>) shopcarDetailList).getTotal();
 //        return R.ok().putPageData(shopcarDetailList, total);
         return null;
-    }
-
-    /**
-     * 修改商品数量
-     */
-    @RequestMapping("/update")
-    public R shopcarUpdate(ShopcarModel shopcarModel) {
-        Map<String, Object> shopParams = new HashMap<>();
-        shopParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);
-        shopParams.put("goodsId", shopcarModel.getGoodsId());
-        shopParams.put("userId", getUserId());
-        Shopcar shopcar = shopcarService.search(shopParams);
-        shopcar.setGoodsNum(shopcarModel.getGoodsNum() > 10 ? 10 : shopcarModel.getGoodsNum());
-        shopcarService.updateById(shopcar);
-        return R.ok();
-    }
-
-    @RequestMapping("/delete")
-    public R delete(Integer id) {
-        Shopcar shopcar = shopcarService.selectByPrimaryKey(id);
-        if (shopcar != null) {
-            shopcarService.delete(shopcar);
-        }
-        return R.ok();
     }
 
 }
