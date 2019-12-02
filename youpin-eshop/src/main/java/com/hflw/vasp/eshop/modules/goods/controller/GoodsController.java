@@ -76,8 +76,8 @@ public class GoodsController extends AbstractController {
     /**
      * 商品详情信息
      */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id) {
+    @RequestMapping("/info")
+    public R info(Long id) {
         Goods goods = goodsService.findById(id);
 
         GoodsDetailModel goodsDetailModel = null;

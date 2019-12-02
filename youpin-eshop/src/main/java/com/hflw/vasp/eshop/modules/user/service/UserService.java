@@ -67,6 +67,11 @@ public class UserService {
         return customerAddressDao.findAllByUserId(userId);
     }
 
+    public CustomerAddress getUserAddressById(Long id) {
+        Optional<CustomerAddress> optional = customerAddressDao.findById(id);
+        return optional.get();
+    }
+
     public void addUserAddress(Long userId, UserAddressModel model) {
         if (model.isDflt()) {
             customerAddressDao.resetByUserId(userId);

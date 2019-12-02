@@ -42,11 +42,10 @@ public class GoodsPictureController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Integer id){
+    @RequestMapping("/info")
+    public R info(Long id){
         //DGoodsPictureEntity dGoodsPicture = dGoodsPictureService.getById(id);
-
-        return R.ok().put("dGoodsPicture", "");
+        return R.ok().data("");
     }
 
     /**
