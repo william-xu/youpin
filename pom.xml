@@ -8,6 +8,7 @@
         <module>youpin-eshop</module>
         <module>youpin-framework</module>
         <module>youpin-system</module>
+        <module>youpin-admin</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

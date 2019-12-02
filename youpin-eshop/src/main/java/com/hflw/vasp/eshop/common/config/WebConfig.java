@@ -1,10 +1,10 @@
 package com.hflw.vasp.eshop.common.config;
 
 import com.hflw.vasp.eshop.common.interceptor.AuthInterceptor;
+import com.hflw.vasp.framework.config.UploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,6 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private AuthInterceptor authInterceptor;
 
+    @Autowired
+    private UploadProperties uploadProperties;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor);
@@ -37,7 +40,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/resources/")
                 .addResourceLocations("classpath:/static/")
                 .addResourceLocations("classpath:/public/")
-                .addResourceLocations("/dist/");
+                .addResourceLocations("/dist/").addResourceLocations();
+
+        String path = uploadProperties.getBasePath();
+        registry.addResourceHandler("/files/**").addResourceLocations("file://" + path);
     }
 
     /**
