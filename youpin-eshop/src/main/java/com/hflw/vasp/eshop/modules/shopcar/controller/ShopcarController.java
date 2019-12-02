@@ -2,14 +2,12 @@ package com.hflw.vasp.eshop.modules.shopcar.controller;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.modules.AbstractController;
+import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
 import com.hflw.vasp.eshop.modules.shopcar.service.ShopcarService;
-import com.hflw.vasp.modules.entity.Shopcar;
-import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.web.Pagination;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +36,7 @@ public class ShopcarController extends AbstractController {
     @RequestMapping("/list")
     public R list() {
         List<ShopcarDetail> list = shopcarService.list(getUserId());
-        return R.ok().put("result", list);
+        return R.ok().data(list);
     }
 
     /**

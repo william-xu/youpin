@@ -58,7 +58,7 @@ public class LoginController extends AbstractController {
             Customer existUser = userService.findByWxOpenId(openId);
             if (existUser != null && !phone.equals(existUser.getPhone())) {
                 existUser.setWxOpenId(null);
-                userService.updateByPrimaryKey(existUser);
+                userService.update(existUser);
             }
             user.setWxOpenId(openId);
         }

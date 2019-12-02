@@ -88,7 +88,7 @@ public class WeiXinController extends AbstractController {
                     user.setWxOpenId(openId);
                     logger.info("当前用户：" + getAccount(), "公众号openid更新完成：" + openId);
                 }
-                userService.updateByPrimaryKeySelective(user);
+                userService.update(user);
             }
         }
         return R.ok().put("openId", openId);

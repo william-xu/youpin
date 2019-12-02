@@ -22,13 +22,20 @@ public class OrderGoods extends BaseEntity {
     /**
      * 订单流水
      */
+    @Column(name = "order_id")
+    private Long orderId;
+
+    /**
+     * 订单流水
+     */
     @Column(name = "order_no", length = 32)
     private String orderNo;
+
     /**
      * 商品id
      */
     @Column(name = "goods_Id")
-    private Integer goodsId;
+    private Long goodsId;
     /**
      *
      */
@@ -44,10 +51,5 @@ public class OrderGoods extends BaseEntity {
      */
     @Column(name = "goods_price", length = 20)
     private BigDecimal goodsPrice;
-    /**
-     *
-     */
-    @Column(name = "cost_price", length = 20)
-    private BigDecimal costPrice;
 
 }

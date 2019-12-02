@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface IOrderGoodsDao extends BaseRepository<OrderGoods, Long>, Serializable {
 
-    List<OrderGoods> findAllByGoodsId(Long userId);
+    List<OrderGoods> findAllByOrderId(Long userId);
 
 }

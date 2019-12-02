@@ -2,12 +2,16 @@ package com.hflw.vasp.eshop.modules.user.controller;
 
 
 import com.hflw.vasp.eshop.modules.AbstractController;
+import com.hflw.vasp.eshop.modules.user.model.UserAddressModel;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
+import com.hflw.vasp.modules.entity.CustomerAddress;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author liuyf
@@ -30,27 +34,27 @@ public class UserController extends AbstractController {
         return R.ok();
     }
 
-    @RequestMapping(value = "/addresslist")
+    @RequestMapping(value = "/address/list")
     public R addressList() {
-
-        return R.ok();
+        List<CustomerAddress> list = userService.findAllAddressByUserId(getUserId());
+        return R.ok().data(list);
     }
 
     @RequestMapping(value = "/address/add")
-    public R addressAdd() {
-
+    public R addressAdd(UserAddressModel model) {
+        userService.addUserAddress(getUserId(), model);
         return R.ok();
     }
 
     @RequestMapping(value = "/address/update")
-    public R addressUpdate() {
-
+    public R addressUpdate(UserAddressModel model) {
+        userService.updateUserAddress(model);
         return R.ok();
     }
 
     @RequestMapping(value = "/address/delete")
-    public R addressDel() {
-
+    public R addressDel(Long id) {
+        userService.deleteUserAddressById(id);
         return R.ok();
     }
 

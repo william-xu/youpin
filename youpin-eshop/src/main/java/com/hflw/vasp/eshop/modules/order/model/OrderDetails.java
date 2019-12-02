@@ -1,6 +1,7 @@
 package com.hflw.vasp.eshop.modules.order.model;
 
 import com.hflw.vasp.modules.entity.Order;
+import com.hflw.vasp.modules.entity.OrderAddress;
 import com.hflw.vasp.modules.entity.OrderGoods;
 import lombok.Data;
 
@@ -18,5 +19,7 @@ public class OrderDetails {
     private Order order;
 
     private List<OrderGoods> goodsList;
+
+    private OrderAddress address;
 
 }

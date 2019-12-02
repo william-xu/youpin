@@ -1,15 +1,13 @@
 package com.hflw.vasp.eshop.modules.shopcar.service;
 
-import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
-import com.hflw.vasp.eshop.modules.common.controller.CommonController;
+import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
 import com.hflw.vasp.modules.dao.IGoodsDao;
 import com.hflw.vasp.modules.dao.IShopcarDao;
 import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.Goods;
 import com.hflw.vasp.modules.entity.Shopcar;
-import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 
 @Service
@@ -50,9 +51,9 @@ public class ShopcarService {
 
             ShopcarDetail detail = new ShopcarDetail();
             detail.setUserId(shopcar.getUserId());
-            detail.setName(goods.getName());
+            detail.setGoodsName(goods.getName());
             detail.setGoodsId(shopcar.getGoodsId());
-            detail.setShopPrice(goods.getShopPrice());
+            detail.setGoodsPrice(goods.getShopPrice());
             detail.setGoodsNum(shopcar.getGoodsNum());
             detailList.add(detail);
         }

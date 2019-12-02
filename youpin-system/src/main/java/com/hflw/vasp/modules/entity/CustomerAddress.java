@@ -17,7 +17,7 @@ public class CustomerAddress extends BaseEntity {
     /**
      * 用户id
      */
-    @Column(name = "user_id", length = 20)
+    @Column(name = "user_id")
     private Long userId;
 
     /**
@@ -33,8 +33,20 @@ public class CustomerAddress extends BaseEntity {
     /**
      * 省份code
      */
+    @Column(name = "province", length = 30)
+    private String province;
+
+    /**
+     * 省份code
+     */
     @Column(name = "province_code", length = 20)
     private String provinceCode;
+
+    /**
+     * 地市code
+     */
+    @Column(name = "city", length = 30)
+    private String city;
 
     /**
      * 地市code
@@ -43,14 +55,27 @@ public class CustomerAddress extends BaseEntity {
     private String cityCode;
 
     /**
+     * 县区
+     */
+    @Column(name = "area", length = 30)
+    private String area;
+
+    /**
      * 县区code
      */
-    @Column(name = "area_code", length = 128)
+    @Column(name = "area_code", length = 20)
     private String areaCode;
 
     /**
      * 详细地址
      */
+    @Column(name = "address", length = 256)
     private String address;
+
+    /**
+     * 是否默认：0否，1是
+     */
+    @Column(name = "is_dflt", length = 2)
+    private boolean isDflt;
 
 }

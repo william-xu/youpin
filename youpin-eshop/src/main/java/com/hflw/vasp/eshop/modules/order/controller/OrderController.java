@@ -2,13 +2,11 @@ package com.hflw.vasp.eshop.modules.order.controller;
 
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
+import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.order.service.OrderService;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,9 +30,18 @@ public class OrderController extends AbstractController {
      * 提交订单，未支付
      */
     @PostMapping("/submit")
-    public R submit() {
-
+    public R submit(OrderModel model) {
+        orderService.submit(getUserId(), model);
         return R.ok();
+    }
+
+    /**
+     * 商品详情信息
+     */
+    @RequestMapping("/info/{id}")
+    public R info(@PathVariable("id") Long id) {
+        OrderDetails od = orderService.getOrderDetailsById(id);
+        return R.ok().data(od);
     }
 
 }
