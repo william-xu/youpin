@@ -1,9 +1,11 @@
 package com.hflw.vasp.eshop.modules.user.controller;
 
 
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.user.model.UserAddressModel;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
+import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.CustomerAddress;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,8 @@ public class UserController extends AbstractController {
 
     @RequestMapping(value = "/info")
     public R index() {
-
-        return R.ok();
+        Customer customer = getSessionUser();
+        return R.ok().data(customer);
     }
 
     @RequestMapping(value = "/address/list")
@@ -40,12 +42,14 @@ public class UserController extends AbstractController {
         return R.ok().data(list);
     }
 
+    @SysLog
     @RequestMapping(value = "/address/add")
     public R addressAdd(UserAddressModel model) {
         userService.addUserAddress(getUserId(), model);
         return R.ok();
     }
 
+    @SysLog
     @RequestMapping(value = "/address/update")
     public R addressUpdate(UserAddressModel model) {
         userService.updateUserAddress(model);

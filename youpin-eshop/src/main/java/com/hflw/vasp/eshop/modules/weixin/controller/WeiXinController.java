@@ -5,6 +5,7 @@ import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
@@ -94,7 +95,7 @@ public class WeiXinController extends AbstractController {
         return R.ok().put("openId", openId);
     }
 
-
+    @SysLog
     @PostMapping("unifiedOrder")
     public R unifiedOrder(UnifiedOrderModel model) throws WxPayException {
         Customer user = getSessionUser();

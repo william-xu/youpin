@@ -1,5 +1,6 @@
 package com.hflw.vasp.eshop.modules.order.controller;
 
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
@@ -29,6 +30,7 @@ public class OrderController extends AbstractController {
     /**
      * 提交订单，未支付
      */
+    @SysLog
     @PostMapping("/submit")
     public R submit(OrderModel model) {
         orderService.submit(getUserId(), model);
