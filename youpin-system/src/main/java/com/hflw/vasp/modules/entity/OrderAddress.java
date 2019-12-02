@@ -33,4 +33,10 @@ public class OrderAddress extends BaseEntity {
      */
     private String address;
 
+    /**
+     * 快递单号
+     */
+    @Column(name = "express_no", length = 32)
+    private String expressNo;
+
 }
