@@ -12,7 +12,6 @@ import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatUtils;
 import com.hflw.vasp.eshop.modules.AbstractController;
-import com.hflw.vasp.eshop.modules.user.service.UserService;
 import com.hflw.vasp.eshop.modules.weixin.model.UnifiedOrderModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
@@ -48,27 +47,19 @@ public class WeiXinController extends AbstractController {
     private WechatUtils wechatUtils;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private YoupinCardService youpinCardService;
 
     /**
      * 获取微信用户openid
      *
      * @param code
-     * @param type   0微信公众号openid，1小程序openid
-     * @param custId
+     * @param type 0微信公众号openid，1小程序openid
      * @return
      * @throws Exception
      */
     @AccessNoSession
     @RequestMapping("getWechatOpenId")
-    public R getWechatOpenId(String code, Integer type, Long custId) throws Exception {
-        Long sessionUserId = getUserId();
-        //处理获取公众号openid时候拿不到当期登录用户的情况
-        if (sessionUserId == null) sessionUserId = custId;
-
+    public R getWechatOpenId(String code, Integer type) throws Exception {
         String appid = null;
         String secret = null;
         if (Constants.PBULIC == type) {
@@ -78,26 +69,12 @@ public class WeiXinController extends AbstractController {
             appid = PropertiesUtils.getProperty(Constants.WECHAT_MINI_APPID);
             secret = PropertiesUtils.getProperty(Constants.WECHAT_MINI_SECRET);
         }
-        logger.info("微信授权码：" + code + ",当前用户id：" + sessionUserId + "--type--" + type + ",session.id:" + session.getId());
+        logger.info("微信授权码：" + code + ",--type--" + type);
         Map<String, Object> wto = wechatUtils.getWechatTokenAndOpenId(appid, secret, code, type);
         if (wto == null || wto.get("openid") == null) {
             return R.error(ResultCodeEnum.ERROR.getCode(), "获取微信用户openid失败");
         }
         String openId = (String) wto.get("openid");
-        if (sessionUserId != null) {
-            // 关联用户openid
-            Customer user = userService.findById(sessionUserId);
-            if (user != null) {
-                if (Constants.MINI == type) {
-                    user.setMiniOpenId(openId);
-                    logger.info("当前用户：" + getAccount(), "小程序openid更新完成：" + openId);
-                } else if (Constants.PBULIC == type) {
-                    user.setWxOpenId(openId);
-                    logger.info("当前用户：" + getAccount(), "公众号openid更新完成：" + openId);
-                }
-                userService.update(user);
-            }
-        }
         return R.ok().data(openId);
     }
 

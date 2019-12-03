@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 /**
@@ -29,6 +30,10 @@ public class Order extends BaseEntity {
      */
     @Column(name = "order_no", length = 32)
     private String orderNo;
+
+    @Transient
+    private BigDecimal totalAmount;
+
     /**
      * 订单总额
      */

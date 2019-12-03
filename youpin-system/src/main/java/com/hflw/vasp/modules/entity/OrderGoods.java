@@ -49,7 +49,13 @@ public class OrderGoods extends BaseEntity {
     /**
      * 商品价格
      */
-    @Column(name = "goods_price", length = 20)
+    @Column(name = "goods_price")
     private BigDecimal goodsPrice;
+
+    /**
+     * 支付价格
+     */
+    @Column(name = "pay_price")
+    private BigDecimal payPrice;
 
 }

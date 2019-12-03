@@ -40,4 +40,8 @@ public class GoodsService {
         return list;
     }
 
+    public List<Goods> findByIds(Long[] goodsIds) {
+        return goodsDao.findByIds(goodsIds);
+    }
+
 }

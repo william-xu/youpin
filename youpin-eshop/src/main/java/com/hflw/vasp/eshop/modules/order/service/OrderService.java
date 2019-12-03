@@ -2,9 +2,12 @@ package com.hflw.vasp.eshop.modules.order.service;
 
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
+import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +20,16 @@ import java.util.Optional;
 @Service
 public class OrderService {
 
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
     @Autowired
     private IOrderDao orderDao;
 
     @Autowired
     private IGoodsDao goodsDao;
+
+    @Autowired
+    private IGoodsPictureDao goodsPictureDao;
 
     @Autowired
     private IOrderGoodsDao orderGoodsDao;
@@ -31,6 +39,9 @@ public class OrderService {
 
     @Autowired
     private ICustomerAddressDao customerAddressDao;
+
+    @Autowired
+    private YoupinCardService youpinCardService;
 
     public List<OrderDetails> list(Long userId) {
         List<Order> oList = orderDao.findAllByUserId(userId);
@@ -66,23 +77,35 @@ public class OrderService {
 
         List<OrderGoods> ogList = new ArrayList<>();
 
+        //优品卡权益校验
+        YoupinCard card = youpinCardService.findByUserId(userId);
+        boolean flag = youpinCardService.verifyValid(card);
+
         BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal payAmount = BigDecimal.ZERO;
         for (int i = 0; i < model.getGoodsIds().length; i++) {
             Long goodsId = model.getGoodsIds()[i];
             Integer goodsNum = model.getGoodsNums()[i];
-            Goods goods = goodsDao.getOne(goodsId);
-            totalPrice = totalPrice.add(goods.getRetailPrice().multiply(new BigDecimal(goodsNum)));
+            Goods g = goodsDao.getOne(goodsId);
+            totalPrice = totalPrice.add(g.getRetailPrice().multiply(new BigDecimal(goodsNum)));
 
             OrderGoods og = new OrderGoods();
             og.setGoodsId(goodsId);
-            og.setGoodsName(goods.getName());
+            og.setGoodsName(g.getName());
             og.setGoodsNum(goodsNum);
-            og.setGoodsPrice(goods.getRetailPrice());
+            og.setGoodsPrice(g.getRetailPrice());
+            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
+            og.setPayPrice(payPrice);
             ogList.add(og);
         }
-
-        System.out.println(totalPrice.toPlainString());
-        if (!totalPrice.equals(model.getPayAmount()))
+        if (flag) {
+            payAmount = totalPrice.multiply(new BigDecimal("0.85"));
+        } else {
+            payAmount = totalPrice;
+        }
+        logger.info("商品总额：" + totalPrice.toPlainString());
+        logger.info("支付金额：" + payAmount.toPlainString());
+        if (!payAmount.equals(model.getPayAmount()))
             throw BusinessException.create(6546, "金额有误，请刷新购物车后重试");
 
         Date now = new Date();
@@ -91,7 +114,8 @@ public class OrderService {
         Order order = new Order();
         order.setUserId(userId);
         order.setDiscountAmount(BigDecimal.ZERO);
-        order.setPayAmount(totalPrice);
+        order.setPayAmount(payAmount);
+        order.setDiscountAmount(totalPrice.subtract(payAmount));
         order.setStatus(0);
         order.setCreateTime(now);
         orderDao.save(order);
