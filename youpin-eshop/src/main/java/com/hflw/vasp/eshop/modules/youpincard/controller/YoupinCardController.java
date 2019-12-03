@@ -50,16 +50,14 @@ public class YoupinCardController extends AbstractController {
         return R.ok();
     }
 
-    @PostMapping("/register")
-    public R register() {
-        String url = PropertiesUtils.getProperty("fsk.register");
-        // TODO: 2019/12/3 同步趣融
-        return R.ok().data(url);
-    }
-
-    @PostMapping("/download")
-    public R download() {
-        String url = PropertiesUtils.getProperty("fsk.download");
+    @GetMapping("/link")
+    public R register(Integer type) {
+        String url = "";
+        if (type == 1) {
+            url = PropertiesUtils.getProperty("fsk.register");
+        } else if (type == 2) {
+            url = PropertiesUtils.getProperty("fsk.download");
+        }
         // TODO: 2019/12/3 同步趣融
         return R.ok().data(url);
     }
