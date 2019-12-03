@@ -1,6 +1,7 @@
 package com.hflw.vasp.eshop.modules.youpincard.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.modules.dao.IYoupinCardDao;
 import com.hflw.vasp.modules.entity.YoupinCard;
 import org.slf4j.Logger;
@@ -41,6 +42,9 @@ public class YoupinCardService {
         Instant instant2 = expirationDate.atZone(ZoneId.systemDefault()).toInstant();
 
         YoupinCard youpinCard = youpinCardDao.findByUserId(userId);
+        if (verifyValid(youpinCard))
+            throw BusinessException.create(13543, "优品卡已是生效状态");
+
         if (youpinCard == null) {
             youpinCard = new YoupinCard();
             youpinCard.setCreateTime(Date.from(instant1));

@@ -3,6 +3,7 @@ package com.hflw.vasp.eshop.modules.shopcar.service;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
+import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.dao.IGoodsDao;
 import com.hflw.vasp.modules.dao.IGoodsPictureDao;
 import com.hflw.vasp.modules.dao.IShopcarDao;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,6 +50,8 @@ public class ShopcarService {
      * @return
      */
     public List<ShopcarDetail> list(Long userId) {
+        String bossImgsUrl = PropertiesUtils.getProperty("boss.imgs.url");
+
         List<Shopcar> list = shopcarDao.findAllByUserId(userId);
 
         List<ShopcarDetail> detailList = new ArrayList<>(list.size());
@@ -55,6 +59,7 @@ public class ShopcarService {
             Goods goods = goodsDao.getOne(shopcar.getGoodsId());
 
             ShopcarDetail detail = new ShopcarDetail();
+            detail.setId(shopcar.getId());
             detail.setUserId(shopcar.getUserId());
             detail.setGoodsName(goods.getName());
             detail.setGoodsId(shopcar.getGoodsId());
@@ -62,7 +67,7 @@ public class ShopcarService {
             detail.setGoodsNum(shopcar.getGoodsNum());
 
             GoodsPicture gp = goodsPictureDao.findMainByGoodsId(goods.getId());
-            if (gp != null) detail.setPicUrl(gp.getPicUrl());
+            if (gp != null) detail.setPicUrl(bossImgsUrl + goods.getId() + File.separator + gp.getPicUrl());
 
             detailList.add(detail);
         }
