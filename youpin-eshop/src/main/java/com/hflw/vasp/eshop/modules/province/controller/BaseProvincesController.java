@@ -17,7 +17,6 @@ import java.util.List;
  * 省份
  *
  * @author Mark
- * @email sunlightcs@gmail.com
  * @date 2019-03-28 10:17:01
  */
 @RestController

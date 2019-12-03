@@ -108,7 +108,7 @@ public class LoginController extends AbstractController {
         Customer user = getSessionUser();
         redisCacheUtil.delete(Constants.REDIS_USER_PHONE_KEY + user.getPhone());
         UserUtils.clearSession(session);
-        return R.ok().put("miniOpenId", user.getMiniOpenId());
+        return R.ok();
     }
 
 }

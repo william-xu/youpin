@@ -23,9 +23,19 @@ import lombok.Data;
 @Data
 public class UnifiedOrderModel {
 
+    /**
+     * 购物名称
+     */
     private String body;
+
+    /**
+     * 购物金额，单位分
+     */
     private Integer totalFee;
 
+    /**
+     * 支付成功回调url，不由前端传，后端控制
+     */
     private String notifyUrl;
 
 }

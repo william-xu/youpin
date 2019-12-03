@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
- * 门店订单表
+ * 订单表
  *
  * @author liumh
  * @date 2019-04-09 14:21:28

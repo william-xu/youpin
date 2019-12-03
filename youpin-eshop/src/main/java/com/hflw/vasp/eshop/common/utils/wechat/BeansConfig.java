@@ -34,11 +34,11 @@ public class BeansConfig {
     @Value("${wechat.youpin.mchId}")
     private String mchId;
 
-    @Value("${wechat.youpin.mchKey}")
-    private String mchKey;
-
     @Value("${wechat.youpin.mini.appid}")
     private String miniAppid;
+
+    @Value("${wechat.youpin.mchKey}")
+    private String mchKey;
 
     @Bean
     public WxPayService wxPayService() {
@@ -48,8 +48,8 @@ public class BeansConfig {
         WxPayConfig config = new WxPayConfig();
         config.setAppId(appid);
         config.setMchId(mchId);
-        config.setMchKey(mchKey);
         config.setSubAppId(miniAppid);
+        config.setMchKey(mchKey);
 
         wxPayService.setConfig(config);
         return wxPayService;

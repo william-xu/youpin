@@ -4,9 +4,11 @@ import com.hflw.vasp.eshop.common.utils.UserUtils;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
 import com.hflw.vasp.modules.dao.IGoodsDao;
+import com.hflw.vasp.modules.dao.IGoodsPictureDao;
 import com.hflw.vasp.modules.dao.IShopcarDao;
 import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.Goods;
+import com.hflw.vasp.modules.entity.GoodsPicture;
 import com.hflw.vasp.modules.entity.Shopcar;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -34,6 +36,9 @@ public class ShopcarService {
     private IGoodsDao goodsDao;
 
     @Autowired
+    private IGoodsPictureDao goodsPictureDao;
+
+    @Autowired
     private UserUtils userUtils;
 
     /**
@@ -55,6 +60,10 @@ public class ShopcarService {
             detail.setGoodsId(shopcar.getGoodsId());
             detail.setGoodsPrice(goods.getShopPrice());
             detail.setGoodsNum(shopcar.getGoodsNum());
+
+            GoodsPicture gp = goodsPictureDao.findMainByGoodsId(goods.getId());
+            if (gp != null) detail.setPicUrl(gp.getPicUrl());
+
             detailList.add(detail);
         }
         return detailList;

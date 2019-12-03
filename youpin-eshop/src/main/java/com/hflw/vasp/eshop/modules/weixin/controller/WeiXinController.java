@@ -9,10 +9,12 @@ import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
+import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatUtils;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
 import com.hflw.vasp.eshop.modules.weixin.model.UnifiedOrderModel;
+import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.Customer;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,6 +39,8 @@ import java.util.Map;
 @RequestMapping("weixin")
 public class WeiXinController extends AbstractController {
 
+    private static final Logger logger = LoggerFactory.getLogger(WeiXinController.class);
+
     @Autowired
     private WxPayService wxPayService;
 
@@ -45,7 +50,8 @@ public class WeiXinController extends AbstractController {
     @Autowired
     private UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(WeiXinController.class);
+    @Autowired
+    private YoupinCardService youpinCardService;
 
     /**
      * 获取微信用户openid
@@ -92,7 +98,7 @@ public class WeiXinController extends AbstractController {
                 userService.update(user);
             }
         }
-        return R.ok().put("openId", openId);
+        return R.ok().data(openId);
     }
 
     @SysLog
@@ -135,29 +141,79 @@ public class WeiXinController extends AbstractController {
     }
 
     /**
-     * 微信还款成功回调接口
+     * 微信支付回调接口
      *
      * @param userId
      * @return
      */
+    @SysLog
     @AccessNoSession
-    @RequestMapping(value = "wxRepaymentSucc/{userId}", produces = {"application/xml; charset=UTF-8"})
+    @RequestMapping(value = "callBackWXpay/{userId}", produces = {"application/xml; charset=UTF-8"})
     @ResponseBody
-    public String wxRepaymentSucc(@PathVariable("userId") Integer userId) {
+    public String callBackWXpay(@PathVariable("userId") Long userId) {
 
-        return returnXml("SUCCESS", "OK");
-    }
+        logger.info("================================================开始处理微信小程序发送的异步通知");
 
-    /**
-     * 通过xml 发给微信消息,告诉微信成功收到回调请求
-     *
-     * @param returnCode
-     * @param returnMsg
-     * @return
-     */
-    private String returnXml(String returnCode, String returnMsg) {
-        return "<xml><return_code><![CDATA[" + returnCode + "]]></return_code>" +
-                "<return_msg><![CDATA[" + returnMsg + "]]></return_msg></xml>";
+        //1 获取微信支付异步回调结果
+        String xmlResult = WechatPayUtil.getPostStr(request);
+
+        Map<String, String> resultMap = null;
+        try {
+            //将结果转成map
+            resultMap = WechatPayUtil.xmlToMap(xmlResult);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        //订单号
+        String orderNo = resultMap.get("out_trade_no");
+        logger.info("订单号：------------------" + orderNo + "结束----------");
+        String result_code = resultMap.get("result_code");
+        //回调返回的加密签名 保存下来 下面会进行对比
+        String sign = resultMap.get("sign");
+        //去掉sign和利用微信回调回来的信息重新加密
+        resultMap.remove("sign");
+        String sign1 = "";
+        try {
+            //重新加密 获取加密的签名
+            sign1 = WechatPayUtil.generateSignature(resultMap, wxPayService.getConfig().getMchKey()); //签名
+        } catch (Exception e) {
+
+        }
+
+        String resultCode;
+        String resultMsg;
+        //对比微信回调的加密与重新加密是否一致  一致即为通过 不一致说明被改动过 加密不通过
+        logger.info("==============================================开始对比加密++++++++++++++++++++++++++++++++++++++");
+        if (sign.equals(sign1)) { //验签通过
+            logger.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
+
+            if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
+                /**
+                 * 待处理的逻辑：
+                 */
+                youpinCardService.active(userId);
+
+                resultCode = "SUCCESS";
+                resultMsg = "成功";
+            } else { // 业务结果为FALL
+                resultCode = "FAIL";
+                resultMsg = "业务结果为FAIL";
+            }
+
+        } else {
+            resultCode = "FAIL";
+            resultMsg = "验签未通过";
+        }
+
+        Map<String, String> returnMap = new HashMap<>();
+        returnMap.put("return_code", resultCode);
+        returnMap.put("return_msg", resultMsg);
+        try {
+            return WechatPayUtil.mapToXml(returnMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
 }
