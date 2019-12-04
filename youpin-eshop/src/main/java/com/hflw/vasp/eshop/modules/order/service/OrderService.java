@@ -103,13 +103,13 @@ public class OrderService {
         } else {
             payAmount = totalPrice;
         }
+        logger.info("提交总额：" + model.getPayAmount().toPlainString());
         logger.info("商品总额：" + totalPrice.toPlainString());
         logger.info("支付金额：" + payAmount.toPlainString());
-        if (!payAmount.equals(model.getPayAmount()))
+        if (payAmount.compareTo(model.getPayAmount()) != 0)
             throw BusinessException.create(6546, "金额有误，请刷新购物车后重试");
 
         Date now = new Date();
-
         //订单主体
         Order order = new Order();
         order.setUserId(userId);
