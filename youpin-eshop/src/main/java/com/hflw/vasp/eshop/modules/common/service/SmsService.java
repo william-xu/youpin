@@ -27,7 +27,7 @@ public class SmsService {
             Map map = JSON.parseObject(data, Map.class);
             logger.info("短信发送状态:{}{}" + "=====" + code, phone, map.get("Message"));
             if (!"OK".equalsIgnoreCase((String) map.get("Code")))
-                throw BusinessException.create(ResultCodeEnum.SMS_VERIFY_CODE_SEND_FAIL.getCode(), (String) map.get("Message"));
+                throw BusinessException.create(ResultCodeEnum.SMS_VERIFY_CODE_SEND_FAIL.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_SEND_FAIL.getMsg());
         } else {
             throw BusinessException.create(ResultCodeEnum.SMS_VERIFY_CODE_SEND_FAIL.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_SEND_FAIL.getMsg());
         }

@@ -9,6 +9,8 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.hflw.vasp.framework.config.SmsConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("smsUtil")
 public class SmsUtils {
+
+    private final Logger logger = LoggerFactory.getLogger(SmsUtils.class);
 
     @Autowired
     private SmsConfig smsConfig;
@@ -43,7 +47,7 @@ public class SmsUtils {
         request.putQueryParameter("TemplateParam", "{\"code\":\"" + code + "\"}");
         try {
             CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
+            logger.info(response.getData());
             return response;
         } catch (ServerException e) {
             e.printStackTrace();
