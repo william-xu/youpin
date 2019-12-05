@@ -3,7 +3,7 @@ package com.hflw.vasp.framework.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hflw.vasp.framework.constant.CacheConstants;
+import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.framework.serializer.KryoRedisSerializer;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -35,8 +35,8 @@ public class RedisCacheConfig {
 
     private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
         Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-        redisCacheConfigurationMap.put(CacheConstants.ONE_DAY_EXPIRE, getRedisCacheConfigurationWithTtl(24 * 60 * 60));
-        redisCacheConfigurationMap.put(CacheConstants.ONE_MINUTE_EXPIRE, getRedisCacheConfigurationWithTtl(60));
+        redisCacheConfigurationMap.put(ConstantKeys.ONE_DAY_EXPIRE, getRedisCacheConfigurationWithTtl(24 * 60 * 60));
+        redisCacheConfigurationMap.put(ConstantKeys.ONE_MINUTE_EXPIRE, getRedisCacheConfigurationWithTtl(60));
         return redisCacheConfigurationMap;
     }
 

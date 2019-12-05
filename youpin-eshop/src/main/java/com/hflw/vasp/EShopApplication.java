@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(value = {
         "com.hflw.vasp.eshop",
         "com.hflw.vasp.framework.components",
+        "com.hflw.vasp.framework.service",
         "com.hflw.vasp.entity"})
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)

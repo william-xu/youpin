@@ -6,6 +6,7 @@ import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
+import com.hflw.vasp.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,6 +114,7 @@ public class OrderService {
         //订单主体
         Order order = new Order();
         order.setUserId(userId);
+        order.setOrderNo(SnowFlake.nextSerialNumber());
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(payAmount);
         order.setDiscountAmount(totalPrice.subtract(payAmount));

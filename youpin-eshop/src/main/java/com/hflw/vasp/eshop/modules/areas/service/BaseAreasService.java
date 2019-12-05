@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.modules.areas.service;
 
 import com.hflw.vasp.framework.components.RedisCacheUtils;
-import com.hflw.vasp.framework.constant.CacheConstants;
+import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.system.dao.IBaseAreasDao;
 import com.hflw.vasp.system.entity.SysArea;
 import org.apache.commons.collections.CollectionUtils;
@@ -27,7 +27,7 @@ public class BaseAreasService {
 
     public List<SysArea> searchByCityCode(Map<String, String> params) {
         String cityCode = params.get("cityCode");
-        List<SysArea> list = redisCacheUtil.getListByPrex(CacheConstants.REDIS_AREA_KEY + cityCode);
+        List<SysArea> list = redisCacheUtil.getListByPrex(ConstantKeys.REDIS_AREA_KEY + cityCode);
         Collections.sort(list, Comparator.comparing(SysArea::getCode));
 
         SysArea area = new SysArea();

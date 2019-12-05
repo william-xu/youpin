@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.modules.cities.service;
 
 import com.hflw.vasp.framework.components.RedisCacheUtils;
-import com.hflw.vasp.framework.constant.CacheConstants;
+import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.system.dao.IBaseCitiesDao;
 import com.hflw.vasp.system.entity.SysCity;
 import org.apache.commons.collections.CollectionUtils;
@@ -27,7 +27,7 @@ public class BaseCitiesService {
 
     public List<SysCity> list(Map<String, String> params) {
         String provinceCode = params.get("provinceCode");
-        List<SysCity> list = redisCacheUtil.getListByPrex(CacheConstants.REDIS_CITY_KEY + provinceCode);
+        List<SysCity> list = redisCacheUtil.getListByPrex(ConstantKeys.REDIS_CITY_KEY + provinceCode);
         Collections.sort(list, Comparator.comparing(SysCity::getCode));
 
         SysCity city = new SysCity();

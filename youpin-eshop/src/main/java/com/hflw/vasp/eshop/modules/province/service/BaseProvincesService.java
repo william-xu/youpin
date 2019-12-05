@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.modules.province.service;
 
 import com.hflw.vasp.framework.components.RedisCacheUtils;
-import com.hflw.vasp.framework.constant.CacheConstants;
+import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.system.dao.ISysProvinceDao;
 import com.hflw.vasp.system.entity.SysProvince;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,7 +24,7 @@ public class BaseProvincesService {
     private RedisCacheUtils redisCacheUtil;
 
     public List<SysProvince> list() {
-        List<SysProvince> list = redisCacheUtil.getCacheList(CacheConstants.REDIS_PROVINCES_KEY);
+        List<SysProvince> list = redisCacheUtil.getCacheList(ConstantKeys.REDIS_PROVINCES_KEY);
         //排序
         Collections.sort(list, Comparator.comparing(SysProvince::getCode));
         if (CollectionUtils.isEmpty(list)) list = provinceDao.findAll();

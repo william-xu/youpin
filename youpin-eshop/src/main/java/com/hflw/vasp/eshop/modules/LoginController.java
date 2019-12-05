@@ -6,6 +6,7 @@ import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
+import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
 import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.web.R;
@@ -43,12 +44,12 @@ public class LoginController extends AbstractController {
     @PostMapping(value = "/login")
     public R login(@NotBlank(message = "手机号不能为空") String phone, @NotBlank(message = "验证码不能为空") String verifyCode, String openId) {
         logger.info("微信用户登录--》手机号phone=" + phone + ",验证码verifyCode=" + verifyCode + "小程序openId=" + openId);
-        String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
-        String realVerifyCode = (String) redisCacheUtil.getCacheObject(smsKey);
+        final String redisSmsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
+        String realVerifyCode = (String) redisCacheUtil.getCacheObject(redisSmsKey);
         if (StringUtils.isEmpty(realVerifyCode))
-            return R.error(ResultCodeEnum.SMS_VERIFY_CODE_TIMEOUT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_TIMEOUT.getMsg());
+            throw BusinessException.create(ResultCodeEnum.SMS_VERIFY_CODE_TIMEOUT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_TIMEOUT.getMsg());
         if (!verifyCode.equals(realVerifyCode))
-            return R.error(ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getMsg());
+            throw BusinessException.create(ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getCode(), ResultCodeEnum.SMS_VERIFY_CODE_NOT_RIGHT.getMsg());
 
         Customer user = userService.getUserByPhone(phone);
         if (user == null) user = new Customer();
@@ -66,6 +67,7 @@ public class LoginController extends AbstractController {
         user.setId(id);
         //miniOpenId保存到redis做免登录使用
         UserUtils.putSessionUser(session, user);
+        redisCacheUtil.delete(redisSmsKey);
         redisCacheUtil.setCacheObject(Constants.REDIS_USER_PHONE_KEY + user.getPhone(), user, Constants.REDIS_INITDATA_VALID_TIME, TimeUnit.DAYS);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("user", user);

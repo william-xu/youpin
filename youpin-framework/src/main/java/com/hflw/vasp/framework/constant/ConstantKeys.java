@@ -2,13 +2,13 @@ package com.hflw.vasp.framework.constant;
 
 /**
  * 〈一句话功能简述〉<br>
- * 缓存常量类
+ * 常量类
  *
  * @author payu
  * @create 3/20/2019 09:46
  * @since 1.0.0
  */
-public final class CacheConstants {
+public class ConstantKeys {
 
     public static final int HOURS_1 = 1;
     public static final int HOURS_24 = 24;
@@ -37,6 +37,7 @@ public final class CacheConstants {
      */
     public static final String WECHAT_APPID = "youpin:wechat:appid_";
     public static final String WECHAT_SECRET = "youpin:wechat:secret_";
+
     /**
      * 微信 小程序
      */
@@ -48,5 +49,7 @@ public final class CacheConstants {
      */
     public static final String WECHAT_TOKEN_KEY = "youpin:wechat:token_";
     public static final String WECHAT_TICKET_KEY = "youpin:wechat:ticket_";
+
+    public static final String REDIS_LOCK_MAX_ORDER_NUMBER = "";
 
 }
