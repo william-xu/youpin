@@ -43,6 +43,7 @@ public class CommonService {
     @SuppressWarnings("unchecked")
     public String sendVerifyCode(String phone) {
         String smsCode = StringUtils.generateRandomCode(true, 4);
+
         logger.info("准备发送手机号>>>" + phone + "短信验证码>>>" + smsCode);
         smsService.sendVerifyCode(phone, smsCode);
 

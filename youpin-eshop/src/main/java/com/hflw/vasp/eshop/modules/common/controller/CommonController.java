@@ -42,6 +42,7 @@ public class CommonController {
         if (StringUtils.isEmpty(phone)) return R.error("手机号码不能为空!");
 
         String verifyCode = commonService.sendVerifyCode(phone);
+
         return R.ok().data(verifyCode);
     }
 
