@@ -1,6 +1,7 @@
 package com.hflw.vasp.eshop.modules.common.service;
 
 import com.hflw.vasp.eshop.common.constant.Constants;
+import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
 import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.system.dao.ICommonDao;
@@ -45,10 +46,16 @@ public class CommonService {
         String smsCode = StringUtils.generateRandomCode(true, 4);
 
         logger.info("准备发送手机号>>>" + phone + "短信验证码>>>" + smsCode);
-        smsService.sendVerifyCode(phone, smsCode);
-
-        String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
-        redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);
+        String ass = PropertiesUtils.getProperty("aliyun.sms.switch");
+        if ("on".equalsIgnoreCase(ass)) {
+            //发送
+            smsService.sendVerifyCode(phone, smsCode);
+            //缓存
+            String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
+            redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);
+            //生产不返回验证码
+            smsCode = "";
+        }
         return smsCode;
     }
 
