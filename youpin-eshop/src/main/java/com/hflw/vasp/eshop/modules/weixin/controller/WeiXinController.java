@@ -18,6 +18,7 @@ import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.utils.IpUtils;
+import com.hflw.vasp.utils.SnowFlake;
 import com.hflw.vasp.utils.StringUtils;
 import com.hflw.vasp.web.R;
 import org.slf4j.Logger;
@@ -88,7 +89,14 @@ public class WeiXinController extends AbstractController {
         String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl").replace("$userId$", "" + user.getId());
         logger.info("支付成功通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
-        String tradeNo = user.getPhone() + System.currentTimeMillis();
+
+        String tradeNo = "";
+        if (model.getType() == 1) {
+            tradeNo = "YP" + SnowFlake.nextSerialNumber();
+            // TODO: 2019/12/5 交易记录入库
+        } else {
+            tradeNo = SnowFlake.nextSerialNumber();
+        }
         WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeNo, model);
         return R.ok().data(result);
     }

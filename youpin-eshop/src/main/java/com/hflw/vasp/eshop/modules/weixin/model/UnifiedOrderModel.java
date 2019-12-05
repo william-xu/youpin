@@ -23,6 +23,8 @@ import lombok.Data;
 @Data
 public class UnifiedOrderModel {
 
+    private Integer type;
+
     /**
      * 购物名称
      */

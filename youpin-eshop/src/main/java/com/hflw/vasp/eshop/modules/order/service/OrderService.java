@@ -4,9 +4,9 @@ import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
+import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
-import com.hflw.vasp.utils.SnowFlake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,6 @@ public class OrderService {
     private IGoodsDao goodsDao;
 
     @Autowired
-    private IGoodsPictureDao goodsPictureDao;
-
-    @Autowired
     private IOrderGoodsDao orderGoodsDao;
 
     @Autowired
@@ -43,6 +40,9 @@ public class OrderService {
 
     @Autowired
     private YoupinCardService youpinCardService;
+
+    @Autowired
+    private RedisService redisService;
 
     public List<OrderDetails> list(Long userId) {
         List<Order> oList = orderDao.findAllByUserId(userId);
@@ -114,7 +114,7 @@ public class OrderService {
         //订单主体
         Order order = new Order();
         order.setUserId(userId);
-        order.setOrderNo(SnowFlake.nextSerialNumber());
+        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(payAmount);
         order.setDiscountAmount(totalPrice.subtract(payAmount));

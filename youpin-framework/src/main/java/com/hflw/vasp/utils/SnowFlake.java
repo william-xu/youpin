@@ -220,11 +220,11 @@ public class SnowFlake {
         return machinePiece;
     }
 
-    public static synchronized long nextId() {
+    public static long nextId() {
         return snowFlake.getNextId();
     }
 
-    public static synchronized String nextSerialNumber() {
+    public static String nextSerialNumber() {
         return String.valueOf(snowFlake.getNextId());
     }
     //==============================Test=============================================
