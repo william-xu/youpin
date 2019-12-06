@@ -42,15 +42,15 @@ public class CommonService {
     @SuppressWarnings("unchecked")
     public String sendVerifyCode(String phone) {
         String smsCode = StringUtils.generateRandomCode(true, 4);
+        //缓存验证码
+        String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
+        redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);
 
         logger.info("准备发送手机号>>>" + phone + "短信验证码>>>" + smsCode);
         String ass = PropertiesUtils.getProperty("aliyun.sms.switch");
         if ("on".equalsIgnoreCase(ass)) {
-            //发送
+            //发送短信
             smsService.sendVerifyCode(phone, smsCode);
-            //缓存
-            String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
-            redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);
             //生产不返回验证码
             smsCode = "";
         }

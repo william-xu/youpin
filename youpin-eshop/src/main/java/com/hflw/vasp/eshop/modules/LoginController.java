@@ -88,7 +88,7 @@ public class LoginController extends AbstractController {
         if (redisUser == null)
             return R.error(ResultCodeEnum.NOT_REDIS_LOGIN.getCode(), ResultCodeEnum.NOT_REDIS_LOGIN.getMsg());
         //判断miniOpenid 是否存在并一致
-        if (!openId.equals(redisUser.getMiniOpenId()))
+        if (!openId.equals(redisUser.getWxOpenId()))
             return R.error(ResultCodeEnum.NOT_MINIOPENID_LOGIN.getCode(), ResultCodeEnum.NOT_MINIOPENID_LOGIN.getMsg());
 
         UserUtils.putSessionUser(session, dbUser);

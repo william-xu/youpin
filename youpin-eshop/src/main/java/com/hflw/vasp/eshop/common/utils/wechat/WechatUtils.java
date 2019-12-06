@@ -33,8 +33,13 @@ import javax.annotation.Resource;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,6 +65,50 @@ public class WechatUtils {
 
     @Resource
     private RedisCacheUtils redisCacheUtil;
+
+    public Map<String, String> sign(String appid, String secret, String url) throws Exception {
+        Map<String, String> ret = new HashMap<>();
+        String nonce_str = create_nonce_str();
+        String timestamp = create_timestamp();
+        String jsapi_ticket = getWechatTicket(appid, secret, getWechatToken(appid, secret));
+        String str;
+        String signature = "";
+        //注意这里参数名必须全部小写，且必须有序
+        str = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + timestamp + "&url=" + url;
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(str.getBytes(StandardCharsets.UTF_8));
+            signature = byteToHexString(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        ret.put("appId", appid);
+        ret.put("jsapi_ticket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        ret.put("url", url);
+        return ret;
+    }
+
+    private static String byteToHexString(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash) {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+    }
+
+    private String create_nonce_str() {
+        return UUID.randomUUID().toString();
+    }
+
+    private String create_timestamp() {
+        return Long.toString(System.currentTimeMillis() / 1000);
+    }
 
     /**
      * 获取微信token和ticket

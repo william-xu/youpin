@@ -51,6 +51,58 @@ public class WeiXinController extends AbstractController {
     private YoupinCardService youpinCardService;
 
     /**
+     * 获取微信Appid
+     *
+     * @return
+     */
+    @AccessNoSession
+    @RequestMapping("getWechatAppid")
+    public R getWechatAppid() {
+        Integer type = Constants.PBULIC;
+        String appid = "";
+        if (Constants.PBULIC == type) {
+            appid = PropertiesUtils.getProperty(Constants.WECHAT_APPID);
+        } else if (Constants.MINI == type) {
+            appid = PropertiesUtils.getProperty(Constants.WECHAT_MINI_APPID);
+        }
+        return R.ok().data(appid);
+    }
+
+    /**
+     * 微信openId置为空
+     */
+    @GetMapping("getUserInfo")
+    @ResponseBody
+    public R getUserInfo(String openId) throws Exception {
+        String appid = PropertiesUtils.getProperty(Constants.WECHAT_APPID);
+        String secret = PropertiesUtils.getProperty(Constants.WECHAT_SECRET);
+        Map<String, Object> wto = wechatUtils.getWechatUserInfo(appid, secret, openId);
+        return R.ok().data(wto);
+    }
+
+    /**
+     * 获取微信Appid
+     *
+     * @return
+     */
+    @AccessNoSession
+    @GetMapping("getWechatConfig")
+    public R getWechatConfig(String url) throws Exception {
+        Integer type = Constants.PBULIC;
+        String appid = "";
+        String secret = "";
+        if (Constants.PBULIC == type) {
+            appid = PropertiesUtils.getProperty(Constants.WECHAT_APPID);
+            secret = PropertiesUtils.getProperty(Constants.WECHAT_SECRET);
+        } else if (Constants.MINI == type) {
+            appid = PropertiesUtils.getProperty(Constants.WECHAT_MINI_APPID);
+            secret = PropertiesUtils.getProperty(Constants.WECHAT_MINI_SECRET);
+        }
+        Map<String, String> ret = wechatUtils.sign(appid, secret, url);
+        return R.ok().data(ret);
+    }
+
+    /**
      * 获取微信用户openid
      *
      * @param code
@@ -60,7 +112,7 @@ public class WeiXinController extends AbstractController {
      */
     @SysLog
     @AccessNoSession
-    @RequestMapping("getWechatOpenId")
+    @GetMapping("getWechatOpenId")
     public R getWechatOpenId(String code, Integer type) throws Exception {
         String appid = null;
         String secret = null;
@@ -95,8 +147,10 @@ public class WeiXinController extends AbstractController {
         if (model.getType() == 1) {
             tradeNo = "YP" + SnowFlake.nextSerialNumber();
             // TODO: 2019/12/5 交易记录入库
+
         } else {
             tradeNo = SnowFlake.nextSerialNumber();
+
         }
         WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeNo, model);
         return R.ok().data(result);
