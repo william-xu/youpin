@@ -28,16 +28,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeansConfig {
 
-    @Value("${wechat.youpin.appid}")
+    @Value("${wechat.appid}")
     private String appid;
 
-    @Value("${wechat.youpin.mchId}")
+    @Value("${wechat.mchId}")
     private String mchId;
 
-    @Value("${wechat.youpin.mini.appid}")
+    @Value("${wechat.mini.appid}")
     private String miniAppid;
 
-    @Value("${wechat.youpin.mchKey}")
+    @Value("${wechat.mchKey}")
     private String mchKey;
 
     @Bean

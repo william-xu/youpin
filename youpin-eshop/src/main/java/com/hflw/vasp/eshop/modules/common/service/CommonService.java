@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,13 +55,6 @@ public class CommonService {
             smsCode = "";
         }
         return smsCode;
-    }
-
-    public synchronized String getContractSerialNum(String sequenceName) {
-        String nextVal = null;//commonMapper.getNextVal(sequenceName);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String dateNowStr = sdf.format(new Date());
-        return Constants.ORDER_NO_PREFIX + dateNowStr + StringUtils.zeroFill(nextVal, 6);
     }
 
     public long getGlobalUniqueId() {

@@ -58,6 +58,7 @@ public class WeiXinController extends AbstractController {
      * @return
      * @throws Exception
      */
+    @SysLog
     @AccessNoSession
     @RequestMapping("getWechatOpenId")
     public R getWechatOpenId(String code, Integer type) throws Exception {

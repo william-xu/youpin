@@ -77,7 +77,7 @@ public class LoginController extends AbstractController {
 
     @AccessNoSession
     @RequestMapping(value = "/loginByOpenId")
-    public R loginOpenId(@NotBlank(message = "openId不能为空") String openId) {
+    public R loginByOpenId(@NotBlank(message = "openId不能为空") String openId) {
         Customer dbUser = userService.findByWxOpenId(openId);
         //判断数据库是否存在
         if (dbUser == null)
