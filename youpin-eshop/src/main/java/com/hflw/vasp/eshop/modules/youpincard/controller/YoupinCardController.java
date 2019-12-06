@@ -5,6 +5,7 @@ import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.YoupinCard;
 import com.hflw.vasp.web.R;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,6 +60,8 @@ public class YoupinCardController extends AbstractController {
             url = PropertiesUtils.getProperty("fsk.download");
         }
         // TODO: 2019/12/3 同步趣融
+//        fsk.tcw.secret
+//        Md5Crypt.apr1Crypt()
         return R.ok().data(url);
     }
 

@@ -74,7 +74,7 @@ public class OrderService {
         return od;
     }
 
-    public void submit(Long userId, OrderModel model) {
+    public Long submit(Long userId, OrderModel model) {
 
         List<OrderGoods> ogList = new ArrayList<>();
 
@@ -138,6 +138,11 @@ public class OrderService {
         String fullAddress = selectedAddress.getProvince() + selectedAddress.getCity() + selectedAddress.getArea() + selectedAddress.getAddress();
         orderAddress.setAddress(fullAddress);
         orderAddressDao.save(orderAddress);
+        return order.getId();
+    }
+
+    public void deleteOrder(Long id) {
+        orderDao.deleteById(id);
     }
 
 }

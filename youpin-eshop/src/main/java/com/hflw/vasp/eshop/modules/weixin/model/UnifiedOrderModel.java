@@ -26,6 +26,11 @@ public class UnifiedOrderModel {
     private Integer type;
 
     /**
+     * 订单id
+     */
+    private Long orderId;
+
+    /**
      * 购物名称
      */
     private String body;

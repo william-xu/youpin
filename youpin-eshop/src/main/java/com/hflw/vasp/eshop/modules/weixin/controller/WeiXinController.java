@@ -139,17 +139,18 @@ public class WeiXinController extends AbstractController {
         if (StringUtils.isNullOrEmpty(user.getWxOpenId()))
             throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
 
-        String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl").replace("$userId$", "" + user.getId());
-        logger.info("支付成功通知url：" + notifyUrl);
+        String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl");
+        logger.info("支付通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
 
         String tradeNo = "";
         if (model.getType() == 1) {
             tradeNo = "YP" + SnowFlake.nextSerialNumber();
-            // TODO: 2019/12/5 交易记录入库
+            // TODO: 2019/12/5 优品卡交易记录入库
 
         } else {
             tradeNo = SnowFlake.nextSerialNumber();
+            // TODO: 2019/12/5 商品购买交易记录入库
 
         }
         WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeNo, model);
@@ -183,14 +184,13 @@ public class WeiXinController extends AbstractController {
     /**
      * 微信支付回调接口
      *
-     * @param userId
      * @return
      */
     @SysLog
     @AccessNoSession
-    @RequestMapping(value = "callBackWXpay/{userId}", produces = {"application/xml; charset=UTF-8"})
+    @RequestMapping(value = "callBackWXpay", produces = {"application/xml; charset=UTF-8"})
     @ResponseBody
-    public String callBackWXpay(@PathVariable("userId") Long userId) {
+    public String callBackWXpay() {
 
         logger.info("================================================开始处理微信小程序发送的异步通知");
 
@@ -228,10 +228,14 @@ public class WeiXinController extends AbstractController {
             logger.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
 
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
-                /**
-                 * 待处理的逻辑：
-                 */
-                youpinCardService.active(userId);
+                //查询订单交易记录，修改交易状态
+
+//                1、优品卡
+                //查询查询优品卡记录，修改激活状态
+//                youpinCardService.active(userId);
+
+//                2、商品
+                //查询订单记录，修改订单状态
 
                 resultCode = "SUCCESS";
                 resultMsg = "成功";

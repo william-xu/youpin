@@ -94,8 +94,8 @@ public class OrderController extends AbstractController {
     @SysLog
     @PostMapping("/submit")
     public R submit(OrderModel model) {
-        orderService.submit(getUserId(), model);
-        return R.ok();
+        Long orderId = orderService.submit(getUserId(), model);
+        return R.ok().data(orderId);
     }
 
     /**
@@ -105,6 +105,18 @@ public class OrderController extends AbstractController {
     public R info(Long id) {
         OrderDetails od = orderService.getOrderDetailsById(id);
         return R.ok().data(od);
+    }
+
+    /**
+     * 删除订单
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("/delete")
+    public R delete(Long id) {
+        orderService.deleteOrder(id);
+        return R.ok();
     }
 
 }
