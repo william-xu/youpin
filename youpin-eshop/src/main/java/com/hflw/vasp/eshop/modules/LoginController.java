@@ -81,7 +81,7 @@ public class LoginController extends AbstractController {
         Customer dbUser = userService.findByWxOpenId(openId);
         //判断数据库是否存在
         if (dbUser == null)
-            return R.error(ResultCodeEnum.USER_NOT_EXIST.getCode(), ResultCodeEnum.USER_NOT_EXIST.getMsg());
+            return R.error(ResultCodeEnum.NOT_USER_EXIST.getCode(), ResultCodeEnum.NOT_USER_EXIST.getMsg());
 
         Customer redisUser = (Customer) redisCacheUtil.getCacheObject(Constants.REDIS_USER_PHONE_KEY + dbUser.getPhone());
         //判断用户缓存是否存在
@@ -89,7 +89,7 @@ public class LoginController extends AbstractController {
             return R.error(ResultCodeEnum.NOT_REDIS_LOGIN.getCode(), ResultCodeEnum.NOT_REDIS_LOGIN.getMsg());
         //判断miniOpenid 是否存在并一致
         if (!openId.equals(redisUser.getWxOpenId()))
-            return R.error(ResultCodeEnum.NOT_MINIOPENID_LOGIN.getCode(), ResultCodeEnum.NOT_MINIOPENID_LOGIN.getMsg());
+            return R.error(ResultCodeEnum.NOT_OPENID_LOGIN.getCode(), ResultCodeEnum.NOT_OPENID_LOGIN.getMsg());
 
         UserUtils.putSessionUser(session, dbUser);
         redisCacheUtil.setCacheObject(Constants.REDIS_USER_PHONE_KEY + dbUser.getPhone(), dbUser, Constants.REDIS_INITDATA_VALID_TIME, TimeUnit.DAYS);
