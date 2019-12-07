@@ -127,7 +127,7 @@ public class OrderController extends AbstractController {
      */
     @RequestMapping("/delete")
     public R delete(Long id) {
-        orderService.deleteOrder(id);
+        orderService.logicDeleteById(id);
         return R.ok();
     }
 

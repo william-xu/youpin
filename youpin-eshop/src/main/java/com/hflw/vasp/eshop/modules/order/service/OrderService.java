@@ -12,8 +12,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,9 +170,10 @@ public class OrderService {
         return order.getId();
     }
 
-    public void deleteOrder(Long id) {
-        orderDao.deleteById(id);
-    }
+    public void logicDeleteById(Long id) {
+        orderDao.logicDeleteById(id);
 
+
+    }
 
 }
