@@ -7,21 +7,30 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+@Controller
 public abstract class BaseController {
 
     protected Log logger = LogFactory.getLog(getClass());
-    public static final String CHARSET = "UTF-8";
+
+    public static final String CHARSET_UTF8 = "UTF-8";
+
+    @Autowired
+    protected HttpSession session;
+
+    @Autowired
+    protected HttpServletRequest request;
 
     /**
      * 获取客户端Ip
@@ -110,11 +119,11 @@ public abstract class BaseController {
          * 在IE浏览器中得到的是：User-Agent=Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; Maxthon; Alexa Toolbar)
          * 在Firefox中得到的是：User-Agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.7.10) Gecko/20050717 Firefox/1.0.6
          */
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String agent = request.getHeader("USER-AGENT");
         try {
             if ((agent != null) && (agent.contains("MSIE"))) {
-                String newFileName = URLEncoder.encode(filename, "UTF-8");
+                String newFileName = URLEncoder.encode(filename, CHARSET_UTF8);
                 newFileName = StringUtils.replace(newFileName, "+", "%20");
                 if (newFileName.length() > 150) {
                     newFileName = new String(filename.getBytes("GB2312"), "ISO8859-1");

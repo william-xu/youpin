@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.hflw.vasp.eshop.common.annotation;
+package com.hflw.vasp.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

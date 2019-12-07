@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.common.interceptor;
 
 import com.alibaba.fastjson.JSON;
-import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
+import com.hflw.vasp.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;

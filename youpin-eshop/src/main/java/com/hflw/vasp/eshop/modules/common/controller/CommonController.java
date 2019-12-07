@@ -1,6 +1,6 @@
 package com.hflw.vasp.eshop.modules.common.controller;
 
-import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
+import com.hflw.vasp.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.modules.common.service.CommonService;
 import com.hflw.vasp.utils.StringUtils;
 import com.hflw.vasp.web.R;

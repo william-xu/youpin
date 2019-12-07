@@ -6,7 +6,7 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.hflw.vasp.annotation.SysLog;
-import com.hflw.vasp.eshop.common.annotation.AccessNoSession;
+import com.hflw.vasp.annotation.AccessNoSession;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
@@ -251,7 +251,7 @@ public class WeiXinController extends AbstractController {
                 TradingFlow tradingFlow = tradingService.findByFlowNo(outTradeNo);
                 if (tradingFlow != null) {
                     Order order = orderService.findById(tradingFlow.getOrderId());
-                    // TODO: 2019/12/7 区分优品卡还是商品订单 
+                    // TODO: 2019/12/7 区分优品卡还是商品订单
 //                1、优品卡
                     //查询查询优品卡记录，修改激活状态
 //                youpinCardService.active(o);
