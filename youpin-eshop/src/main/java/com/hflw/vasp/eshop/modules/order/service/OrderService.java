@@ -2,11 +2,13 @@ package com.hflw.vasp.eshop.modules.order.service;
 
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
+import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class OrderService {
     private IGoodsDao goodsDao;
 
     @Autowired
+    private IGoodsPictureDao goodsPictureDao;
+
+    @Autowired
     private IOrderGoodsDao orderGoodsDao;
 
     @Autowired
@@ -49,11 +54,16 @@ public class OrderService {
 
         List<OrderDetails> list = new ArrayList<>();
         for (Order o : oList) {
-            List<OrderGoods> orderGoods = orderGoodsDao.findAllByOrderId(o.getId());
-
+            List<OrderGoods> ogList = orderGoodsDao.findAllByOrderId(o.getId());
+            if (CollectionUtils.isNotEmpty(ogList)) {
+                for (OrderGoods og : ogList) {
+                    GoodsPicture gp = goodsPictureDao.findMainByGoodsId(og.getGoodsId());
+                    if (gp != null) og.setPicUrl(gp.getPicUrl());
+                }
+            }
             OrderDetails od = new OrderDetails();
             od.setOrder(o);
-            od.setGoodsList(orderGoods);
+            od.setGoodsList(ogList);
             list.add(od);
         }
         return list;
@@ -62,16 +72,32 @@ public class OrderService {
     public OrderDetails getOrderDetailsById(Long id) {
         Optional<Order> optionalOrder = orderDao.findById(id);
         Order order = optionalOrder.get();
+
         List<OrderGoods> orderGoods = orderGoodsDao.findAllByOrderId(order.getId());
 
         Optional<OrderAddress> optionalAddress = orderAddressDao.findById(order.getId());
-        OrderAddress address = optionalAddress.get();
+        OrderAddress address = optionalAddress.orElse(null);
 
         OrderDetails od = new OrderDetails();
         od.setOrder(order);
         od.setGoodsList(orderGoods);
         od.setAddress(address);
         return od;
+    }
+
+    public Long youpinCardSubmit(Long userId, OrderYoupinCardModel model) {
+        Date now = new Date();
+        //订单主体
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
+        order.setDiscountAmount(BigDecimal.ZERO);
+        order.setPayAmount(model.getPayAmount());
+        order.setDiscountAmount(model.getOriginalCost().subtract(model.getPayAmount()));
+        order.setStatus(0);
+        order.setCreateTime(now);
+        orderDao.save(order);
+        return order.getId();
     }
 
     public Long submit(Long userId, OrderModel model) {
@@ -144,5 +170,6 @@ public class OrderService {
     public void deleteOrder(Long id) {
         orderDao.deleteById(id);
     }
+
 
 }

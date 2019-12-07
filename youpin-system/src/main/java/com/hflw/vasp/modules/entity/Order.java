@@ -25,6 +25,7 @@ public class Order extends BaseEntity {
      */
     @Column(name = "user_id")
     private Long userId;
+
     /**
      * 订单流水
      */

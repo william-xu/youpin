@@ -25,7 +25,10 @@ public class GoodsService {
 
     public Goods findById(Long id) {
         Optional<Goods> optional = goodsDao.findById(id);
-        return optional.orElse(null);
+        Goods goods = optional.get();
+        GoodsPicture gp = goodsPictureDao.findMainByGoodsId(goods.getId());
+        goods.setPicUrl(gp.getPicUrl());
+        return goods;
     }
 
     public List<Goods> search(Goods goods) {

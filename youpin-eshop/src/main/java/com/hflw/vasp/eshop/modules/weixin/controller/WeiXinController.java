@@ -12,11 +12,13 @@ import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatUtils;
 import com.hflw.vasp.eshop.modules.AbstractController;
+import com.hflw.vasp.eshop.modules.trading.service.TradingService;
 import com.hflw.vasp.eshop.modules.weixin.model.UnifiedOrderModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.Customer;
+import com.hflw.vasp.modules.entity.TradingFlow;
 import com.hflw.vasp.utils.IpUtils;
 import com.hflw.vasp.utils.SnowFlake;
 import com.hflw.vasp.utils.StringUtils;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +52,9 @@ public class WeiXinController extends AbstractController {
 
     @Autowired
     private YoupinCardService youpinCardService;
+
+    @Autowired
+    private TradingService tradingService;
 
     /**
      * 获取微信Appid
@@ -143,17 +149,25 @@ public class WeiXinController extends AbstractController {
         logger.info("支付通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
 
-        String tradeNo = "";
+        String tradeFlowNo = "";
         if (model.getType() == 1) {
-            tradeNo = "YP" + SnowFlake.nextSerialNumber();
-            // TODO: 2019/12/5 优品卡交易记录入库
-
+            tradeFlowNo = "YP" + SnowFlake.nextSerialNumber();
         } else {
-            tradeNo = SnowFlake.nextSerialNumber();
-            // TODO: 2019/12/5 商品购买交易记录入库
-
+            tradeFlowNo = SnowFlake.nextSerialNumber();
         }
-        WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeNo, model);
+
+        WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeFlowNo, model);
+
+        //优品卡交易记录|商品购买交易记录入库
+        TradingFlow tradingFlow = new TradingFlow();
+        tradingFlow.setFlowNo(tradeFlowNo);
+        tradingFlow.setOrderId(model.getOrderId());
+        tradingFlow.setBody(model.getBody());
+        tradingFlow.setType(0);
+        tradingFlow.setStatus(0);
+        tradingFlow.setCreateTime(new Date());
+        tradingService.save(tradingFlow);
+
         return R.ok().data(result);
     }
 
@@ -161,12 +175,12 @@ public class WeiXinController extends AbstractController {
      * 统一订单
      *
      * @param openid
-     * @param tradeNo
+     * @param tradeFlowNo
      * @param model
      * @return
      * @throws WxPayException
      */
-    private WxPayMpOrderResult unifiedOrder(String openid, String tradeNo, UnifiedOrderModel model) throws WxPayException {
+    private WxPayMpOrderResult unifiedOrder(String openid, String tradeFlowNo, UnifiedOrderModel model) throws WxPayException {
         WxPayUnifiedOrderRequest unifiedOrderRequest = WxPayUnifiedOrderRequest.newBuilder()
                 .body(model.getBody())
                 .totalFee(model.getTotalFee())
@@ -174,7 +188,7 @@ public class WeiXinController extends AbstractController {
                 .notifyUrl(model.getNotifyUrl())
                 .tradeType(WxPayConstants.TradeType.JSAPI)
                 .openid(openid)
-                .outTradeNo(tradeNo)
+                .outTradeNo(tradeFlowNo)
                 .limitPay(WxPayConstants.LimitPay.NO_CREDIT)
                 .build();
         unifiedOrderRequest.setSignType(WxPayConstants.SignType.MD5);

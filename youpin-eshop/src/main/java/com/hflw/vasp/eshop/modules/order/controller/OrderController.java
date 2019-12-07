@@ -5,6 +5,7 @@ import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.goods.service.GoodsService;
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
+import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
 import com.hflw.vasp.eshop.modules.order.service.OrderService;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.modules.entity.Goods;
@@ -69,6 +70,7 @@ public class OrderController extends AbstractController {
             BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
             og.setPayPrice(payPrice);
             og.setGoodsNum(goodsNums[i]);
+            og.setPicUrl(g.getPicUrl());
             ogList.add(og);
 
             totalPrice = totalPrice.add(g.getRetailPrice().multiply(new BigDecimal(goodsNums[i])));
@@ -86,6 +88,16 @@ public class OrderController extends AbstractController {
         od.setOrder(order);
         od.setGoodsList(ogList);
         return R.ok().data(od);
+    }
+
+    /**
+     * 提交优品卡订单，未支付
+     */
+    @SysLog
+    @PostMapping("/ypcSubmit")
+    public R youpinCardSubmit(OrderYoupinCardModel model) {
+        Long orderId = orderService.youpinCardSubmit(getUserId(), model);
+        return R.ok().data(orderId);
     }
 
     /**

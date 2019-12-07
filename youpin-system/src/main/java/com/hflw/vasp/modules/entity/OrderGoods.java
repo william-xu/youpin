@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 public class OrderGoods extends BaseEntity {
 
     /**
-     * 订单流水
+     * 订单id
      */
     @Column(name = "order_id")
     private Long orderId;
@@ -58,4 +58,5 @@ public class OrderGoods extends BaseEntity {
     @Column(name = "pay_price")
     private BigDecimal payPrice;
 
+    private String picUrl;
 }
