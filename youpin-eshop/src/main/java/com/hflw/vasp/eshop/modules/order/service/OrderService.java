@@ -5,6 +5,7 @@ import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
+import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
@@ -12,11 +13,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +51,14 @@ public class OrderService {
     @Autowired
     private RedisService redisService;
 
+    private String getGoodsPicUrl(GoodsPicture gp) {
+        String bossImgsUrl = PropertiesUtils.getProperty("boss.imgs.url");
+        return bossImgsUrl + gp.getGoodsId() + File.separator + gp.getPicUrl();
+    }
+
     public List<OrderDetails> list(Long userId) {
+
+
         List<Order> oList = orderDao.findAllByUserId(userId);
 
         List<OrderDetails> list = new ArrayList<>();
@@ -61,7 +67,7 @@ public class OrderService {
             if (CollectionUtils.isNotEmpty(ogList)) {
                 for (OrderGoods og : ogList) {
                     GoodsPicture gp = goodsPictureDao.findMainByGoodsId(og.getGoodsId());
-                    if (gp != null) og.setPicUrl(gp.getPicUrl());
+                    if (gp != null) og.setPicUrl(getGoodsPicUrl(gp));
                 }
             }
             OrderDetails od = new OrderDetails();
@@ -72,7 +78,13 @@ public class OrderService {
         return list;
     }
 
-    public OrderDetails getOrderDetailsById(Long id) {
+    public Order findById(Long id) {
+        Optional<Order> optionalOrder = orderDao.findById(id);
+        Order order = optionalOrder.get();
+        return order;
+    }
+
+    public OrderDetails getDetailsById(Long id) {
         Optional<Order> optionalOrder = orderDao.findById(id);
         Order order = optionalOrder.get();
 
@@ -101,6 +113,47 @@ public class OrderService {
         order.setCreateTime(now);
         orderDao.save(order);
         return order.getId();
+    }
+
+    public OrderDetails preview(Long userId, Long[] goodsIds, Integer[] goodsNums) {
+        OrderDetails od = new OrderDetails();
+
+        Order order = new Order();
+        List<OrderGoods> ogList = new ArrayList<>();
+
+        YoupinCard card = youpinCardService.findByUserId(userId);
+        boolean flag = youpinCardService.verifyValid(card);
+
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal payAmount = BigDecimal.ZERO;
+        for (int i = 0; i < goodsIds.length; i++) {
+            Goods g = goodsDao.getOne(goodsIds[i]);
+            OrderGoods og = new OrderGoods();
+            og.setGoodsId(g.getId());
+            og.setGoodsName(g.getName());
+            og.setGoodsPrice(g.getRetailPrice());
+            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
+            og.setPayPrice(payPrice);
+            og.setGoodsNum(goodsNums[i]);
+            og.setPicUrl(g.getPicUrl());
+            ogList.add(og);
+
+            totalPrice = totalPrice.add(g.getRetailPrice().multiply(new BigDecimal(goodsNums[i])));
+        }
+        if (flag) {
+            payAmount = totalPrice.multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP);
+        } else {
+            payAmount = totalPrice;
+        }
+        order.setPayAmount(payAmount);
+        order.setTotalAmount(totalPrice);
+        BigDecimal discountAmount = order.getTotalAmount().subtract(order.getPayAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+        order.setDiscountAmount(discountAmount);
+        order.setCreateTime(new Date());
+        od.setOrder(order);
+        od.setGoodsList(ogList);
+
+        return od;
     }
 
     public Long submit(Long userId, OrderModel model) {

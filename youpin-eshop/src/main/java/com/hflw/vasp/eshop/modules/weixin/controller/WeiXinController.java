@@ -12,12 +12,14 @@ import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatUtils;
 import com.hflw.vasp.eshop.modules.AbstractController;
+import com.hflw.vasp.eshop.modules.order.service.OrderService;
 import com.hflw.vasp.eshop.modules.trading.service.TradingService;
 import com.hflw.vasp.eshop.modules.weixin.model.UnifiedOrderModel;
 import com.hflw.vasp.eshop.modules.youpincard.service.YoupinCardService;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.Customer;
+import com.hflw.vasp.modules.entity.Order;
 import com.hflw.vasp.modules.entity.TradingFlow;
 import com.hflw.vasp.utils.IpUtils;
 import com.hflw.vasp.utils.SnowFlake;
@@ -52,6 +54,9 @@ public class WeiXinController extends AbstractController {
 
     @Autowired
     private YoupinCardService youpinCardService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private TradingService tradingService;
@@ -219,8 +224,8 @@ public class WeiXinController extends AbstractController {
             e1.printStackTrace();
         }
         //订单号
-        String orderNo = resultMap.get("out_trade_no");
-        logger.info("订单号：------------------" + orderNo + "结束----------");
+        String outTradeNo = resultMap.get("out_trade_no");
+        logger.info("交易流水号：------------------" + outTradeNo + "结束----------");
         String result_code = resultMap.get("result_code");
         //回调返回的加密签名 保存下来 下面会进行对比
         String sign = resultMap.get("sign");
@@ -243,14 +248,17 @@ public class WeiXinController extends AbstractController {
 
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
                 //查询订单交易记录，修改交易状态
-
+                TradingFlow tradingFlow = tradingService.findByFlowNo(outTradeNo);
+                if (tradingFlow != null) {
+                    Order order = orderService.findById(tradingFlow.getOrderId());
+                    // TODO: 2019/12/7 区分优品卡还是商品订单 
 //                1、优品卡
-                //查询查询优品卡记录，修改激活状态
-//                youpinCardService.active(userId);
+                    //查询查询优品卡记录，修改激活状态
+//                youpinCardService.active(o);
 
 //                2、商品
-                //查询订单记录，修改订单状态
-
+                    //查询订单记录，修改订单状态
+                }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";
             } else { // 业务结果为FALL

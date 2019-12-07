@@ -43,6 +43,11 @@ public class ShopcarService {
     @Autowired
     private UserUtils userUtils;
 
+    private String getGoodsPicUrl(GoodsPicture gp) {
+        String bossImgsUrl = PropertiesUtils.getProperty("boss.imgs.url");
+        return bossImgsUrl + gp.getGoodsId() + File.separator + gp.getPicUrl();
+    }
+
     /**
      * 购物车列表
      *
@@ -50,8 +55,6 @@ public class ShopcarService {
      * @return
      */
     public List<ShopcarDetail> list(Long userId) {
-        String bossImgsUrl = PropertiesUtils.getProperty("boss.imgs.url");
-
         List<Shopcar> list = shopcarDao.findAllByUserId(userId);
 
         List<ShopcarDetail> detailList = new ArrayList<>(list.size());
@@ -67,7 +70,7 @@ public class ShopcarService {
             detail.setGoodsNum(shopcar.getGoodsNum());
 
             GoodsPicture gp = goodsPictureDao.findMainByGoodsId(goods.getId());
-            if (gp != null) detail.setPicUrl(bossImgsUrl + goods.getId() + File.separator + gp.getPicUrl());
+            if (gp != null) detail.setPicUrl(getGoodsPicUrl(gp));
 
             detailList.add(detail);
         }

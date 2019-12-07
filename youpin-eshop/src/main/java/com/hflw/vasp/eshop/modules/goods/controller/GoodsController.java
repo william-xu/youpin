@@ -4,19 +4,14 @@ import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.category.service.CategoryService;
 import com.hflw.vasp.eshop.modules.goods.model.GoodsDetailModel;
 import com.hflw.vasp.eshop.modules.goods.service.GoodsService;
-import com.hflw.vasp.eshop.modules.goodspicture.service.GoodsPictureService;
-import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.modules.entity.Goods;
-import com.hflw.vasp.modules.entity.GoodsPicture;
 import com.hflw.vasp.web.R;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,9 +33,6 @@ public class GoodsController extends AbstractController {
 
     @Autowired
     private GoodsService goodsService;
-
-    @Autowired
-    private GoodsPictureService goodsPictureService;
 
     /**
      * 同类型商品列表
@@ -82,22 +74,8 @@ public class GoodsController extends AbstractController {
      */
     @RequestMapping("/info")
     public R info(Long id) {
-        Goods goods = goodsService.findById(id);
-        GoodsDetailModel goodsDetailModel = new GoodsDetailModel();
-
-        String bossImgsUrl = PropertiesUtils.getProperty("boss.imgs.url");
-
-        //多张图片
-        List<GoodsPicture> pictureList = goodsPictureService.findByGoodsId(goods.getId());
-        List<String> picUrls = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(pictureList)) {
-            for (GoodsPicture p : pictureList) {
-                picUrls.add(bossImgsUrl + p.getGoodsId() + File.separator + p.getPicUrl());
-            }
-        }
-        BeanUtils.copyProperties(goods, goodsDetailModel);
-        goodsDetailModel.setPicUrls(picUrls);
-        return R.ok().data(goodsDetailModel);
+        GoodsDetailModel gdModel = goodsService.getInfoById(id);
+        return R.ok().data(gdModel);
     }
 
 }
