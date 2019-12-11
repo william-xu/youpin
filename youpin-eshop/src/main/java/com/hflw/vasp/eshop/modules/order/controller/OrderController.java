@@ -6,6 +6,8 @@ import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
 import com.hflw.vasp.eshop.modules.order.service.OrderService;
+import com.hflw.vasp.exception.BusinessException;
+import com.hflw.vasp.modules.entity.Order;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +50,10 @@ public class OrderController extends AbstractController {
     @SysLog
     @PostMapping("/ypcSubmit")
     public R youpinCardSubmit(OrderYoupinCardModel model) {
+        //校验是否存在未支付的优品卡订单
+        Order ypOrder = orderService.findUnpayYoupinOrder(getUserId());
+        if (ypOrder != null)
+            throw BusinessException.create("存在未支付的优品卡订单");
         Long orderId = orderService.youpinCardSubmit(getUserId(), model);
         return R.ok().data(orderId);
     }

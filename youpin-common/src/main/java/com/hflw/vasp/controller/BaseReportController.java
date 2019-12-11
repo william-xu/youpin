@@ -21,6 +21,21 @@ import java.io.InputStream;
 @Controller
 public class BaseReportController extends BaseController {
 
+    @Override
+    public Object getSessionUser() {
+        return null;
+    }
+
+    @Override
+    public String getAccount() {
+        return null;
+    }
+
+    @Override
+    public Long getUserId() {
+        return null;
+    }
+
     @GetMapping(value = "/downTemplates")
     @ApiOperation(value = "下载导入模版")
     public void downTemplates(HttpServletResponse response, String fileName) throws IOException {

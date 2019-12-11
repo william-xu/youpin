@@ -35,6 +35,7 @@ public class AbstractController extends BaseController {
      *
      * @return
      */
+    @Override
     public Customer getSessionUser() {
         Customer user = (Customer) session.getAttribute(Constants.SESSION_LOGIN_USER);
         if (user == null || StringUtils.isBlank(user.getPhone())) {
@@ -43,6 +44,7 @@ public class AbstractController extends BaseController {
         return user;
     }
 
+    @Override
     public String getAccount() {
         Customer user = getSessionUser();
         if (user != null) {
@@ -51,6 +53,7 @@ public class AbstractController extends BaseController {
         return null;
     }
 
+    @Override
     public Long getUserId() {
         Customer user = getSessionUser();
         if (user != null) {

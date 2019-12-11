@@ -34,8 +34,8 @@ public class UserController extends AbstractController {
 
     @GetMapping(value = "/info")
     public R index() {
-        Customer customer = getSessionUser();
-        return R.ok().data(customer);
+        Customer user = getSessionUser();
+        return R.ok().data(user);
     }
 
     @GetMapping(value = "/address/list")

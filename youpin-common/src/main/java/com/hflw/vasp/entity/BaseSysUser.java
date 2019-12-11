@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -14,7 +15,8 @@ import javax.persistence.Column;
  * @since 1.0.0
  */
 @Data
-public abstract class BaseSysUser extends BaseEntity {
+@MappedSuperclass
+public class BaseSysUser extends BaseEntity {
 
     /**
      * 帐号

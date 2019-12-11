@@ -32,6 +32,12 @@ public abstract class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
+    public abstract Object getSessionUser();
+
+    public abstract String getAccount();
+
+    public abstract Long getUserId();
+
     /**
      * 获取客户端Ip
      *

@@ -10,7 +10,7 @@ public interface SysContants {
     /**
      * 超级管理员的登录id
      */
-    public static final long ADMIN_LOGINID = 1;
+    public static final long ADMIN_LOGIN_ID = 1;
 
     /**
      * 获取代码量

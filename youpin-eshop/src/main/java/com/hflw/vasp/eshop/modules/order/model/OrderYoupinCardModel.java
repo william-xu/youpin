@@ -13,4 +13,6 @@ public class OrderYoupinCardModel {
 
     private BigDecimal payAmount;
 
+    private Long addressId;
+
 }

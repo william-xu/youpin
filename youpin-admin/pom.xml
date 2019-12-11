@@ -13,6 +13,7 @@
     <artifactId>youpin-admin</artifactId>
     <properties>
         <kaptcha.version>0.0.9</kaptcha.version>
+        <shiro.version>1.4.0</shiro.version>
     </properties>
 
     <dependencies>
@@ -33,6 +34,27 @@
             <groupId>com.github.axet</groupId>
             <artifactId>kaptcha</artifactId>
             <version>${kaptcha.version}</version>
+        </dependency>
+
+        <!--Shiro核心框架 -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+
+        <!-- Shiro使用Srping框架 -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+
+        <!-- Shiro使用EhCache缓存框架 -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>${shiro.version}</version>
         </dependency>
     </dependencies>
 

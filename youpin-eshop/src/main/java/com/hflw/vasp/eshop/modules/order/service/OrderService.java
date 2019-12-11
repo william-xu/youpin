@@ -57,8 +57,6 @@ public class OrderService {
     }
 
     public List<OrderDetails> list(Long userId) {
-
-
         List<Order> oList = orderDao.findAllByUserId(userId);
 
         List<OrderDetails> list = new ArrayList<>();
@@ -105,6 +103,7 @@ public class OrderService {
         //订单主体
         Order order = new Order();
         order.setUserId(userId);
+        order.setType(1);
         order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(model.getPayAmount());
@@ -112,6 +111,48 @@ public class OrderService {
         order.setStatus(0);
         order.setCreateTime(now);
         orderDao.save(order);
+
+        // 子订单（送扫地机器人）
+        subOrder(order, model.getAddressId());
+
+        return order.getId();
+    }
+
+    public Long subOrder(Order parentOrder, Long addressId) {
+        Date now = new Date();
+        //订单主体
+        Order order = new Order();
+        order.setUserId(parentOrder.getUserId());
+        order.setType(0);
+        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
+        order.setParentOrderNo(parentOrder.getParentOrderNo());
+        order.setDiscountAmount(BigDecimal.ZERO);
+        order.setPayAmount(BigDecimal.ZERO);
+        order.setDiscountAmount(new BigDecimal("699.00"));
+        order.setStatus(0);
+        order.setCreateTime(now);
+        orderDao.save(order);
+
+        Goods g = goodsDao.getOne(4L);
+        OrderGoods og = new OrderGoods();
+        og.setOrderId(order.getId());
+        og.setGoodsId(g.getId());
+        og.setGoodsName(g.getName());
+        og.setGoodsPrice(g.getRetailPrice());
+        og.setPayPrice(BigDecimal.ZERO);
+        og.setGoodsNum(1);
+        og.setPicUrl(g.getPicUrl());
+        orderGoodsDao.save(og);
+
+        Optional<CustomerAddress> optionalAddress = customerAddressDao.findById(addressId);
+        CustomerAddress selectedAddress = optionalAddress.get();
+        OrderAddress orderAddress = new OrderAddress();
+        orderAddress.setOrderId(order.getId());
+        orderAddress.setName(selectedAddress.getName());
+        orderAddress.setTel(selectedAddress.getTel());
+        String fullAddress = selectedAddress.getProvince() + selectedAddress.getCity() + selectedAddress.getArea() + selectedAddress.getAddress();
+        orderAddress.setAddress(fullAddress);
+        orderAddressDao.save(orderAddress);
         return order.getId();
     }
 
@@ -196,6 +237,7 @@ public class OrderService {
         //订单主体
         Order order = new Order();
         order.setUserId(userId);
+        order.setType(0);
         order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(payAmount);
@@ -225,8 +267,18 @@ public class OrderService {
 
     public void logicDeleteById(Long id) {
         orderDao.logicDeleteById(id);
+    }
 
+    public void update(Order order) {
+        orderDao.save(order);
+    }
 
+    public Order findByParentOrderNo(String orderNo) {
+        return orderDao.findByParentOrderNo(orderNo);
+    }
+
+    public Order findUnpayYoupinOrder(Long userId) {
+        return orderDao.findUnpayYoupinOrder(userId);
     }
 
 }

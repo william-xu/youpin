@@ -32,6 +32,18 @@ public class Order extends BaseEntity {
     @Column(name = "order_no", length = 32)
     private String orderNo;
 
+    /**
+     * 父订单流水
+     */
+    @Column(name = "parent_order_no", length = 32)
+    private String parentOrderNo;
+
+    /**
+     * 订单类型：0商品订单，1优品卡订单
+     */
+    @Column(name = "type", length = 2)
+    private int type;
+
     @Transient
     private BigDecimal totalAmount;
 

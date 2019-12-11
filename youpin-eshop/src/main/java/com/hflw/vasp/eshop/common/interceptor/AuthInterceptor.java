@@ -49,6 +49,25 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+//        String getServerName();//获取服务器名，localhost；
+//        String getServerPort();//获取服务器端口号，8080；
+//        String getContextPath();//获取项目名，/Example；
+//        String getServletPath();//获取Servlet路径，/AServlet；
+//        String getQueryString();//获取参数部分，即问号后面的部分：username=zhangsan
+//        String getRequestURI();//获取请求URI，等于项目名+Servlet路径：/Example/AServlet
+//        String getRequestURL();//获取请求URL，等于不包含参数的整个请求路径：http://localhost:8080/Example/AServlet
+//        String getRemoteAddr();//获取服务器的IP，如localhost对应ip为127.0.0.1
+//
+        HttpSession session = request.getSession();
+
+        String requestURL = request.getRequestURI();
+        String remoteAddr = request.getRequestURI();
+        String sessionId = session.getId();
+
+        logger.info("\nrequestURL:" + requestURL);
+        logger.info("\nremoteAddr:" + remoteAddr);
+        logger.info("\nsessionId:" + sessionId);
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
         boolean needLoginFlag = true;

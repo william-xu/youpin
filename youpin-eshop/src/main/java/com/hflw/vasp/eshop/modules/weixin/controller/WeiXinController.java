@@ -5,8 +5,8 @@ import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
-import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.annotation.AccessNoSession;
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.wechat.WechatPayUtil;
@@ -236,7 +236,7 @@ public class WeiXinController extends AbstractController {
             //重新加密 获取加密的签名
             sign1 = WechatPayUtil.generateSignature(resultMap, wxPayService.getConfig().getMchKey()); //签名
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         String resultCode;
@@ -245,19 +245,28 @@ public class WeiXinController extends AbstractController {
         logger.info("==============================================开始对比加密++++++++++++++++++++++++++++++++++++++");
         if (sign.equals(sign1)) { //验签通过
             logger.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
-
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
                 //查询订单交易记录，修改交易状态
                 TradingFlow tradingFlow = tradingService.findByFlowNo(outTradeNo);
                 if (tradingFlow != null) {
                     Order order = orderService.findById(tradingFlow.getOrderId());
-                    // TODO: 2019/12/7 区分优品卡还是商品订单
-//                1、优品卡
-                    //查询查询优品卡记录，修改激活状态
-//                youpinCardService.active(o);
-
-//                2、商品
-                    //查询订单记录，修改订单状态
+                    //区分优品卡还是商品订单
+                    if (order.getType() == 1) {
+//                        1、优品卡，查询查询优品卡记录，修改激活状态
+                        // 查赠送商品订单
+                        Order subOrder = orderService.findByParentOrderNo(order.getOrderNo());
+                        if (subOrder != null) {
+                            subOrder.setStatus(1);
+                            orderService.update(subOrder);
+                        }
+                        //激活优品卡
+                        youpinCardService.active(order.getUserId());
+                    } else {
+//                        2、商品，查询订单记录，修改订单状态
+                    }
+                    //修改订单状态为已支付
+                    order.setStatus(1);
+                    orderService.update(order);
                 }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";
@@ -265,7 +274,6 @@ public class WeiXinController extends AbstractController {
                 resultCode = "FAIL";
                 resultMsg = "业务结果为FAIL";
             }
-
         } else {
             resultCode = "FAIL";
             resultMsg = "验签未通过";
