@@ -3,6 +3,7 @@ package com.hflw.vasp.eshop.modules.order.model;
 import com.hflw.vasp.modules.entity.Order;
 import com.hflw.vasp.modules.entity.OrderAddress;
 import com.hflw.vasp.modules.entity.OrderGoods;
+import com.hflw.vasp.modules.entity.OrderLogistics;
 import lombok.Data;
 
 import java.util.List;
@@ -21,5 +22,7 @@ public class OrderDetails {
     private List<OrderGoods> goodsList;
 
     private OrderAddress address;
+
+    private OrderLogistics logistics;
 
 }

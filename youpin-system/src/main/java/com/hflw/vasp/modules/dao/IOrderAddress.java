@@ -6,4 +6,7 @@ import com.hflw.vasp.repository.BaseRepository;
 import java.io.Serializable;
 
 public interface IOrderAddress extends BaseRepository<OrderAddress, Long>, Serializable {
+
+    OrderAddress findByOrderId(Long orderId);
+
 }

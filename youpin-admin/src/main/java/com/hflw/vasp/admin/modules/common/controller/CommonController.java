@@ -1,9 +1,9 @@
 package com.hflw.vasp.admin.modules.common.controller;
 
 import com.google.code.kaptcha.Producer;
+import com.hflw.vasp.admin.modules.AbstractController;
 import com.hflw.vasp.admin.modules.common.service.CommonService;
 import com.hflw.vasp.annotation.AccessNoSession;
-import com.hflw.vasp.controller.BaseController;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.utils.StringUtils;
 import io.swagger.annotations.Api;
@@ -31,7 +31,7 @@ import java.io.IOException;
 @Api
 @RestController
 @RequestMapping(value = "/common")
-public class CommonController extends BaseController {
+public class CommonController extends AbstractController {
 
     private static final Logger logger = LoggerFactory.getLogger(CommonController.class);
 

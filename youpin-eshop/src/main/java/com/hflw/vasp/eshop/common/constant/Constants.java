@@ -52,6 +52,7 @@ public final class Constants extends BasicConstants {
      */
     public static final String WECHAT_TOKEN_KEY = "wechat_token_";
     public static final String WECHAT_TICKET_KEY = "wechat_ticket_";
+    public static final String WECHAT_USERINFO_KEY = "wechat_userinfo_";
 
     /**
      * openid类型

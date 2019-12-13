@@ -20,10 +20,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "com.hflw.vasp.entity"})
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
-public class AdminMain {
+public class AdminApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AdminMain.class, args);
+        SpringApplication.run(AdminApplication.class, args);
     }
 
 }

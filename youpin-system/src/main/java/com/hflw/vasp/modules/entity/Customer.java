@@ -8,12 +8,15 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "d_customer")
 @ApiModel("客户")
-public class Customer extends BaseSysUser {
+public class Customer extends BaseSysUser implements Serializable {
+
+    private static final long serialVersionUID = -108003137573859467L;
 
     @ApiModelProperty("手机号")
     @Column(name = "phone", length = 11)

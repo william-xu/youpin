@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 /**
@@ -56,6 +57,13 @@ public class Goods extends BaseEntity {
      */
     @Column(name = "retail_price", length = 20)
     private BigDecimal retailPrice;
+
+    /**
+     * 会员价
+     */
+    @Transient
+    private BigDecimal memberPrice;
+
     /**
      * 商品主图片
      */

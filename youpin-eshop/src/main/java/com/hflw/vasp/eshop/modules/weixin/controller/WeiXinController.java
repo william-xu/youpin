@@ -82,6 +82,7 @@ public class WeiXinController extends AbstractController {
     /**
      * 微信openId置为空
      */
+    @SysLog
     @GetMapping("getUserInfo")
     @ResponseBody
     public R getUserInfo(String openId) throws Exception {
@@ -246,9 +247,11 @@ public class WeiXinController extends AbstractController {
         if (sign.equals(sign1)) { //验签通过
             logger.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
+                logger.info("查询交易流水：{}", outTradeNo);
                 //查询订单交易记录，修改交易状态
                 TradingFlow tradingFlow = tradingService.findByFlowNo(outTradeNo);
                 if (tradingFlow != null) {
+                    logger.info("查询订单ID：{}", tradingFlow.getOrderId());
                     Order order = orderService.findById(tradingFlow.getOrderId());
                     //区分优品卡还是商品订单
                     if (order.getType() == 1) {
@@ -267,6 +270,7 @@ public class WeiXinController extends AbstractController {
                     //修改订单状态为已支付
                     order.setStatus(1);
                     orderService.update(order);
+                    logger.info("更新订单{}状态订单", order.getOrderNo());
                 }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";

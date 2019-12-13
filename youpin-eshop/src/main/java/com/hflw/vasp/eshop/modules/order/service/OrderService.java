@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,6 +27,9 @@ import java.util.Optional;
 public class OrderService {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
+    @Value("${youpincard.discount.ratio}")
+    private Float discountRatio;
 
     @Autowired
     private IOrderDao orderDao;
@@ -46,6 +50,9 @@ public class OrderService {
     private ICustomerAddressDao customerAddressDao;
 
     @Autowired
+    private IOrderLogisticsDao orderLogisticsDao;
+
+    @Autowired
     private YoupinCardService youpinCardService;
 
     @Autowired
@@ -61,6 +68,7 @@ public class OrderService {
 
         List<OrderDetails> list = new ArrayList<>();
         for (Order o : oList) {
+            //商品
             List<OrderGoods> ogList = orderGoodsDao.findAllByOrderId(o.getId());
             if (CollectionUtils.isNotEmpty(ogList)) {
                 for (OrderGoods og : ogList) {
@@ -68,9 +76,16 @@ public class OrderService {
                     if (gp != null) og.setPicUrl(getGoodsPicUrl(gp));
                 }
             }
+            //地址
+            OrderAddress address = orderAddressDao.findByOrderId(o.getId());
+            //物流
+            OrderLogistics logistics = orderLogisticsDao.findByOrderId(o.getId());
+
             OrderDetails od = new OrderDetails();
             od.setOrder(o);
             od.setGoodsList(ogList);
+            od.setAddress(address);
+            od.setLogistics(logistics);
             list.add(od);
         }
         return list;
@@ -85,16 +100,18 @@ public class OrderService {
     public OrderDetails getDetailsById(Long id) {
         Optional<Order> optionalOrder = orderDao.findById(id);
         Order order = optionalOrder.get();
-
+        //商品
         List<OrderGoods> orderGoods = orderGoodsDao.findAllByOrderId(order.getId());
-
-        Optional<OrderAddress> optionalAddress = orderAddressDao.findById(order.getId());
-        OrderAddress address = optionalAddress.orElse(null);
+        //地址
+        OrderAddress address = orderAddressDao.findByOrderId(order.getId());
+        //物流
+        OrderLogistics logistics = orderLogisticsDao.findByOrderId(order.getId());
 
         OrderDetails od = new OrderDetails();
         od.setOrder(order);
         od.setGoodsList(orderGoods);
         od.setAddress(address);
+        od.setLogistics(logistics);
         return od;
     }
 
@@ -104,7 +121,7 @@ public class OrderService {
         Order order = new Order();
         order.setUserId(userId);
         order.setType(1);
-        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
+        order.setOrderNo("YP" + redisService.getGlobalUniqueId());
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(model.getPayAmount());
         order.setDiscountAmount(model.getOriginalCost().subtract(model.getPayAmount()));
@@ -120,20 +137,22 @@ public class OrderService {
 
     public Long subOrder(Order parentOrder, Long addressId) {
         Date now = new Date();
+
+        Goods g = goodsDao.getOne(4L);
+
         //订单主体
         Order order = new Order();
         order.setUserId(parentOrder.getUserId());
         order.setType(0);
-        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
-        order.setParentOrderNo(parentOrder.getParentOrderNo());
+        order.setOrderNo("B" + redisService.getGlobalUniqueId());
+        order.setParentOrderNo(parentOrder.getOrderNo());
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(BigDecimal.ZERO);
-        order.setDiscountAmount(new BigDecimal("699.00"));
+        order.setDiscountAmount(g.getRetailPrice());
         order.setStatus(0);
         order.setCreateTime(now);
         orderDao.save(order);
 
-        Goods g = goodsDao.getOne(4L);
         OrderGoods og = new OrderGoods();
         og.setOrderId(order.getId());
         og.setGoodsId(g.getId());
@@ -173,16 +192,17 @@ public class OrderService {
             og.setGoodsId(g.getId());
             og.setGoodsName(g.getName());
             og.setGoodsPrice(g.getRetailPrice());
-            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
+            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal(discountRatio)).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
             og.setPayPrice(payPrice);
             og.setGoodsNum(goodsNums[i]);
-            og.setPicUrl(g.getPicUrl());
+            GoodsPicture gp = goodsPictureDao.findMainByGoodsId(g.getId());
+            og.setPicUrl(getGoodsPicUrl(gp));
             ogList.add(og);
 
             totalPrice = totalPrice.add(g.getRetailPrice().multiply(new BigDecimal(goodsNums[i])));
         }
         if (flag) {
-            payAmount = totalPrice.multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP);
+            payAmount = totalPrice.multiply(new BigDecimal(discountRatio)).setScale(2, BigDecimal.ROUND_HALF_UP);
         } else {
             payAmount = totalPrice;
         }
@@ -218,12 +238,12 @@ public class OrderService {
             og.setGoodsName(g.getName());
             og.setGoodsNum(goodsNum);
             og.setGoodsPrice(g.getRetailPrice());
-            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal("0.85")).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
+            BigDecimal payPrice = flag ? g.getRetailPrice().multiply(new BigDecimal(discountRatio)).setScale(2, BigDecimal.ROUND_HALF_UP) : g.getRetailPrice();
             og.setPayPrice(payPrice);
             ogList.add(og);
         }
         if (flag) {
-            payAmount = totalPrice.multiply(new BigDecimal("0.85"));
+            payAmount = totalPrice.multiply(new BigDecimal(discountRatio)).setScale(2, BigDecimal.ROUND_HALF_UP);
         } else {
             payAmount = totalPrice;
         }
@@ -238,7 +258,7 @@ public class OrderService {
         Order order = new Order();
         order.setUserId(userId);
         order.setType(0);
-        order.setOrderNo(String.valueOf(redisService.getGlobalUniqueId()));
+        order.setOrderNo("B" + redisService.getGlobalUniqueId());
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(payAmount);
         order.setDiscountAmount(totalPrice.subtract(payAmount));

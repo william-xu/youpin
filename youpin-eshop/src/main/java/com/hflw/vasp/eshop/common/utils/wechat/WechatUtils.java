@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
+import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.utils.HttpUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -139,7 +140,7 @@ public class WechatUtils {
      */
     public Map<String, Object> getWechatTokenAndOpenId(String appid, String secret, String code, Integer type)
             throws Exception {
-        Map<String, Object> wto = new HashMap<String, Object>();
+        Map<String, Object> wto = new HashMap<>();
         String url = Constants.MINI == type ? GET_MINI_OPENID_URL : GET_OPENID_URL;
         url = Constants.MINI == type
                 ? url.replace("$APPID$", appid).replace("$SECRET$", secret).replace("$JSCODE$", code).replace("\r", "").replace("\n", "")
@@ -249,15 +250,18 @@ public class WechatUtils {
      * @throws Exception
      */
     public Map<String, Object> getWechatUserInfo(String appid, String secret, String openId) throws Exception {
-        Map<String, Object> wu = new HashMap<String, Object>();
+        Map<String, Object> wu = new HashMap<>();
         //获取token
         String accessToken = getWechatToken(appid, secret);
         if (StringUtils.isNotEmpty(accessToken)) {
-            String url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
-            HttpUtils httpUtils = new HttpUtils();
-            String result = httpUtils.get(url, null);
-            logger.info(url + " 获取UserInfo返回：" + result);
-            JSONObject ticketJO = JSON.parseObject(result);
+            String userCacheKey = Constants.WECHAT_USERINFO_KEY + openId;
+            JSONObject userJO = (JSONObject) redisCacheUtil.getCacheObject(userCacheKey);
+            if (userJO == null) {
+                String url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
+                HttpUtils httpUtils = new HttpUtils();
+                String result = httpUtils.get(url, null);
+                logger.info(url + " 获取UserInfo返回：" + result);
+                userJO = JSON.parseObject(result);
 //            成功
 //            {
 //                "subscribe": 1,
@@ -280,13 +284,16 @@ public class WechatUtils {
 //            }
 //            失败
 //            {"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest hint: [fBBCDa06263401!]"}
-            if (ticketJO.containsKey("errcode") && 40001 == ticketJO.getIntValue("errcode")) {
-                accessToken = getAndCacheWechatToken(appid, secret);//重新获取token
-                url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
-                result = httpUtils.get(url, null);
-                logger.info(url + " 重新获取UserInfo返回：" + result);
+                if (userJO.containsKey("errcode") && 40001 == userJO.getIntValue("errcode")) {
+                    accessToken = getAndCacheWechatToken(appid, secret);//重新获取token
+                    url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
+                    result = httpUtils.get(url, null);
+                    logger.info(url + " 重新获取UserInfo返回：" + result);
+                    userJO = JSON.parseObject(result);
+                }
+                redisCacheUtil.setCacheObject(userCacheKey, userJO, ConstantKeys.DAYS_30, TimeUnit.DAYS);
             }
-            wu.putAll(ticketJO);
+            wu.putAll(userJO);
         }
         return wu;
     }
@@ -301,7 +308,7 @@ public class WechatUtils {
      * @throws Exception
      */
 //    public Map<String, Object> getWechatTokenAndOpenId(String appid, String secret, String code) throws Exception {
-//        Map<String, Object> wto = new HashMap<String, Object>();
+//        Map<String, Object> wto = new HashMap<>();
 //
 //        String url = GET_OPENID_URL.replace("$APPID$", appid).replace("$SECRET$", secret).replace("$JSCODE$", code);
 //        HttpUtils httpUtils = new HttpUtils();

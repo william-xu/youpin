@@ -66,7 +66,7 @@ public class ShopcarService {
             detail.setUserId(shopcar.getUserId());
             detail.setGoodsName(goods.getName());
             detail.setGoodsId(shopcar.getGoodsId());
-            detail.setGoodsPrice(goods.getShopPrice());
+            detail.setGoodsPrice(goods.getRetailPrice());
             detail.setGoodsNum(shopcar.getGoodsNum());
 
             GoodsPicture gp = goodsPictureDao.findMainByGoodsId(goods.getId());

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -16,7 +17,9 @@ import javax.persistence.MappedSuperclass;
  */
 @Data
 @MappedSuperclass
-public class BaseSysUser extends BaseEntity {
+public class BaseSysUser extends BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = -108003137533859467L;
 
     /**
      * 帐号
