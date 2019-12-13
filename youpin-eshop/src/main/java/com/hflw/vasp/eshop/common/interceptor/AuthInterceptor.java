@@ -60,10 +60,10 @@ public class AuthInterceptor implements HandlerInterceptor {
 //
         HttpSession session = request.getSession();
 
-        String requestURL = request.getRequestURI();
+//        String requestURL = request.getRequestURI();
 //        String remoteAddr = request.getRequestURI();
-        String sessionId = session.getId();
-        logger.info("requestURL:{},sessionId:{}", requestURL, sessionId);
+//        String sessionId = session.getId();
+//        logger.info("requestURL:{},sessionId:{}", requestURL, sessionId);
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 

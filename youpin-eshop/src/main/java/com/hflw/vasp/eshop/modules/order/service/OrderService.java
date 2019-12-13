@@ -53,6 +53,9 @@ public class OrderService {
     private IOrderLogisticsDao orderLogisticsDao;
 
     @Autowired
+    private IShopcarDao shopcarDao;
+
+    @Autowired
     private YoupinCardService youpinCardService;
 
     @Autowired
@@ -270,6 +273,9 @@ public class OrderService {
         for (OrderGoods og : ogList) {
             og.setOrderId(order.getId());
             orderGoodsDao.save(og);
+
+            //删除购物车商品
+            shopcarDao.deleteByUserIdAndAndGoodsId(userId, og.getGoodsId());
         }
 
         //订单地址

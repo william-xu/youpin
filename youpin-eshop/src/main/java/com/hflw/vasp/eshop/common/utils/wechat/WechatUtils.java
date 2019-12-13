@@ -169,7 +169,7 @@ public class WechatUtils {
     public String getWechatToken(String appid, String secret) throws Exception {
         String tokenCacheKey = Constants.WECHAT_TOKEN_KEY + appid;
         String access_token = (String) redisCacheUtil.getCacheObject(tokenCacheKey);
-        logger.info("公众号缓存token：" + access_token);
+        //logger.info("公众号缓存token：" + access_token);
         if (StringUtils.isEmpty(access_token)) {
             access_token = getAndCacheWechatToken(appid, secret);
         }
