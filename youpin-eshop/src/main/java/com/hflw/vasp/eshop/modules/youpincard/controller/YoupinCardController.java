@@ -46,7 +46,7 @@ public class YoupinCardController extends AbstractController {
         Map<String, Object> rtm = new HashMap<>();
         rtm.put("card", card);
         rtm.put("flag", flag);
-        rtm.put("links", flag);
+        rtm.put("links", flm);
         return R.ok().data(rtm);
     }
 

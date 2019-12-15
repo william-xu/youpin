@@ -1,7 +1,7 @@
 package com.hflw.vasp.eshop.common.config;
 
 import com.hflw.vasp.eshop.common.interceptor.AuthInterceptor;
-import com.hflw.vasp.framework.config.UploadProperties;
+import com.hflw.vasp.framework.components.UploadProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
-    @Value("${cros.allow.origins:*}")
-    private String origins;
 
     @Autowired
     private AuthInterceptor authInterceptor;

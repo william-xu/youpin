@@ -3,6 +3,7 @@ package com.hflw.vasp.modules.entity;
 import com.hflw.vasp.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
  * @author Mark
  * @date 2019-04-01 15:17:15
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_category")

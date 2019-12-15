@@ -6,7 +6,7 @@ import com.hflw.vasp.constant.BasicConstants;
  * 〈一句话功能简述〉<br>
  * 公共常量类
  *
- * @author liumh
+ * @author liuyf
  * @create 3/20/2019 09:49
  * @since 1.0.0
  */

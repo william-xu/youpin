@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * 购物车表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-02 16:00:37
  */
 @Data

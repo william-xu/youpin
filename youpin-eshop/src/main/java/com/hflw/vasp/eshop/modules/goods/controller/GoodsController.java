@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * 商品表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-01 17:52:54
  */
 @RestController

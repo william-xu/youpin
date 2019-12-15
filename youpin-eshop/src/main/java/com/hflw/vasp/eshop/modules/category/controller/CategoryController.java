@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * 商品分类表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-01 15:17:15
  */
 @RestController

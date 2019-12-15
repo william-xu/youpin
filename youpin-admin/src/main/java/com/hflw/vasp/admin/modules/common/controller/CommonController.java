@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class CommonController extends AbstractController {
     @AccessNoSession
     @ApiOperation(value = "验证码接口")
     @GetMapping("captcha")
-    public void captcha(HttpServletResponse response) throws IOException {
+    public void captcha(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
 

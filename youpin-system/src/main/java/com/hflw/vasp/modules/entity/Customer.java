@@ -4,12 +4,14 @@ import com.hflw.vasp.entity.BaseSysUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_customer")

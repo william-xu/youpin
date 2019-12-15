@@ -216,7 +216,7 @@ public class WechatUtils {
     public String getWechatTicket(String appid, String secret, String access_token) throws Exception {
         String ticketCacheKey = Constants.WECHAT_TICKET_KEY + appid;
         String ticket = (String) redisCacheUtil.getCacheObject(ticketCacheKey);
-        logger.info("公众号缓存ticket：" + ticket);
+//        logger.info("公众号缓存ticket：" + ticket);
         if (StringUtils.isEmpty(ticket)) {
             String url = GET_TICKET_URL.replace("$ACCESS_TOKEN$", access_token);
             HttpUtils httpUtils = new HttpUtils();

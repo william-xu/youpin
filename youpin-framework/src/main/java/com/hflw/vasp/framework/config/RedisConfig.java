@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.framework.serializer.KryoRedisSerializer;
-import org.springframework.cache.CacheManager;
+import lombok.Data;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +22,13 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
 @Configuration
 @EnableCaching
-public class RedisCacheConfig {
+public class RedisConfig {
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+    public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         return new RedisCacheManager(
                 RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory),
                 getRedisCacheConfigurationWithTtl(7 * 24 * 60 * 60),//日常数据缓存7*24小时
@@ -117,4 +118,5 @@ public class RedisCacheConfig {
         redisTemplate.setHashValueSerializer(redisSerializer);
         return redisTemplate;
     }
+
 }

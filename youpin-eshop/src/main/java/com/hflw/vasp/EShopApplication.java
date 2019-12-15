@@ -9,15 +9,17 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableSwagger2
 @Import({ImportBeansConfigs.class})
-@EnableJpaRepositories(basePackages = "com.hflw.vasp.*.dao")
-@ComponentScan(value = {
+@ComponentScan(basePackages = {
         "com.hflw.vasp.eshop",
         "com.hflw.vasp.framework.components",
         "com.hflw.vasp.framework.service",
         "com.hflw.vasp.entity"})
+@EnableJpaRepositories(basePackages = "com.hflw.vasp.*.dao")
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 public class EShopApplication {

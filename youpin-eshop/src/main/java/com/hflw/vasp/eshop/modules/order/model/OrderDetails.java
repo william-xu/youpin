@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 订单商品关系表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-09 15:03:07
  */
 @Data

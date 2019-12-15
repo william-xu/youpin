@@ -10,6 +10,7 @@
         <module>youpin-system</module>
         <module>youpin-admin</module>
         <module>youpin-task</module>
+        <module>youpin-mq</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

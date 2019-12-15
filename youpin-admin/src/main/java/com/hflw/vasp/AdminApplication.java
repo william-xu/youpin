@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @Import({ImportBeansConfigs.class})
-@EnableJpaRepositories(basePackages = "com.hflw.vasp.*.dao")
-@ComponentScan(value = {
-        "com.hflw.vasp.admin",
+@ComponentScan(basePackages = {
+        "com.hflw.vasp.admin.*",
         "com.hflw.vasp.framework.components",
         "com.hflw.vasp.framework.service",
         "com.hflw.vasp.entity"})
+@EnableJpaRepositories(basePackages = "com.hflw.vasp.*.dao")
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 public class AdminApplication {

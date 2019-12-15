@@ -3,6 +3,7 @@ package com.hflw.vasp.modules.entity;
 import com.hflw.vasp.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +13,10 @@ import java.math.BigDecimal;
 /**
  * 由（平台）派发/（用户）领用优惠券表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-04 18:47:32
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_coupon_recipients")

@@ -2,6 +2,7 @@ package com.hflw.vasp.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -15,6 +16,7 @@ import java.io.Serializable;
  * @create 3/20/2019 10:19
  * @since 1.0.0
  */
+@Accessors(chain = true)
 @Data
 @MappedSuperclass
 public class BaseSysUser extends BaseEntity implements Serializable {

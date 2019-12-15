@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * redis缓存帮助类
- * Created by liumh on 2018/8/13
+ * Created by liuyf on 2018/8/13
  */
 @Component
 public class RedisCacheUtils<T> {

@@ -1,4 +1,4 @@
-package com.hflw.vasp.admin.shiro;
+package com.hflw.vasp.admin.common.config.shiro;
 
 import com.hflw.vasp.utils.StringUtils;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
@@ -11,16 +11,17 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
 
-public class MySessionManager extends DefaultWebSessionManager {
+public class CustomSessionManager extends DefaultWebSessionManager {
 
-    private static final Logger log = LoggerFactory.getLogger(MySessionManager.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomSessionManager.class);
 
     private static final String AUTHORIZATION = "Authorization";
 
     private static final String REFERENCED_SESSION_ID_SOURCE = "Stateless request";
 
-    public MySessionManager() {
+    public CustomSessionManager() {
         super();
+        setGlobalSessionTimeout(DEFAULT_GLOBAL_SESSION_TIMEOUT * 48);
     }
 
     @Override

@@ -1,24 +1,18 @@
-package com.hflw.vasp.framework.config;
+package com.hflw.vasp.framework.components;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Data
 @Component
 @ConfigurationProperties("upload")
 public class UploadProperties {
 
     // 获取存放位置
     private Map<String, String> location;
-
-    public Map<String, String> getLocation() {
-        return location;
-    }
-
-    public void setLocation(Map<String, String> location) {
-        this.location = location;
-    }
 
     public String getBasePath() {
         String location = "";

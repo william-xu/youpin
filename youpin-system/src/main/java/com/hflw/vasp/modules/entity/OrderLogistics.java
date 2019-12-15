@@ -2,6 +2,7 @@ package com.hflw.vasp.modules.entity;
 
 import com.hflw.vasp.entity.BaseEntity;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 /**
  * 物流快递
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_order_logistics")

@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
  * @Description 登录
  * @date 2019年10月24日 下午2:02:54
  */
-@RestController
 @Validated
+@RestController
 public class LoginController extends AbstractController {
 
     @SuppressWarnings("rawtypes")

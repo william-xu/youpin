@@ -1,5 +1,6 @@
 package com.hflw.vasp.eshop.modules.order.service;
 
+import com.google.common.base.Preconditions;
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
@@ -222,9 +223,13 @@ public class OrderService {
 
     public Long submit(Long userId, OrderModel model) {
 
+        //============ 以下为约束条件   ==============
+        //1.用户id不能为空，且此用户确实是存在的
+        Preconditions.checkNotNull(userId);
+
         List<OrderGoods> ogList = new ArrayList<>();
 
-        //优品卡权益校验
+        //2.优品卡权益校验
         YoupinCard card = youpinCardService.findByUserId(userId);
         boolean flag = youpinCardService.verifyValid(card);
 

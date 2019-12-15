@@ -3,6 +3,7 @@ package com.hflw.vasp.modules.entity;
 import com.hflw.vasp.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,9 +14,10 @@ import java.math.BigDecimal;
 /**
  * 商品表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-01 17:52:54
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_goods")

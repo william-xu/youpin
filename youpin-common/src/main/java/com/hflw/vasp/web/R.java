@@ -10,8 +10,8 @@ public class R extends HashMap<String, Object> {
 
     private static final long serialVersionUID = 1L;
 
-    private final static String CODE_KEY = "code";
-    private final static String MSG_KEY = "msg";
+    public final static String CODE_KEY = "code";
+    public final static String MSG_KEY = "msg";
     private final static String DATA_KEY = "data";
     private final static String LIST_KEY = "list";
     private final static String PAGE_KEY = "page";

@@ -2,6 +2,7 @@ package com.hflw.vasp.modules.entity;
 
 import com.hflw.vasp.entity.BaseEntity;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +13,10 @@ import java.math.BigDecimal;
 /**
  * 订单表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-09 14:21:28
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_order")

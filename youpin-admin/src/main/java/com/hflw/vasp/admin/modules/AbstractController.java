@@ -4,10 +4,9 @@ import com.hflw.vasp.admin.common.constant.Constants;
 import com.hflw.vasp.controller.BaseController;
 import com.hflw.vasp.system.entity.SysUser;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,8 +20,6 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class AbstractController extends BaseController {
-
-    public Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected HttpServletRequest request;
@@ -60,6 +57,13 @@ public class AbstractController extends BaseController {
             return user.getId();
         }
         return null;
+    }
+
+    protected void checkDTOParams(BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            //throw new 带验证码的验证错误异常
+
+        }
     }
 
 }

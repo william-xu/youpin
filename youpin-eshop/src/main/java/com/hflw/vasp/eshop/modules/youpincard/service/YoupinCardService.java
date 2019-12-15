@@ -64,6 +64,8 @@ public class YoupinCardService {
      * @return
      */
     public boolean verifyValid(YoupinCard card) {
+        logger.info("当前权益详情：" + JSONObject.toJSONString(card));
+
         if (card == null) return false;
         if (card.getStatus() == null || card.getStatus() != 1) return false;
 
@@ -72,7 +74,6 @@ public class YoupinCardService {
         Calendar c2 = Calendar.getInstance();
         c1.setTime(card.getEffectiveDate());
         c2.setTime(card.getExpirationDate());
-        logger.info("权益：" + JSONObject.toJSONString(card));
         return (c.after(c1) && c.before(c2)); //在权益有效期内
     }
 

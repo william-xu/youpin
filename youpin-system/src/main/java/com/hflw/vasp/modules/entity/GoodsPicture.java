@@ -4,6 +4,7 @@ package com.hflw.vasp.modules.entity;
 import com.hflw.vasp.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -11,9 +12,10 @@ import javax.persistence.Table;
 /**
  * 商品图片表
  *
- * @author liumh
+ * @author liuyf
  * @date 2019-04-02 10:04:45
  */
+@Accessors(chain = true)
 @Data
 @Entity
 @Table(name = "d_goods_picture")

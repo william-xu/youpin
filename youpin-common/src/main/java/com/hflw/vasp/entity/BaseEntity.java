@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hflw.vasp.enums.StatusEnum;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Accessors(chain = true)
 @Data
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
