@@ -4,16 +4,17 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.spi.FilterReply;
+import lombok.Data;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-
-public class TaxiBootTurboFilter extends TurboFilter {
+@Data
+public class BootTurboFilter extends TurboFilter {
 
     String marker;
     Marker markerToAccept;
 
-    public TaxiBootTurboFilter() {
+    public BootTurboFilter() {
     }
 
     @Override
@@ -23,14 +24,6 @@ public class TaxiBootTurboFilter extends TurboFilter {
         } else {
             return this.markerToAccept.equals(marker) ? FilterReply.ACCEPT : FilterReply.NEUTRAL;
         }
-    }
-
-    public String getMarker() {
-        return this.marker;
-    }
-
-    public void setMarker(String markerStr) {
-        this.marker = markerStr;
     }
 
     @Override

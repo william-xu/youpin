@@ -18,7 +18,7 @@ logback-spring.xml引入文件:
     <property name="LOG_PATH" value="${logging.path}"/>
     <contextName>${APP_NAME}</contextName>
 
-    <turboFilter class="com.hflw.vasp.logger.TaxiBootTurboFilter">
+    <turboFilter class="com.hflw.vasp.logger.BootTurboFilter">
         <Marker>${APP_NAME}</Marker>
     </turboFilter>
 

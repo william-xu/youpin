@@ -2,11 +2,7 @@ package com.hflw.vasp.eshop.common.config;
 
 import com.hflw.vasp.eshop.common.interceptor.AuthInterceptor;
 import com.hflw.vasp.framework.components.UploadProperties;
-import com.hflw.vasp.framework.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -44,15 +40,6 @@ public class WebConfig implements WebMvcConfigurer {
 
         String path = uploadProperties.getBasePath();
         registry.addResourceHandler("/files/**").addResourceLocations("file://" + path);
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    @Bean
-    public FilterRegistrationBean filterRegistrationBean(){
-        FilterRegistrationBean frBean = new FilterRegistrationBean();
-        frBean.setFilter(new CorsFilter());
-        frBean.addUrlPatterns("/*");
-        return frBean;
     }
 
     /**

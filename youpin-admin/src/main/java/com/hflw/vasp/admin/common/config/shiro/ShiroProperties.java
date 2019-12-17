@@ -11,4 +11,6 @@ public class ShiroProperties {
 
     private Long timeout;
 
+    private String hashAlgorithmName;
+
 }

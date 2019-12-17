@@ -28,10 +28,10 @@ public interface IOrderDao extends BaseRepository<Order, Long>, JpaSpecification
 
     Order findByParentOrderNo(String orderNo);
 
-//    @Query(value = " select new com.hflw.vasp.modules.model.OrderListModel(o.id,o.orderNo,o.status) from Order o " +
-//            "left join OrderAddress oa on o.id = oa.orderId " +
-//            "left join OrderLogistics ol on o.id = ol.orderId ",
-//            countQuery = "select count(o) from Order o left join OrderAddress oa on o.id = oa.orderId")
-//    Page<OrderListModel> findOrderCriteria(Pageable pageable);
+    @Query(value = " select new com.hflw.vasp.modules.model.OrderListModel(o,oa,ol) from Order o " +
+            "left join OrderAddress oa on o.id = oa.orderId " +
+            "left join OrderLogistics ol on o.id = ol.orderId ",
+            countQuery = "select count(o) from Order o left join OrderAddress oa on o.id = oa.orderId")
+    Page<OrderListModel> findOrderCriteria(Pageable pageable);
 
 }

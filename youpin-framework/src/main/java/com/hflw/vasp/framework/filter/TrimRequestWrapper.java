@@ -21,7 +21,8 @@ import java.util.*;
 
 @Slf4j
 public class TrimRequestWrapper extends HttpServletRequestWrapper {
-    private Map<String, String[]> params = new HashMap<String, String[]>();//保存处理后的参数
+
+    private Map<String, String[]> params = new HashMap<>();//保存处理后的参数
 
     public TrimRequestWrapper(HttpServletRequest request) {
         super(request);

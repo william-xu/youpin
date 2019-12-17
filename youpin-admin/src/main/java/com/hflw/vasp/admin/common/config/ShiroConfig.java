@@ -1,10 +1,9 @@
 package com.hflw.vasp.admin.common.config;
 
 import cn.hutool.core.codec.Base64;
-import com.hflw.vasp.admin.common.config.shiro.KaptchaFilter;
 import com.hflw.vasp.admin.common.config.shiro.ShiroLoginFilter;
+import com.hflw.vasp.admin.common.config.shiro.ShiroProperties;
 import com.hflw.vasp.admin.common.config.shiro.ShiroRealm;
-import com.hflw.vasp.framework.config.RedisConfig;
 import lombok.Data;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
@@ -35,14 +34,12 @@ public class ShiroConfig {
     @Autowired
     private RedisProperties redisProperties;
 
+    @Autowired
+    private ShiroProperties shiroProperties;
+
     @Bean
     public Realm realm() {
         return new ShiroRealm();
-    }
-
-    @Bean
-    public RedisConfig redisConfig() {
-        return new RedisConfig();
     }
 
     @Bean
@@ -76,11 +73,11 @@ public class ShiroConfig {
      *
      * @return RedisCacheManager
      */
-    @Bean
+    @Bean(name = "shiroCacheManager")
     public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
-        // 必须要设置主键名称，shiro-redis 插件用过这个缓存用户信息
+        //必须要设置主键名称，shiro-redis 插件用过这个缓存用户信息
         redisCacheManager.setPrincipalIdFieldName("userId");
         return redisCacheManager;
     }
@@ -96,7 +93,7 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSessionManager sessionManager() {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
-        sessionManager.setGlobalSessionTimeout(2592000);    // 设置session超时
+        sessionManager.setGlobalSessionTimeout(shiroProperties.getTimeout());    // 设置session超时
         sessionManager.setDeleteInvalidSessions(true);      // 删除无效session
         sessionManager.setSessionIdCookie(cookie());        // 设置JSESSIONID
         sessionManager.setSessionDAO(sessionDAO());         // 设置sessionDAO
@@ -111,7 +108,7 @@ public class ShiroConfig {
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");// 散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashAlgorithmName(shiroProperties.getHashAlgorithmName());// 散列算法:这里使用MD5算法;
         //hashedCredentialsMatcher.setHashIterations(2);// 散列的次数，比如散列两次，相当于md5(md5(""));
         hashedCredentialsMatcher.setStoredCredentialsHexEncoded(true);// 表示是否存储散列后的密码为16进制，需要和生成密码时的一样，默认是base64；
         return hashedCredentialsMatcher;
@@ -167,7 +164,6 @@ public class ShiroConfig {
      */
     @Bean
     public CookieRememberMeManager rememberMeManager() {
-        //System.out.println("ShiroConfiguration.rememberMeManager()");
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
         cookieRememberMeManager.setCookie(rememberMeCookie());
         //rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度(128 256 512 位)
@@ -189,14 +185,14 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/corp/call_back/receive", "anon");
         //登录验证码拦截验证
-        filterChainDefinitionMap.put("/ajaxLogin", "kaptchaFilter");
+//        filterChainDefinitionMap.put("/login", "kaptchaFilter");
         //authc:所有url必须通过认证才能访问，anon:所有url都可以匿名访问
         filterChainDefinitionMap.put("/**", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         //自定义过滤器
         Map<String, Filter> filterMap = shiroFilter.getFilters();
-        filterMap.put("kaptchaFilter", new KaptchaFilter());
+//        filterMap.put("kaptchaFilter", new KaptchaFilter());
         filterMap.put("authc", new ShiroLoginFilter());
         shiroFilter.setFilters(filterMap);
         return shiroFilter;

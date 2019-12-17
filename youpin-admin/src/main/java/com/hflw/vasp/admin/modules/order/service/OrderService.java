@@ -4,7 +4,6 @@ import com.hflw.vasp.admin.modules.order.dto.OrderQuery;
 import com.hflw.vasp.modules.dao.IOrderDao;
 import com.hflw.vasp.modules.dao.IOrderLogisticsDao;
 import com.hflw.vasp.modules.entity.Order;
-import com.hflw.vasp.modules.entity.OrderAddress;
 import com.hflw.vasp.modules.entity.OrderLogistics;
 import com.hflw.vasp.modules.model.OrderListModel;
 import com.hflw.vasp.utils.StringUtils;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,10 +58,10 @@ public class OrderService {
         return orderPage;
     }
 
-    public void findOrderCriteria2(final OrderQuery orderQuery){
+    public Page<OrderListModel> findOrderCriteria2(final OrderQuery orderQuery) {
         Pageable pageable = PageRequest.of(orderQuery.getPageNumber() - 1, orderQuery.getPageSize(), Sort.Direction.DESC, "id");
-//        Page<OrderListModel> page = orderDao.findOrderCriteria(pageable);
-//        System.out.println(page);
+        Page<OrderListModel> page = orderDao.findOrderCriteria(pageable);
+        return page;
     }
 
     /**

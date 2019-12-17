@@ -1,5 +1,8 @@
 package com.hflw.vasp.modules.model;
 
+import com.hflw.vasp.modules.entity.Order;
+import com.hflw.vasp.modules.entity.OrderAddress;
+import com.hflw.vasp.modules.entity.OrderLogistics;
 import lombok.AllArgsConstructor;
 
 import javax.xml.crypto.Data;
@@ -9,17 +12,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class OrderListModel {
 
-    public OrderListModel() {
-    }
+    private Order order;
 
-    private Long orderId;
-    private String orderNo;
-    private BigDecimal payAmount;
-    private Long status;
-    private Long ypcStatus;
-    private Data createTime;
-    private String buyer;
-    private String phone;
+    private OrderAddress address;
 
+    private OrderLogistics logistics;
 
 }

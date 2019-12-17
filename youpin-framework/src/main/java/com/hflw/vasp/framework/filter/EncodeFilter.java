@@ -4,6 +4,7 @@ package com.hflw.vasp.framework.filter;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.IOException;
  * 编码 过滤器
  */
 @Component
+@WebFilter(urlPatterns = "/**", filterName = "encodeFilter")
 public class EncodeFilter implements Filter {
 
     @Override
