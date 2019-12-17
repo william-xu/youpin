@@ -1,17 +1,15 @@
 package com.hflw.vasp.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.UnknownHostException;
 
+@Slf4j
 public class IpUtils {
-
-    private static Logger logger = LoggerFactory.getLogger(IpUtils.class);
 
     /**
      * ipv4 地址;本机
@@ -64,7 +62,7 @@ public class IpUtils {
                 ip = request.getRemoteAddr();
             }
         } catch (Exception e) {
-            logger.error("IPUtils ERROR ", e);
+            log.error("IPUtils ERROR ", e);
         }
 
 //        //使用代理，则获取第一个IP地址

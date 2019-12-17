@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 /**
@@ -60,5 +61,10 @@ public class OrderGoods extends BaseEntity {
     @Column(name = "pay_price")
     private BigDecimal payPrice;
 
+    @Transient
     private String picUrl;
+
+    @Column(name = "status", length = 2)
+    private Integer status;
+
 }

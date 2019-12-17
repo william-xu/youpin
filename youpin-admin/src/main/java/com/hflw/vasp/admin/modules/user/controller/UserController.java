@@ -40,10 +40,11 @@ public class UserController extends AbstractController {
     @PostMapping(value = "/add")
     public R add(@Valid UserDTO userDTO, BindingResult bindingResult) {
         checkDTOParams(bindingResult);
-        SysUser user = userDTO.convertToUser();
+
+        SysUser user = userDTO.convertTo();
         SysUser saveResultUser = userService.addUser(user);
-        UserDTO result = userDTO.convertFor(saveResultUser);
-        return R.ok().data(result);
+//        UserDTO result = userDTO.convertFor(saveResultUser);
+        return R.ok();
     }
 
     @PostMapping(value = "/update")

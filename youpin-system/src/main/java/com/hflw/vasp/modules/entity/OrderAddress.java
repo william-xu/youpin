@@ -14,8 +14,12 @@ import javax.persistence.Table;
 @Table(name = "d_order_address")
 public class OrderAddress extends BaseEntity {
 
+//    @OneToOne(optional = false, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_id")
+//    private Order order;
+
     /**
-     * 用户id
+     * 订单id
      */
     @Column(name = "order_id")
     private Long orderId;

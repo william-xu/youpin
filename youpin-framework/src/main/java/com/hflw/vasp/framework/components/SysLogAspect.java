@@ -9,6 +9,7 @@ import com.hflw.vasp.framework.entity.SysLogEntity;
 import com.hflw.vasp.utils.DateUtils;
 import com.hflw.vasp.utils.IpUtils;
 import com.hflw.vasp.utils.SessionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
@@ -21,8 +22,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -34,13 +33,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Aspect
 @Component
 public class SysLogAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(SysLogAspect.class);
-
-    @Value("${project.package.prefix:com.glsx}")
+    @Value("${project.package.prefix:com.hflw}")
     private String packagePrefix;
 
 //    @Autowired
@@ -75,7 +73,7 @@ public class SysLogAspect {
         Map<String, String[]> parameterMap = request.getParameterMap();
         String modul = target.getClass().getName() + "." + methodSignature.getName();
         if (sysLogMark.printRequestParams()) {
-            logger.info(modul + " 方法参数为:" + JSONObject.toJSONString(parameterMap));
+            log.info(modul + " 方法参数为:" + JSONObject.toJSONString(parameterMap));
         }
 
         String remortIP = IpUtils.getIpAddr(request);
@@ -123,9 +121,9 @@ public class SysLogAspect {
 
                 }
             } catch (Exception e) {
-                logger.error("保存日志出错", e);
+                log.error("保存日志出错", e);
             } finally {
-                logger.info("记录日志,保存数据库 TODO :0" + sysLog);
+                log.info("记录日志,保存数据库 TODO :0" + sysLog);
 //                sysLogMapper.insert(sysLog);
 //                mongoTemplate.insert(sysLog);
             }
@@ -150,7 +148,7 @@ public class SysLogAspect {
         SysLog sysLog = method.getAnnotation(SysLog.class);
         String methodName = methodSignature.getName();
         if (sysLog.printSpendTime()) {
-            logger.info(target.getClass().getName() + "." + methodName + " 执行耗时:" + DurationFormatUtils.formatDuration(time, "HH:mm:ss.S") + "; 精确时间为 :" + time + " ms");
+            log.info(target.getClass().getName() + "." + methodName + " 执行耗时:" + DurationFormatUtils.formatDuration(time, "HH:mm:ss.S") + "; 精确时间为 :" + time + " ms");
         }
         return result;
     }

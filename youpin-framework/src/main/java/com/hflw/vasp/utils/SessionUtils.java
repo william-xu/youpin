@@ -1,7 +1,5 @@
 package com.hflw.vasp.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -13,8 +11,6 @@ import javax.servlet.http.HttpSession;
  * session 工具,主要用来获取用户信息
  */
 public class SessionUtils {
-
-    private static Logger logger = LoggerFactory.getLogger(SessionUtils.class);
 
     /**
      * 获取当前  request

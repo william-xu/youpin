@@ -17,6 +17,7 @@ import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.components.RedisCacheUtils;
 import com.hflw.vasp.framework.constant.ConstantKeys;
 import com.hflw.vasp.utils.HttpUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -26,8 +27,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -51,10 +50,9 @@ import java.util.concurrent.TimeUnit;
  * @create 2018/4/27
  * @since 1.0.0
  */
+@Slf4j
 @Component("wechatUtils")
 public class WechatUtils {
-
-    private static Logger logger = LoggerFactory.getLogger(WechatUtils.class);
 
     public String GET_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$APPID$&secret=$SECRET$";
     public String GET_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=$ACCESS_TOKEN$&type=jsapi";
@@ -147,7 +145,7 @@ public class WechatUtils {
                 : url.replace("$APPID$", appid).replace("$SECRET$", secret).replace("$CODE$", code).replace("\r", "").replace("\n", "");
         HttpUtils httpUtils = new HttpUtils();
         String result = httpUtils.get(url, null);
-        logger.info(url + " 获取openId接口返回：" + result);
+        log.info(url + " 获取openId接口返回：" + result);
         if (StringUtils.isNotEmpty(result)) {
             JSONObject openIdJO = JSON.parseObject(result);
             for (String key : openIdJO.keySet()) {
@@ -169,7 +167,7 @@ public class WechatUtils {
     public String getWechatToken(String appid, String secret) throws Exception {
         String tokenCacheKey = Constants.WECHAT_TOKEN_KEY + appid;
         String access_token = (String) redisCacheUtil.getCacheObject(tokenCacheKey);
-        //logger.info("公众号缓存token：" + access_token);
+        //log.info("公众号缓存token：" + access_token);
         if (StringUtils.isEmpty(access_token)) {
             access_token = getAndCacheWechatToken(appid, secret);
         }
@@ -189,7 +187,7 @@ public class WechatUtils {
         String url = GET_TOKEN_URL.replace("$APPID$", appid).replace("$SECRET$", secret);
         HttpUtils httpUtils = new HttpUtils();
         String result = httpUtils.get(url, null);
-        logger.info(url + " 获取token接口返回：" + result);
+        log.info(url + " 获取token接口返回：" + result);
         //{"access_token":"10_hMYT_8NG0GFfM4jkqVSNdWT4QaVIb3SRVhdOfsyj3AkPxXHmeY9uXwC43WgpwJ3xWJt2Ti7RuiOWEVDPVD1sI3ksPaZxc8x2UBsRfElJNM0","expires_in":7200,"refresh_token":"10_In3tQS4WISR5vDdxasxh4j2017NW_VfKr6S2EUITlqk0Iy83rUQEUufbZxoA2NrHZqSX-O8_8O5eEhELSx54X860ttGLh0I0BGtAlVoVeMs","openid":"oxAQwwMiYESDE8--YOopaAl6F4uo","scope":"snsapi_userinfo"}
         if (StringUtils.isNotEmpty(result)) {
             JSONObject tokenJO = JSON.parseObject(result);
@@ -216,14 +214,14 @@ public class WechatUtils {
     public String getWechatTicket(String appid, String secret, String access_token) throws Exception {
         String ticketCacheKey = Constants.WECHAT_TICKET_KEY + appid;
         String ticket = (String) redisCacheUtil.getCacheObject(ticketCacheKey);
-//        logger.info("公众号缓存ticket：" + ticket);
+//        log.info("公众号缓存ticket：" + ticket);
         if (StringUtils.isEmpty(ticket)) {
             String url = GET_TICKET_URL.replace("$ACCESS_TOKEN$", access_token);
             HttpUtils httpUtils = new HttpUtils();
             String result = httpUtils.get(url, null);
             //{"errcode":0,"errmsg":"ok","ticket":"kgt8ON7yVITDhtdwci0qecVGaUkK4of6P4yBMM24dNWF-d8bPguhmuKFE88bG1x85CnMARKyTniiHR6NtL55bw","expires_in":7200}
             //{"errcode":40001,"errmsg":"invalid credential, access_token is invalid or not latest hint: [KWDItA0150a456!]"}
-            logger.info(url + " 获取ticket返回：" + result);
+            log.info(url + " 获取ticket返回：" + result);
             JSONObject ticketJO = JSON.parseObject(result);
             if (ticketJO.containsKey("ticket")) {
                 ticket = ticketJO.getString("ticket");
@@ -260,7 +258,7 @@ public class WechatUtils {
                 String url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
                 HttpUtils httpUtils = new HttpUtils();
                 String result = httpUtils.get(url, null);
-                logger.info(url + " 获取UserInfo返回：" + result);
+                log.info(url + " 获取UserInfo返回：" + result);
                 userJO = JSON.parseObject(result);
 //            成功
 //            {
@@ -288,7 +286,7 @@ public class WechatUtils {
                     accessToken = getAndCacheWechatToken(appid, secret);//重新获取token
                     url = GET_USER_INFO_URL.replace("$ACCESS_TOKEN$", accessToken).replace("$OPENID$", openId);
                     result = httpUtils.get(url, null);
-                    logger.info(url + " 重新获取UserInfo返回：" + result);
+                    log.info(url + " 重新获取UserInfo返回：" + result);
                     userJO = JSON.parseObject(result);
                 }
                 redisCacheUtil.setCacheObject(userCacheKey, userJO, ConstantKeys.DAYS_30, TimeUnit.DAYS);
@@ -313,7 +311,7 @@ public class WechatUtils {
 //        String url = GET_OPENID_URL.replace("$APPID$", appid).replace("$SECRET$", secret).replace("$JSCODE$", code);
 //        HttpUtils httpUtils = new HttpUtils();
 //        String result = httpUtils.get(url, null);
-//        logger.info(url + " 获取openId接口返回：" + result);
+//        log.info(url + " 获取openId接口返回：" + result);
 ////            {
 ////                "access_token": "OezXcEiiBSKSxW0eoylIeAsR0GmYd1awCffdHgb4fhS_KKf2CotGj2cBNUKQQvj-G0ZWEE5-uBjBz941EOPqDQy5sS_GCs2z40dnvU99Y5AI1bw2uqN--2jXoBLIM5d6L9RImvm8Vg8cBAiLpWA8Vw",
 ////                "expires_in": 7200,
@@ -369,8 +367,8 @@ public class WechatUtils {
                 conn.setRequestMethod("GET");
                 System.setProperty("sun.net.client.defaultConnectTimeout", "30000");// 连接超时30秒
                 System.setProperty("sun.net.client.defaultReadTimeout", "30000"); // 读取超时30秒
-                logger.info(System.getProperty("sun.net.client.defaultConnectTimeout"));
-                logger.info(System.getProperty("sun.net.client.defaultReadTimeout"));
+                log.info(System.getProperty("sun.net.client.defaultConnectTimeout"));
+                log.info(System.getProperty("sun.net.client.defaultReadTimeout"));
                 conn.connect();
 
                 String contentType = conn.getHeaderField("Content-Type");
@@ -427,7 +425,7 @@ public class WechatUtils {
             String url = this.SEND_MESSAGE_URL + access_token;
             String para = JSON.toJSONString(wechatTemplate);
             String resultStr = sendWeCharMsg(para, url);
-            logger.info("返回结果：" + resultStr);
+            log.info("返回结果：" + resultStr);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -461,15 +459,15 @@ public class WechatUtils {
             inStream.close();
 
             result = strber.toString();
-            logger.info(result);
+            log.info(result);
 
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                logger.info("请求服务器成功，做相应处理");
+                log.info("请求服务器成功，做相应处理");
             } else {
-                logger.info("请求服务端失败");
+                log.info("请求服务端失败");
             }
         } catch (Exception e) {
-            logger.error("请求异常");
+            log.error("请求异常");
             throw new RuntimeException(e);
         }
         return result;

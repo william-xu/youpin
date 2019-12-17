@@ -30,11 +30,8 @@ public class EncodeFilter implements Filter {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        System.out.println("EncodeFilter");
-
         //过滤结束，继续执行    没有这一行，程序不会继续向下执行
         chain.doFilter(req, res);
-
     }
 
     @Override

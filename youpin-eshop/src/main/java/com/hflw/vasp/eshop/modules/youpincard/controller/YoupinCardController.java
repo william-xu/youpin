@@ -36,17 +36,20 @@ public class YoupinCardController extends AbstractController {
     public R info() {
         //优品卡
         YoupinCard card = youpinCardService.findByUserId(getUserId());
+
         //有效判断
         boolean flag = youpinCardService.verifyValid(card);
-
-        FushikangLinkModel flm = new FushikangLinkModel();
-        flm.setRegister(PropertiesUtils.getProperty("fsk.register"));
-        flm.setDownload(PropertiesUtils.getProperty("fsk.download"));
 
         Map<String, Object> rtm = new HashMap<>();
         rtm.put("card", card);
         rtm.put("flag", flag);
-        rtm.put("links", flm);
+
+        if (flag) {
+            FushikangLinkModel flm = new FushikangLinkModel();
+            flm.setRegister(PropertiesUtils.getProperty("fsk.register"));
+            flm.setDownload(PropertiesUtils.getProperty("fsk.download"));
+            rtm.put("links", flm);
+        }
         return R.ok().data(rtm);
     }
 

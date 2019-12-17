@@ -4,8 +4,6 @@ import com.hflw.vasp.controller.BaseController;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.modules.entity.Customer;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -21,8 +19,6 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class AbstractController extends BaseController {
-
-    public Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     protected HttpServletRequest request;

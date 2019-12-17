@@ -3,8 +3,6 @@ package com.hflw.vasp.eshop.common.utils;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.modules.entity.Customer;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpSession;
  */
 @Component
 public class UserUtils {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserUtils.class.getName());
 
     @Autowired
     HttpSession session;

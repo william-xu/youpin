@@ -8,8 +8,8 @@ import com.hflw.vasp.exception.ValidateException;
 import com.hflw.vasp.framework.config.ThreadPoolConfig;
 import com.hflw.vasp.utils.SessionUtils;
 import com.hflw.vasp.web.R;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
@@ -37,11 +37,10 @@ import static com.hflw.vasp.exception.SystemMessage.ARGS_NULL;
  * 时间: 2018/3/3
  * 功能: 全局异常处理
  */
+@Slf4j
 @RestControllerAdvice
 @Import({ThreadPoolConfig.class})
 public class GlobalExceptionHandler {
-
-    protected static final org.slf4j.Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @Value("${project.package.prefix:com.hflw.vasp}")
     protected String packagePrefix;
@@ -78,9 +77,9 @@ public class GlobalExceptionHandler {
                     showMessage.append(className + "(" + lineNumber + ")\n");
                 }
             }
-            logger.error("业务异常:" + e.getMessage() + "\n" + showMessage);
+            log.error("业务异常:" + e.getMessage() + "\n" + showMessage);
         } else {
-            logger.error("业务异常,没有调用栈 " + e.getMessage());
+            log.error("业务异常,没有调用栈 " + e.getMessage());
         }
 
 //        saveException(businessException, ExceptionLevel.business);
@@ -97,7 +96,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = IOException.class)
     public R ioException(HttpServletRequest req, Exception e) {
-        logger.error("网络连接错误", e);
+        log.error("网络连接错误", e);
         saveException(e, ExceptionLevel.normal);
         return SystemMessage.NETWORK_ERROR.result();
     }
@@ -124,7 +123,7 @@ public class GlobalExceptionHandler {
 
         saveException(e, ExceptionLevel.fatal);
 
-        logger.error("数据存储出错", e);
+        log.error("数据存储出错", e);
         return R.error(9999, "数据存储异常");
     }
 
@@ -135,14 +134,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = ValidateException.class)
     public R validateException(ValidateException e) {
-        logger.error("数据校验异常", e);
+        log.error("数据校验异常", e);
         saveException(e, ExceptionLevel.normal);
         return R.error(e.getCode(), e.getMsg());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public R handleServiceException(ConstraintViolationException e) {
-        logger.error("参数验证失败", e);
+        log.error("参数验证失败", e);
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         StringBuffer buf = new StringBuffer();
         for (ConstraintViolation<?> violation : violations) {
@@ -153,7 +152,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public R otherException(Exception e) {
-        logger.error("后台服务异常", e);
+        log.error("后台服务异常", e);
         saveException(e, ExceptionLevel.fatal);
         return SystemMessage.SERVICE_CALL_FAIL.result();
     }
@@ -178,7 +177,7 @@ public class GlobalExceptionHandler {
 //            try {
 //                exceptionModel.setRequest(request);
 //            } catch (IOException e1) {
-//                logger.error("记录异常请求内容时出异常... " + e.getMessage());
+//                log.error("记录异常请求内容时出异常... " + e.getMessage());
 //            }
 //            if (finalBaseEntity != null) {
 //                exceptionModel.setOperator(finalBaseEntity.getId());

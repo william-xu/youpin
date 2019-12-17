@@ -25,31 +25,29 @@ public class UserDTO {
 
     private Long[] roleIds;
 
-    public SysUser convertToUser() {
-        UserDTOConvert userDTOConvert = new UserDTOConvert();
-        SysUser convert = userDTOConvert.convert(this);
-        return convert;
+    public SysUser convertTo() {
+        DTOConverter convert = new DTOConverter();
+        return convert.convert(this);
     }
 
     public UserDTO convertFor(SysUser user) {
-        UserDTOConvert userDTOConvert = new UserDTOConvert();
-        UserDTO convert = userDTOConvert.reverse().convert(user);
-        return convert;
+        DTOConverter convert = new DTOConverter();
+        return convert.reverse().convert(user);
     }
 
-    private static class UserDTOConvert extends Converter<UserDTO, SysUser> {
+    private static class DTOConverter extends Converter<UserDTO, SysUser> {
         @Override
-        protected SysUser doForward(UserDTO userDTO) {
-            SysUser user = new SysUser();
-            BeanUtils.copyProperties(userDTO, user);
-            return user;
+        protected SysUser doForward(UserDTO source) {
+            SysUser target = new SysUser();
+            BeanUtils.copyProperties(source, target);
+            return target;
         }
 
         @Override
-        protected UserDTO doBackward(SysUser user) {
-            UserDTO userDTO = new UserDTO();
-            BeanUtils.copyProperties(user, userDTO);
-            return userDTO;
+        protected UserDTO doBackward(SysUser source) {
+            UserDTO target = new UserDTO();
+            BeanUtils.copyProperties(source, target);
+            return target;
         }
     }
 

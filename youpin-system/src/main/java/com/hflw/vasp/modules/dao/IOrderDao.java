@@ -1,7 +1,11 @@
 package com.hflw.vasp.modules.dao;
 
 import com.hflw.vasp.modules.entity.Order;
+import com.hflw.vasp.modules.model.OrderListModel;
 import com.hflw.vasp.repository.BaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,7 +13,7 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
-public interface IOrderDao extends BaseRepository<Order, Long>, Serializable {
+public interface IOrderDao extends BaseRepository<Order, Long>, JpaSpecificationExecutor<Order>, Serializable {
 
     @Query("select o from Order o where o.userId=?1 and o.delFlag = 0 order by o.id desc")
     List<Order> findAllByUserId(Long userId);
@@ -23,5 +27,11 @@ public interface IOrderDao extends BaseRepository<Order, Long>, Serializable {
     Order findUnpayYoupinOrder(Long userId);
 
     Order findByParentOrderNo(String orderNo);
+
+//    @Query(value = " select new com.hflw.vasp.modules.model.OrderListModel(o.id,o.orderNo,o.status) from Order o " +
+//            "left join OrderAddress oa on o.id = oa.orderId " +
+//            "left join OrderLogistics ol on o.id = ol.orderId ",
+//            countQuery = "select count(o) from Order o left join OrderAddress oa on o.id = oa.orderId")
+//    Page<OrderListModel> findOrderCriteria(Pageable pageable);
 
 }

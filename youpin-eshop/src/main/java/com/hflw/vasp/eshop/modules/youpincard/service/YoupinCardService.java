@@ -4,8 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hflw.vasp.exception.BusinessException;
 import com.hflw.vasp.modules.dao.IYoupinCardDao;
 import com.hflw.vasp.modules.entity.YoupinCard;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +14,9 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-
+@Slf4j
 @Service
 public class YoupinCardService {
-
-    private static final Logger logger = LoggerFactory.getLogger(YoupinCardService.class);
 
     @Autowired
     private IYoupinCardDao youpinCardDao;
@@ -64,7 +61,7 @@ public class YoupinCardService {
      * @return
      */
     public boolean verifyValid(YoupinCard card) {
-        logger.info("当前权益详情：" + JSONObject.toJSONString(card));
+        log.info("当前权益详情：" + JSONObject.toJSONString(card));
 
         if (card == null) return false;
         if (card.getStatus() == null || card.getStatus() != 1) return false;

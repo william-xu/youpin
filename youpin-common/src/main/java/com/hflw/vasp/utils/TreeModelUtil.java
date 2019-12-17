@@ -1,6 +1,7 @@
 package com.hflw.vasp.utils;
 
 import com.hflw.vasp.model.TreeModel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TreeModelUtil {
 
     private static final Log logger = LogFactory.getLog(TreeModelUtil.class);
@@ -30,7 +32,7 @@ public class TreeModelUtil {
             roots.stream().forEach(root -> findChildrens(root, treeModels));
         }
         stopWatch.stop();
-        logger.debug("线程结构转换树结构[递归]耗时:" + stopWatch.getTime() + " ms");
+        log.debug("线程结构转换树结构[递归]耗时:" + stopWatch.getTime() + " ms");
         return roots;
     }
 
@@ -85,7 +87,7 @@ public class TreeModelUtil {
                 ((TreeModel) treeModel).getId().equals(rootNo)
         ).collect(Collectors.toList());
         stopWatch.stop();
-        logger.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
+        log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
         return collect;
     }
 
@@ -111,7 +113,7 @@ public class TreeModelUtil {
                 ((TreeModel) treeModel).getId().equals(rootNo)
         ).collect(Collectors.toList());
         stopWatch.stop();
-        logger.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
+        log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
         return collect;
     }
 

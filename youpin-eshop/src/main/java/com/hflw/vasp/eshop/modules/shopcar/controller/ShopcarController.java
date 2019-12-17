@@ -1,5 +1,6 @@
 package com.hflw.vasp.eshop.modules.shopcar.controller;
 
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
@@ -42,9 +43,9 @@ public class ShopcarController extends AbstractController {
     /**
      * 购物车保存商品
      */
+    @SysLog
     @RequestMapping("/add")
     public R save(ShopcarModel model) {
-        logger.info(model.toString());
         model.setUserId(getUserId());
         shopcarService.addToShopcar(model);
         return R.ok();
@@ -69,9 +70,9 @@ public class ShopcarController extends AbstractController {
     /**
      * 购物车批量添加商品
      */
+    @SysLog
     @RequestMapping("/batchAdd")
     public R save(@RequestBody(required = false) List<ShopcarModel> list) {
-        logger.info(list.toString());
         shopcarService.saveList(list);
         return R.ok();
     }
@@ -79,9 +80,9 @@ public class ShopcarController extends AbstractController {
     /**
      * 购物车添加缓存商品
      */
+    @SysLog
     @RequestMapping("/reLoginSave")
     public R reLoginSave(@RequestBody(required = false) List<ShopcarModel> list, Pagination pagination) {
-        logger.info(list.toString());
         shopcarService.saveList(list);
         Map<String, Object> shopParams = new HashMap<>();
         shopParams.put("userId", getUserId());

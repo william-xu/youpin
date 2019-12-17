@@ -3,11 +3,10 @@ package com.hflw.vasp.framework.filter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -17,8 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@Slf4j
 public class TrimRequestWrapper extends HttpServletRequestWrapper {
     private Map<String, String[]> params = new HashMap<String, String[]>();//保存处理后的参数
 
@@ -64,8 +65,6 @@ public class TrimRequestWrapper extends HttpServletRequestWrapper {
         return this.params;
     }
 
-    private Log logger = LogFactory.getLog(getClass());
-
     /**
      * 重写getInputStream方法  post类型的请求参数必须通过流才能获取到值
      */
@@ -76,7 +75,7 @@ public class TrimRequestWrapper extends HttpServletRequestWrapper {
             return super.getInputStream();
         }
         //为空，直接返回
-        String json = IOUtils.toString(super.getInputStream(), "utf-8");
+        String json = IOUtils.toString(super.getInputStream(), StandardCharsets.UTF_8);
         if (StringUtils.isEmpty(json)) {
             return super.getInputStream();
         }
@@ -87,7 +86,7 @@ public class TrimRequestWrapper extends HttpServletRequestWrapper {
         } else if (parse instanceof JSONObject) {
             trimJsonObject((JSONObject) parse);
         } else {
-            logger.info("参数不支持去空格:" + parse);
+            log.warn("参数不支持去空格:" + parse);
         }
 
         ByteArrayInputStream bis = new ByteArrayInputStream(JSON.toJSONString(parse).getBytes("utf-8"));

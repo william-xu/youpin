@@ -25,8 +25,7 @@ import com.hflw.vasp.utils.IpUtils;
 import com.hflw.vasp.utils.SnowFlake;
 import com.hflw.vasp.utils.StringUtils;
 import com.hflw.vasp.web.R;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,11 +39,10 @@ import java.util.Map;
  * @Description:
  * @date 2019年10月23日
  */
+@Slf4j
 @RestController
 @RequestMapping("weixin")
 public class WeiXinController extends AbstractController {
-
-    private static final Logger logger = LoggerFactory.getLogger(WeiXinController.class);
 
     @Autowired
     private WxPayService wxPayService;
@@ -135,7 +133,7 @@ public class WeiXinController extends AbstractController {
             appid = PropertiesUtils.getProperty(Constants.WECHAT_MINI_APPID);
             secret = PropertiesUtils.getProperty(Constants.WECHAT_MINI_SECRET);
         }
-        logger.info("微信授权码：" + code + ",--type--" + type);
+        log.info("微信授权码：" + code + ",--type--" + type);
         Map<String, Object> wto = wechatUtils.getWechatTokenAndOpenId(appid, secret, code, type);
         if (wto == null || wto.get("openid") == null) {
             return R.error(ResultCodeEnum.ERROR.getCode(), "获取微信用户openid失败");
@@ -152,7 +150,7 @@ public class WeiXinController extends AbstractController {
             throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
 
         String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl");
-        logger.info("支付通知url：" + notifyUrl);
+        log.info("支付通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
 
         String tradeFlowNo = "";
@@ -212,7 +210,7 @@ public class WeiXinController extends AbstractController {
     @ResponseBody
     public String callBackWXpay() {
 
-        logger.info("================================================开始处理微信小程序发送的异步通知");
+        log.info("================================================开始处理微信小程序发送的异步通知");
 
         //1 获取微信支付异步回调结果
         String xmlResult = WechatPayUtil.getPostStr(request);
@@ -226,7 +224,7 @@ public class WeiXinController extends AbstractController {
         }
         //订单号
         String outTradeNo = resultMap.get("out_trade_no");
-        logger.info("交易流水号：------------------" + outTradeNo + "结束----------");
+        log.info("交易流水号：------------------" + outTradeNo + "结束----------");
         String result_code = resultMap.get("result_code");
         //回调返回的加密签名 保存下来 下面会进行对比
         String sign = resultMap.get("sign");
@@ -243,15 +241,15 @@ public class WeiXinController extends AbstractController {
         String resultCode;
         String resultMsg;
         //对比微信回调的加密与重新加密是否一致  一致即为通过 不一致说明被改动过 加密不通过
-        logger.info("==============================================开始对比加密++++++++++++++++++++++++++++++++++++++");
+        log.info("==============================================开始对比加密++++++++++++++++++++++++++++++++++++++");
         if (sign.equals(sign1)) { //验签通过
-            logger.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
+            log.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
-                logger.info("查询交易流水：{}", outTradeNo);
+                log.info("查询交易流水：{}", outTradeNo);
                 //查询订单交易记录，修改交易状态
                 TradingFlow tradingFlow = tradingService.findByFlowNo(outTradeNo);
                 if (tradingFlow != null) {
-                    logger.info("查询订单ID：{}", tradingFlow.getOrderId());
+                    log.info("查询订单ID：{}", tradingFlow.getOrderId());
                     Order order = orderService.findById(tradingFlow.getOrderId());
                     //区分优品卡还是商品订单
                     if (order.getType() == 1) {
@@ -270,7 +268,7 @@ public class WeiXinController extends AbstractController {
                     //修改订单状态为已支付
                     order.setStatus(1);
                     orderService.update(order);
-                    logger.info("更新订单{}状态订单", order.getOrderNo());
+                    log.info("更新订单{}状态订单", order.getOrderNo());
                 }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";

@@ -27,8 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/common")
 public class CommonController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommonController.class);
-
     @Autowired
     private CommonService commonService;
 

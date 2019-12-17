@@ -8,8 +8,6 @@ import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +31,6 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/common")
 public class CommonController extends AbstractController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommonController.class);
 
     @Autowired
     private Producer producer;

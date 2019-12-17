@@ -62,7 +62,6 @@ public class AbstractController extends BaseController {
     protected void checkDTOParams(BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             //throw new 带验证码的验证错误异常
-
         }
     }
 

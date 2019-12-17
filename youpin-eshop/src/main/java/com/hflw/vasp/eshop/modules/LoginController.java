@@ -2,6 +2,7 @@ package com.hflw.vasp.eshop.modules;
 
 
 import com.hflw.vasp.annotation.AccessNoSession;
+import com.hflw.vasp.annotation.SysLog;
 import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @Description 登录
  * @date 2019年10月24日 下午2:02:54
  */
+
 @Validated
 @RestController
 public class LoginController extends AbstractController {
@@ -40,10 +42,10 @@ public class LoginController extends AbstractController {
     @Autowired
     private UserService userService;
 
+    @SysLog
     @AccessNoSession
     @PostMapping(value = "/login")
     public R login(@NotBlank(message = "手机号不能为空") String phone, @NotBlank(message = "验证码不能为空") String verifyCode, String openId) {
-        logger.info("微信用户登录--》手机号phone=" + phone + ",验证码verifyCode=" + verifyCode + "小程序openId=" + openId);
         final String redisSmsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
         String realVerifyCode = (String) redisCacheUtil.getCacheObject(redisSmsKey);
         if (StringUtils.isEmpty(realVerifyCode))

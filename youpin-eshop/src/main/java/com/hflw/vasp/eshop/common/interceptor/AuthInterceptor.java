@@ -7,8 +7,7 @@ import com.hflw.vasp.eshop.common.exception.ResultCodeEnum;
 import com.hflw.vasp.eshop.common.utils.UserUtils;
 import com.hflw.vasp.eshop.modules.user.service.UserService;
 import com.hflw.vasp.modules.entity.Customer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -31,10 +30,9 @@ import java.util.Map;
  * @Description 登录校验拦截器
  * @date 2019年7月18日 下午4:20:58
  */
+@Slf4j
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
-
-    private Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     @Autowired
     private UserService userService;
@@ -63,7 +61,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 //        String requestURL = request.getRequestURI();
 //        String remoteAddr = request.getRequestURI();
 //        String sessionId = session.getId();
-//        logger.info("requestURL:{},sessionId:{}", requestURL, sessionId);
+//        log.info("requestURL:{},sessionId:{}", requestURL, sessionId);
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
 
@@ -89,10 +87,10 @@ public class AuthInterceptor implements HandlerInterceptor {
     private boolean sessionVerify(HttpServletRequest request, Customer user) {
         HttpSession session = request.getSession();
         if (user.getDelFlag() == Constants.NOT_DEL && user.getEnableStatus() != Constants.ENABLE_STATUS_INVALID) {
-            logger.info(user.getId() + "状态正常");
+            log.info(user.getId() + "状态正常");
             return true;
         } else {
-            logger.info("状态异常");
+            log.info("状态异常");
             UserUtils.clearSession(session);
             return false;
         }
@@ -129,7 +127,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             out = response.getWriter();
             out.print(JSON.toJSON(result));
         } catch (IOException e) {
-            logger.error("获取PrintWriter异常", e);
+            log.error("获取PrintWriter异常", e);
         } finally {
             if (out != null) {
                 out.close();

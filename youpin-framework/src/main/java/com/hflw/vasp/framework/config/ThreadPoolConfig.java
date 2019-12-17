@@ -1,5 +1,6 @@
 package com.hflw.vasp.framework.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,8 +19,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 /**
  * 线程池配置
  */
-@Configuration
+@Slf4j
 @EnableAsync
+@Configuration
 public class ThreadPoolConfig implements AsyncConfigurer {
 
     // 线程池维护线程的最少数量
@@ -60,7 +62,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
             @Override
             public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
-                logger.error(method.getName() + " 执行异常", throwable);
+                log.error(method.getName() + " 执行异常", throwable);
             }
         };
         return asyncUncaughtExceptionHandler;
@@ -93,7 +95,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
             if (lastWaitTime >= maxWaitTime) {
                 //如果上次等待时间超过 3 分钟 ,则需要增大线程池大小,并需要查询什么操作耗时过长
-                logger.error("上次等待时间[" + lastWaitTime + "]超过最大等待时间[" + maxWaitTime + "] ms,当前请求获取线程被拒绝;当前线程池配置 ==> \n" +
+                log.error("上次等待时间[" + lastWaitTime + "]超过最大等待时间[" + maxWaitTime + "] ms,当前请求获取线程被拒绝;当前线程池配置 ==> \n" +
                         " 最大池大小[" + maxPoolSize + "],核心维护大小[" + corePoolSize + "],排队数[" + queueCapacity + "]");
                 return;
             }

@@ -1,7 +1,10 @@
 package com.hflw.vasp.admin.common.config;
 
 import com.hflw.vasp.framework.components.UploadProperties;
+import com.hflw.vasp.framework.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -30,6 +33,15 @@ public class WebConfig implements WebMvcConfigurer {
 
         String path = uploadProperties.getBasePath();
         registry.addResourceHandler("/files/**").addResourceLocations("file://" + path);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean(){
+        FilterRegistrationBean frBean = new FilterRegistrationBean();
+        frBean.setFilter(new CorsFilter());
+        frBean.addUrlPatterns("/*");
+        return frBean;
     }
 
     /**

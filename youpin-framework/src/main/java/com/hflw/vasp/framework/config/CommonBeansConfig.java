@@ -1,6 +1,5 @@
 package com.hflw.vasp.framework.config;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +12,6 @@ import javax.servlet.MultipartConfigElement;
  */
 @Configuration
 public class CommonBeansConfig {
-
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(CommonBeansConfig.class);
 
     @Bean
     public MultipartConfigElement multipartConfigElement() {

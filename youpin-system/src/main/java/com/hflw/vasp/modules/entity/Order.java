@@ -54,6 +54,7 @@ public class Order extends BaseEntity {
      */
     @Column(name = "pay_amount", length = 20)
     private BigDecimal payAmount;
+
     /**
      * 订单优惠金额
      */
@@ -65,6 +66,12 @@ public class Order extends BaseEntity {
      */
     @Column(name = "profit", length = 20)
     private BigDecimal profit;
+
+    /**
+     * 优惠码
+     */
+    @Column(name = "promo_code", length = 20)
+    private String promoCode;
 
     /**
      * 订单状态：0已下单，1已支付，2退款

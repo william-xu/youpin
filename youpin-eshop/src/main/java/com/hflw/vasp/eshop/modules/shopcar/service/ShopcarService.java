@@ -11,9 +11,8 @@ import com.hflw.vasp.modules.entity.Customer;
 import com.hflw.vasp.modules.entity.Goods;
 import com.hflw.vasp.modules.entity.GoodsPicture;
 import com.hflw.vasp.modules.entity.Shopcar;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,11 +24,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
+@Slf4j
 @Service
 public class ShopcarService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ShopcarService.class);
 
     @Resource
     private IShopcarDao shopcarDao;
@@ -146,13 +143,13 @@ public class ShopcarService {
                 if (CollectionUtils.isNotEmpty(shopcarList)) {
                     //存在相同商品
                     Shopcar shopcar = shopcarList.get(0);
-                    logger.info("新增商品数量:" + shopcarModel.getGoodsNum() + "购物车相同商品数量:" + shopcar.getGoodsNum());
+                    log.info("新增商品数量:" + shopcarModel.getGoodsNum() + "购物车相同商品数量:" + shopcar.getGoodsNum());
                     int goodsNum = shopcarModel.getGoodsNum() + shopcar.getGoodsNum();
                     shopcar.setGoodsNum(goodsNum > 10 ? 10 : goodsNum);
 //                    shopcarMapper.updateByPrimaryKeySelective(shopcar);
                 } else {
                     //没有相同商品
-                    logger.info("新增商品数量:" + shopcarModel.getGoodsNum());
+                    log.info("新增商品数量:" + shopcarModel.getGoodsNum());
                     Shopcar target = new Shopcar();
                     BeanUtils.copyProperties(shopcarModel, target);
                     int goodsNum = target.getGoodsNum();

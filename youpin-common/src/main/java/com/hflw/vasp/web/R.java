@@ -1,5 +1,7 @@
 package com.hflw.vasp.web;
 
+import org.springframework.data.domain.Page;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +17,8 @@ public class R extends HashMap<String, Object> {
     private final static String DATA_KEY = "data";
     private final static String LIST_KEY = "list";
     private final static String PAGE_KEY = "page";
-    private final static String TOTAL_KEY = "total";
+    private final static String TOTAL_PAGES_KEY = "totalPages";
+    private final static String TOTAL_ELEMENTS_KEY = "totalElements";
 
     public R() {
         put(CODE_KEY, 200);
@@ -66,16 +69,31 @@ public class R extends HashMap<String, Object> {
     }
 
     /**
-     * 分页信息
+     * 分页信息，需要前端自己算分页数
      *
      * @param value
-     * @param total
+     * @param totalElements
      * @return
      */
-    public R putPageData(Object value, long total) {
+    public R putPageData(Object value, long totalElements) {
         Map data = new HashMap(2);
-        data.put(PAGE_KEY, value);
-        data.put(TOTAL_KEY, total);
+        data.put(LIST_KEY, value);
+        data.put(TOTAL_ELEMENTS_KEY, totalElements);
+        super.put(DATA_KEY, data);
+        return this;
+    }
+
+    /**
+     * 分页信息
+     *
+     * @param page
+     * @return
+     */
+    public R putPageData(Page page) {
+        Map data = new HashMap(3);
+        data.put(LIST_KEY, page.getContent());
+        data.put(TOTAL_PAGES_KEY, page.getTotalPages());
+        data.put(TOTAL_ELEMENTS_KEY, page.getTotalElements());
         super.put(DATA_KEY, data);
         return this;
     }

@@ -3,8 +3,7 @@ package com.hflw.vasp.framework.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
@@ -14,8 +13,8 @@ import java.io.ByteArrayOutputStream;
  * @param <T>
  * @author yuhao.wang
  */
+@Slf4j
 public class KryoRedisSerializer<T> implements RedisSerializer<T> {
-    Logger logger = LoggerFactory.getLogger(KryoRedisSerializer.class);
 
     public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
@@ -44,7 +43,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
             output.flush();
             return baos.toByteArray();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return EMPTY_BYTE_ARRAY;
@@ -63,7 +62,7 @@ public class KryoRedisSerializer<T> implements RedisSerializer<T> {
         try (Input input = new Input(bytes)) {
             return (T) kryo.readClassAndObject(input);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
 
         return null;

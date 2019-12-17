@@ -10,9 +10,8 @@ import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class OrderService {
-
-    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Value("${youpincard.discount.ratio}")
     private Float discountRatio;
@@ -129,6 +127,7 @@ public class OrderService {
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setPayAmount(model.getPayAmount());
         order.setDiscountAmount(model.getOriginalCost().subtract(model.getPayAmount()));
+        order.setPromoCode(model.getPromoCode());
         order.setStatus(0);
         order.setCreateTime(now);
         orderDao.save(order);
@@ -255,9 +254,9 @@ public class OrderService {
         } else {
             payAmount = totalPrice;
         }
-        logger.info("提交总额：" + model.getPayAmount().toPlainString());
-        logger.info("商品总额：" + totalPrice.toPlainString());
-        logger.info("支付金额：" + payAmount.toPlainString());
+        log.info("提交总额：" + model.getPayAmount().toPlainString());
+        log.info("商品总额：" + totalPrice.toPlainString());
+        log.info("支付金额：" + payAmount.toPlainString());
         if (payAmount.compareTo(model.getPayAmount()) != 0)
             throw BusinessException.create(6546, "金额有误，请刷新购物车后重试");
 

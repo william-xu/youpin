@@ -7,8 +7,7 @@ import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.system.dao.ICommonDao;
 import com.hflw.vasp.utils.SnowFlake;
 import com.hflw.vasp.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +20,9 @@ import java.util.concurrent.TimeUnit;
  * @Description TODO
  * @date 2019年10月22日 下午3:01:25
  */
+@Slf4j
 @Service
 public class CommonService {
-
-    private Logger logger = LoggerFactory.getLogger(CommonService.class);
 
     @Autowired
     private ICommonDao commonDao;
@@ -46,7 +44,7 @@ public class CommonService {
         String smsKey = Constants.SMS_VERIFY_CODE_PREFIX + "." + phone;
         redisCacheUtil.setCacheObject(smsKey, smsCode, Constants.SMS_VERIFY_CODE_TIMEOUT, TimeUnit.SECONDS);
 
-        logger.info("准备发送手机号>>>" + phone + "短信验证码>>>" + smsCode);
+        log.info("准备发送手机号>>>" + phone + "短信验证码>>>" + smsCode);
         String ass = PropertiesUtils.getProperty("aliyun.sms.switch");
         if ("on".equalsIgnoreCase(ass)) {
             //发送短信

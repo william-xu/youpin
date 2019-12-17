@@ -1,19 +1,17 @@
 package com.hflw.vasp.admin.common.config.shiro;
 
 import com.hflw.vasp.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
 
+@Slf4j
 public class CustomSessionManager extends DefaultWebSessionManager {
-
-    private static final Logger log = LoggerFactory.getLogger(CustomSessionManager.class);
 
     private static final String AUTHORIZATION = "Authorization";
 
