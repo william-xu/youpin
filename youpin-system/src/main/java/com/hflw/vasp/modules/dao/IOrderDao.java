@@ -1,10 +1,7 @@
 package com.hflw.vasp.modules.dao;
 
 import com.hflw.vasp.modules.entity.Order;
-import com.hflw.vasp.modules.model.OrderListModel;
 import com.hflw.vasp.repository.BaseRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,11 +24,5 @@ public interface IOrderDao extends BaseRepository<Order, Long>, JpaSpecification
     Order findUnpayYoupinOrder(Long userId);
 
     Order findByParentOrderNo(String orderNo);
-
-    @Query(value = " select new com.hflw.vasp.modules.model.OrderListModel(o,oa,ol) from Order o " +
-            "left join OrderAddress oa on o.id = oa.orderId " +
-            "left join OrderLogistics ol on o.id = ol.orderId ",
-            countQuery = "select count(o) from Order o left join OrderAddress oa on o.id = oa.orderId")
-    Page<OrderListModel> findOrderCriteria(Pageable pageable);
 
 }

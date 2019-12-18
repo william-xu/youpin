@@ -1,34 +1,18 @@
 package com.hflw.vasp.web;
 
-public class Pagination {
-    private int pageStart = 1;
-    private int currentPage = 1;
-    private int pageSize = 10;
+import lombok.Data;
 
-    public Pagination() {
+import java.util.List;
+
+@Data
+public class Pagination<T> {
+
+    private long total;
+    private List<T> list;
+
+    public Pagination(long total, List<T> list) {
+        this.total = total;
+        this.list = list;
     }
 
-    public int getPageStart() {
-        return this.pageStart;
-    }
-
-    public void setPageStart(int pageStart) {
-        this.pageStart = pageStart;
-    }
-
-    public int getCurrentPage() {
-        return this.currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getPageSize() {
-        return this.pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
 }

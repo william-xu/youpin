@@ -35,7 +35,8 @@ public class LoginController extends AbstractController {
 
     @PostMapping(value = "/login")
     @ResponseBody
-    public R login(@NotBlank(message = "用户名不能为空") String username,
+    public R login(HttpServletRequest request,
+                   @NotBlank(message = "用户名不能为空") String username,
                    @NotBlank(message = "密码不能为空") String password,
                    @NotBlank(message = "验证码不能为空") String captcha) {
 //        UsernamePasswordCaptchaToken token = new UsernamePasswordCaptchaToken(username, password.toCharArray(), true, captcha);

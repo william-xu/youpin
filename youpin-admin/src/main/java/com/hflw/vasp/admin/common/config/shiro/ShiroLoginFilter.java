@@ -17,7 +17,7 @@ public class ShiroLoginFilter extends FormAuthenticationFilter {
     protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
         return super.preHandle(request, response);
     }
-    
+
     /**
      * 如果isAccessAllowed返回false 则执行onAccessDenied
      *
@@ -48,7 +48,7 @@ public class ShiroLoginFilter extends FormAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        if (isAjax(httpServletRequest)) {
+//        if (isAjax(httpServletRequest)) {
             //这里是个坑，如果不设置的接受的访问源，那么前端都会报跨域错误，因为这里还没到corsConfig里面
             httpServletResponse.setHeader("Access-Control-Allow-Origin", ((HttpServletRequest) request).getHeader("Origin"));
             httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
@@ -60,13 +60,12 @@ public class ShiroLoginFilter extends FormAuthenticationFilter {
             httpServletResponse.setContentType("application/json");
             R r = R.error(ResultCodeEnum.NOT_LOGIN.getCode(), ResultCodeEnum.NOT_LOGIN.getMsg());
             httpServletResponse.getWriter().write(JSONObject.toJSON(r).toString());
-        } else {
-            //saveRequestAndRedirectToLogin(request, response);
-            /**
-             * @Mark 非ajax请求重定向为登录页面
-             */
-            httpServletResponse.sendRedirect("/login");
-        }
+//        } else {
+//            /**
+//             * @Mark 非ajax请求重定向为登录页面
+//             */
+//            httpServletResponse.sendRedirect("/login");
+//        }
         return false;
     }
 

@@ -1,21 +1,17 @@
 package com.hflw.vasp.eshop.modules.shopcar.controller;
 
 import com.hflw.vasp.annotation.SysLog;
-import com.hflw.vasp.eshop.common.constant.Constants;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarDetail;
 import com.hflw.vasp.eshop.modules.shopcar.model.ShopcarModel;
 import com.hflw.vasp.eshop.modules.shopcar.service.ShopcarService;
-import com.hflw.vasp.web.Pagination;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -75,23 +71,6 @@ public class ShopcarController extends AbstractController {
     public R save(@RequestBody(required = false) List<ShopcarModel> list) {
         shopcarService.saveList(list);
         return R.ok();
-    }
-
-    /**
-     * 购物车添加缓存商品
-     */
-    @SysLog
-    @RequestMapping("/reLoginSave")
-    public R reLoginSave(@RequestBody(required = false) List<ShopcarModel> list, Pagination pagination) {
-        shopcarService.saveList(list);
-        Map<String, Object> shopParams = new HashMap<>();
-        shopParams.put("userId", getUserId());
-        shopParams.put("enableStatus", Constants.ENABLE_STATUS_EFFECT);
-//        PageHelper.startPage(pagination.getCurrentPage(), pagination.getPageSize());
-//        List<ShopcarDetail> shopcarDetailList = shopcarService.searchShopcarDetail(shopParams);
-//        long total = ((Page<ShopcarDetail>) shopcarDetailList).getTotal();
-//        return R.ok().putPageData(shopcarDetailList, total);
-        return null;
     }
 
 }

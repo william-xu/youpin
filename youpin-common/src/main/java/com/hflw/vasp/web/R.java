@@ -91,9 +91,23 @@ public class R extends HashMap<String, Object> {
      */
     public R putPageData(Page page) {
         Map data = new HashMap(3);
-        data.put(LIST_KEY, page.getContent());
-        data.put(TOTAL_PAGES_KEY, page.getTotalPages());
-        data.put(TOTAL_ELEMENTS_KEY, page.getTotalElements());
+        data.put(LIST_KEY, page.getContent());//分页数据
+        data.put(TOTAL_PAGES_KEY, page.getTotalPages());//总页数
+        data.put(TOTAL_ELEMENTS_KEY, page.getTotalElements());//总数
+        super.put(DATA_KEY, data);
+        return this;
+    }
+
+    /**
+     * 分页信息，需要前端自己算分页数
+     *
+     * @param page
+     * @return
+     */
+    public R putPageData(Pagination page) {
+        Map data = new HashMap(2);
+        data.put(LIST_KEY, page.getList());
+        data.put(TOTAL_ELEMENTS_KEY, page.getTotal());//总数
         super.put(DATA_KEY, data);
         return this;
     }
@@ -113,4 +127,5 @@ public class R extends HashMap<String, Object> {
     public int getCode() {
         return (int) this.get(CODE_KEY);
     }
+
 }

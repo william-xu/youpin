@@ -3,13 +3,13 @@ package com.hflw.vasp.admin.modules.order.controller;
 
 import com.hflw.vasp.admin.modules.AbstractController;
 import com.hflw.vasp.admin.modules.order.dto.OrderLogisticsDTO;
-import com.hflw.vasp.admin.modules.order.dto.OrderQuery;
+import com.hflw.vasp.admin.modules.order.dto.OrderSearch;
+import com.hflw.vasp.admin.modules.order.model.OrderListModel;
 import com.hflw.vasp.admin.modules.order.service.OrderService;
-import com.hflw.vasp.modules.entity.Order;
 import com.hflw.vasp.modules.entity.OrderLogistics;
+import com.hflw.vasp.web.Pagination;
 import com.hflw.vasp.web.R;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,10 +35,16 @@ public class OrderController extends AbstractController {
     @Autowired
     private OrderService orderService;
 
-    @GetMapping(value = "/query")
-    public R query(OrderQuery query) {
-        Page<Order> page = orderService.findOrderCriteria(query);
+    @GetMapping(value = "/search")
+    public R query(OrderSearch search) throws Exception {
+        Pagination<OrderListModel> page = orderService.search(search);
         return R.ok().putPageData(page);
+    }
+
+    @GetMapping(value = "/info")
+    public R query(Long id) {
+
+        return R.ok();
     }
 
     /**
