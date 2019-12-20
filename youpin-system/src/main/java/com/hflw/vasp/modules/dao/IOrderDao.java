@@ -23,6 +23,9 @@ public interface IOrderDao extends BaseRepository<Order, Long>, JpaSpecification
     @Query("select o from Order o where o.userId=?1 and o.delFlag = 0 and o.type = 1 and o.status = 0 order by o.id desc")
     Order findUnpayYoupinOrder(Long userId);
 
+    @Query("select o from Order o where o.userId=?1 and o.delFlag = 0 and o.type = 1 and o.status = 1 order by o.id desc")
+    Order findValidYoupinOrder(Long userId);
+
     Order findByParentOrderNo(String orderNo);
 
 }

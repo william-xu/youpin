@@ -1,5 +1,7 @@
 package com.hflw.vasp.framework.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,11 @@ public class CommonBeansConfig {
         /// 总上传数据大小
         factory.setMaxRequestSize(DataSize.ofMegabytes(10));
         return factory.createMultipartConfig();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
 }

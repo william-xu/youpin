@@ -311,4 +311,8 @@ public class OrderService {
         return orderDao.findUnpayYoupinOrder(userId);
     }
 
+    public Order findValidYoupinOrder(Long userId) {
+        return orderDao.findValidYoupinOrder(userId);
+    }
+
 }

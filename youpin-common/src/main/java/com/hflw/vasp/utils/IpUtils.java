@@ -65,12 +65,11 @@ public class IpUtils {
             log.error("IPUtils ERROR ", e);
         }
 
-//        //使用代理，则获取第一个IP地址
-//        if(StringUtils.isEmpty(ip) && ip.length() > 15) {
-//			if(ip.indexOf(",") > 0) {
-//				ip = ip.substring(0, ip.indexOf(","));
-//			}
-//		}
+        //使用代理，则获取第一个IP地址
+        if (StringUtils.isNotEmpty(ip)) {
+            String[] ips = ip.split(",");
+            if (ips.length > 0) return ips[0];
+        }
         return ip;
     }
 

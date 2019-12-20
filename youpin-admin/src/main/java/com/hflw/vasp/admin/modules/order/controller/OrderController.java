@@ -4,6 +4,7 @@ package com.hflw.vasp.admin.modules.order.controller;
 import com.hflw.vasp.admin.modules.AbstractController;
 import com.hflw.vasp.admin.modules.order.dto.OrderLogisticsDTO;
 import com.hflw.vasp.admin.modules.order.dto.OrderSearch;
+import com.hflw.vasp.admin.modules.order.model.OrderDetails;
 import com.hflw.vasp.admin.modules.order.model.OrderListModel;
 import com.hflw.vasp.admin.modules.order.service.OrderService;
 import com.hflw.vasp.modules.entity.OrderLogistics;
@@ -43,8 +44,8 @@ public class OrderController extends AbstractController {
 
     @GetMapping(value = "/info")
     public R query(Long id) {
-
-        return R.ok();
+        OrderDetails od = orderService.getDetailsById(id);
+        return R.ok().data(od);
     }
 
     /**
@@ -61,6 +62,18 @@ public class OrderController extends AbstractController {
         OrderLogistics logistics = logisticsDTO.convertTo();
         orderService.bindLogistics(logistics);
 
+        return R.ok();
+    }
+
+    /**
+     * 解绑物流信息
+     *
+     * @param logisticsDTO
+     * @param bindingResult
+     * @return
+     */
+    @PostMapping(value = "/untyinglogistics")
+    public R untyingLogistics(@Valid OrderLogisticsDTO logisticsDTO, BindingResult bindingResult) {
         return R.ok();
     }
 

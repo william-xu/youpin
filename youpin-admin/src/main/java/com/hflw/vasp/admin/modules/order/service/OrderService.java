@@ -1,12 +1,11 @@
 package com.hflw.vasp.admin.modules.order.service;
 
 import com.hflw.vasp.admin.modules.order.dto.OrderSearch;
+import com.hflw.vasp.admin.modules.order.model.OrderDetails;
 import com.hflw.vasp.admin.modules.order.model.OrderListModel;
-import com.hflw.vasp.modules.dao.IOrderDao;
-import com.hflw.vasp.modules.dao.IOrderLogisticsDao;
-import com.hflw.vasp.modules.entity.Order;
-import com.hflw.vasp.modules.entity.OrderAddress;
-import com.hflw.vasp.modules.entity.OrderLogistics;
+import com.hflw.vasp.exception.BusinessException;
+import com.hflw.vasp.modules.dao.*;
+import com.hflw.vasp.modules.entity.*;
 import com.hflw.vasp.utils.ReflectUtils;
 import com.hflw.vasp.utils.StringUtils;
 import com.hflw.vasp.web.Pagination;
@@ -36,7 +35,19 @@ public class OrderService {
     private IOrderDao orderDao;
 
     @Autowired
+    private IOrderGoodsDao orderGoodsDao;
+
+    @Autowired
+    private IOrderAddress orderAddressDao;
+
+    @Autowired
     private IOrderLogisticsDao orderLogisticsDao;
+
+    @Autowired
+    private IYoupinCardDao youpinCardDao;
+
+    @Autowired
+    private ICustomerDao customerDao;
 
     @Autowired
     private EntityManager entityManager;
@@ -50,12 +61,13 @@ public class OrderService {
         sql.append("         o.pay_amount payAmount, ");
         sql.append("         o.promo_code promoCode, ");
         sql.append("         DATE_FORMAT(o.create_time,'%Y-%m-%d %H:%i:%S') createTime, ");
-        sql.append("         oa.name, ");
-        sql.append("         oa.tel, ");
+        sql.append("         case when o.type = 0 then oa.name else c.realname end name, ");
+        sql.append("         case when o.type = 0 then oa.tel else c.phone end tel, ");
         sql.append("         ol.number ");
         sql.append(" FROM d_order o ");
         sql.append(" left join d_order_address oa on oa.order_id = o.id ");
         sql.append(" left join d_order_logistics ol on ol.order_id = o.id ");
+        sql.append(" left join d_customer c on c.id = o.user_id ");
         sql.append(" where 1 = 1 ");
 
         if (null != search.getOrderType()) {
@@ -94,6 +106,27 @@ public class OrderService {
         return new Pagination<>(total, modelList);
     }
 
+    public OrderDetails getDetailsById(Long id) {
+        Optional<Order> optionalOrder = orderDao.findById(id);
+        Order order = optionalOrder.get();
+        //商品
+        List<OrderGoods> orderGoods = orderGoodsDao.findAllByOrderId(order.getId());
+        //地址
+        OrderAddress address = orderAddressDao.findByOrderId(order.getId());
+        //物流
+        OrderLogistics logistics = orderLogisticsDao.findByOrderId(order.getId());
+        //购买人
+        Customer customer = customerDao.getOne(order.getUserId());
+
+        OrderDetails od = new OrderDetails();
+        od.setOrder(order);
+        od.setGoodsList(orderGoods);
+        od.setAddress(address);
+        od.setLogistics(logistics);
+        od.setCustomer(customer);
+        return od;
+    }
+
     /**
      * 分页查询，多表多条件查询 限制太多  需要在实体中添加 外键约束
      * 这个需要 order 有addressId和logisticsId外键
@@ -128,6 +161,10 @@ public class OrderService {
      * @param logistics
      */
     public void bindLogistics(OrderLogistics logistics) {
+        OrderLogistics existLogistics = orderLogisticsDao.findByOrderId(logistics.getOrderId());
+        if (existLogistics != null)
+            throw BusinessException.create("该订单已经绑定物流单号，请勿重复绑定！");
+
         logistics.setCreateTime(new Date());
         orderLogisticsDao.save(logistics);
     }
@@ -141,10 +178,22 @@ public class OrderService {
     public void change(Long orderId, Integer status) {
         Optional<Order> optional = orderDao.findById(orderId);
         Order order = optional.get();
-
+        if (order.getType() == 1) {
+            // TODO: 2019/12/20 修改优品卡激活状态
+            YoupinCard card = youpinCardDao.findByUserId(order.getUserId());
+            invalidYoupinCard(card);
+        }
         order.setStatus(status);
         order.setUpdateTime(new Date());
         orderDao.save(order);
+    }
+
+    public void invalidYoupinCard(YoupinCard card) {
+        if (card == null) return;
+
+        card.setStatus((byte) 2);
+        card.setUpdateTime(new Date());
+        youpinCardDao.save(card);
     }
 
 }
