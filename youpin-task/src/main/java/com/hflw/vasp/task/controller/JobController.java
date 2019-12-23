@@ -28,7 +28,7 @@ public class JobController {
     @PostConstruct
     public void initialize() {
         try {
-            reStartAllJobs();
+            restartAllJobs();
             log.info("INIT SUCCESS");
         } catch (SchedulerException e) {
             log.info("INIT EXCEPTION : " + e.getMessage());
@@ -145,7 +145,7 @@ public class JobController {
     public String refreshAll() {
         String result;
         try {
-            reStartAllJobs();
+            restartAllJobs();
             result = "SUCCESS";
         } catch (SchedulerException e) {
             result = "EXCEPTION : " + e.getMessage();
@@ -156,7 +156,7 @@ public class JobController {
     /**
      * 重新启动所有的job
      */
-    private void reStartAllJobs() throws SchedulerException {
+    private void restartAllJobs() throws SchedulerException {
         synchronized (log) {                                                         //只允许一个线程进入操作
             Scheduler scheduler = schedulerFactoryBean.getScheduler();
             Set<JobKey> set = scheduler.getJobKeys(GroupMatcher.anyGroup());
