@@ -68,6 +68,8 @@ public class LoginController extends AbstractController {
 
     @RequestMapping(value = "/logout")
     public R logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
         return R.ok();
     }
 
