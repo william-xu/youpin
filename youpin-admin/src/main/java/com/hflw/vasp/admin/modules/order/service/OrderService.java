@@ -1,6 +1,5 @@
 package com.hflw.vasp.admin.modules.order.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hflw.vasp.admin.modules.order.dto.OrderSearch;
 import com.hflw.vasp.admin.modules.order.model.OrderDetails;
 import com.hflw.vasp.admin.modules.order.model.OrderListModel;
@@ -135,8 +134,6 @@ public class OrderService {
      * @return
      */
     public boolean verifyValid(YoupinCard card) {
-        log.info("当前权益详情：" + JSONObject.toJSONString(card));
-
         if (card == null) return false;
         if (card.getStatus() == null || card.getStatus() != 1) return false;
 
