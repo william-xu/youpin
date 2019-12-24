@@ -44,7 +44,9 @@ public enum ResultCodeEnum {
     //省市数据
     PROVINCE_NOT_EXIST(700, "省份不存在"),
     CITY_NOT_EXIST(701, "城市不存在"),
-    AREAS_NOT_EXIST(702, "区域不存在");
+    AREAS_NOT_EXIST(702, "区域不存在"),
+    //支付
+    PAY_AMOUNT_ERROR(800, "支付金额有误");
 
     /**
      * 状态码

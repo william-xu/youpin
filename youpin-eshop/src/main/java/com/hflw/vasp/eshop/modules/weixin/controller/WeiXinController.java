@@ -1,5 +1,6 @@
 package com.hflw.vasp.eshop.modules.weixin.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
@@ -149,6 +150,9 @@ public class WeiXinController extends AbstractController {
         if (StringUtils.isNullOrEmpty(user.getWxOpenId()))
             throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
 
+        if (model.getTotalFee() == null || model.getTotalFee() <= 0)
+            throw BusinessException.create("支付金额有误或此订单无需支付");
+
         String notifyUrl = PropertiesUtils.getProperty("wechat.repayment.notifyUrl");
         log.info("支付通知url：" + notifyUrl);
         model.setNotifyUrl(notifyUrl);
@@ -210,18 +214,20 @@ public class WeiXinController extends AbstractController {
     @ResponseBody
     public String callBackWXpay() {
 
-        log.info("================================================开始处理微信小程序发送的异步通知");
+        log.info("================================================开始处理微信支付发送的异步通知");
 
         //1 获取微信支付异步回调结果
         String xmlResult = WechatPayUtil.getPostStr(request);
+        log.info("异步通知参数：" + xmlResult);
 
-        Map<String, String> resultMap = null;
+        Map<String, String> resultMap = new HashMap<>();
         try {
             //将结果转成map
             resultMap = WechatPayUtil.xmlToMap(xmlResult);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+
         //订单号
         String outTradeNo = resultMap.get("out_trade_no");
         log.info("交易流水号：------------------" + outTradeNo + "结束----------");
@@ -242,7 +248,7 @@ public class WeiXinController extends AbstractController {
         String resultMsg;
         //对比微信回调的加密与重新加密是否一致  一致即为通过 不一致说明被改动过 加密不通过
         log.info("==============================================开始对比加密++++++++++++++++++++++++++++++++++++++");
-        if (sign.equals(sign1)) { //验签通过
+        if (StringUtils.isNotEmpty(sign) && sign.equals(sign1)) { //验签通过
             log.info("==============================================验签通过++++++++++++++++++++++++++++++++++++++");
             if (WxPayConstants.ResultCode.SUCCESS.equalsIgnoreCase(result_code)) {//业务结果为SUCCESS
                 log.info("查询交易流水：{}", outTradeNo);
@@ -257,18 +263,20 @@ public class WeiXinController extends AbstractController {
                         // 查赠送商品订单
                         Order subOrder = orderService.findByParentOrderNo(order.getOrderNo());
                         if (subOrder != null) {
+                            log.info("更新优品卡订单{}附属订单{}状态为已支付", subOrder.getParentOrderNo(), subOrder.getOrderNo());
                             subOrder.setStatus(1);
                             orderService.update(subOrder);
                         }
                         //激活优品卡
+                        log.info("激活用户{}优品卡权益", order.getUserId());
                         youpinCardService.active(order.getUserId());
                     } else {
 //                        2、商品，查询订单记录，修改订单状态
                     }
                     //修改订单状态为已支付
+                    log.info("更新订单{}状态为已支付", order.getOrderNo());
                     order.setStatus(1);
                     orderService.update(order);
-                    log.info("更新订单{}状态订单", order.getOrderNo());
                 }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";

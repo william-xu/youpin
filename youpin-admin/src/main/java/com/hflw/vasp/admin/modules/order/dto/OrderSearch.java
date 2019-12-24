@@ -6,9 +6,13 @@ import lombok.Data;
 @Data
 public final class OrderSearch extends Page {
 
+    private String merchantId;
+
     private Integer orderType;
 
     private String orderNo;
+
+    private String parentOrderNo;
 
     private Integer orderStatus;
 

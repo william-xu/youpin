@@ -74,6 +74,12 @@
             <version>${querydsl.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>1.1.2-beta4</version>
+        </dependency>
     </dependencies>
 
     <build>
