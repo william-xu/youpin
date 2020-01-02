@@ -1,6 +1,6 @@
 package com.hflw.vasp.admin.modules.user.service;
 
-import com.hflw.vasp.enums.SysContants;
+import com.hflw.vasp.enums.SysConstants;
 import com.hflw.vasp.system.dao.ISysUserDao;
 import com.hflw.vasp.system.entity.SysUser;
 import com.hflw.vasp.utils.StringUtils;
@@ -44,7 +44,7 @@ public class UserService {
         SimpleHash hash = new SimpleHash(hcm.getHashAlgorithmName(), password, user.getSalt(), hcm.getHashIterations());
         //重新赋值
         user.setPassword(hash.toString());
-        user.setEnableStatus(SysContants.EnableStatus.enable.getCode());
+        user.setEnableStatus(SysConstants.EnableStatus.enable.getCode());
         user.setCreateTime(new Date());
         userDao.save(user);
         return user;

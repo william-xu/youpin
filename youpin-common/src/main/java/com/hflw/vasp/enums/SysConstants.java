@@ -5,7 +5,7 @@ import java.text.MessageFormat;
 /**
  * 常量列表
  */
-public interface SysContants {
+public interface SysConstants {
 
     /**
      * 超级管理员的登录id
@@ -29,7 +29,7 @@ public interface SysContants {
     /**
      * 启用状态
      */
-    public enum EnableStatus implements SysContants {
+    public enum EnableStatus implements SysConstants {
         initialize {
             @Override
             public Integer getCode() {
@@ -67,7 +67,7 @@ public interface SysContants {
     /**
      * 删除状态
      */
-    public enum DeleteStatus implements SysContants {
+    public enum DeleteStatus implements SysConstants {
         normal {
             @Override
             public Integer getCode() {
@@ -94,7 +94,7 @@ public interface SysContants {
     /**
      * 资源是否为父级
      */
-    public enum ResourceIsParent implements SysContants {
+    public enum ResourceIsParent implements SysConstants {
         yes {
             @Override
             public Integer getCode() {
@@ -122,7 +122,7 @@ public interface SysContants {
     /**
      * 规则状态
      */
-    public enum RuleStatus implements SysContants {
+    public enum RuleStatus implements SysConstants {
         enable {
             @Override
             public Integer getCode() {
@@ -150,7 +150,7 @@ public interface SysContants {
     /**
      * 性别
      */
-    public enum Gender implements SysContants {
+    public enum Gender implements SysConstants {
         man {
             @Override
             public Integer getCode() {
@@ -175,7 +175,7 @@ public interface SysContants {
         }
     }
 
-    public enum RealNameState implements SysContants {
+    public enum RealNameState implements SysConstants {
         yes(1, "实名"), no(2, "未实名");
         private Integer code;
         private String value;

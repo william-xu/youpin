@@ -1,6 +1,7 @@
 package com.hflw.vasp.eshop.modules.order.service;
 
 import com.google.common.base.Preconditions;
+import com.hflw.vasp.enums.SysConstants;
 import com.hflw.vasp.eshop.modules.order.model.OrderDetails;
 import com.hflw.vasp.eshop.modules.order.model.OrderModel;
 import com.hflw.vasp.eshop.modules.order.model.OrderYoupinCardModel;
@@ -10,6 +11,7 @@ import com.hflw.vasp.framework.components.PropertiesUtils;
 import com.hflw.vasp.framework.service.RedisService;
 import com.hflw.vasp.modules.dao.*;
 import com.hflw.vasp.modules.entity.*;
+import com.hflw.vasp.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,7 +260,7 @@ public class OrderService {
         log.info("商品总额：" + totalPrice.toPlainString());
         log.info("支付金额：" + payAmount.toPlainString());
         if (payAmount.compareTo(model.getPayAmount()) != 0)
-            throw BusinessException.create(6546, "金额有误，请刷新购物车后重试");
+            throw BusinessException.create("金额有误，请刷新购物车后重试");
 
         Date now = new Date();
         //订单主体
@@ -296,6 +298,26 @@ public class OrderService {
     }
 
     public void logicDeleteById(Long id) {
+        Order order = orderDao.getOne(id);
+
+        if (!SysConstants.DeleteStatus.normal.getCode().equals(order.getDelFlag()))
+            throw BusinessException.create("订单已删除，请刷新重试");
+
+        if (order.getType() == 1) {//优品卡订单
+            //同步删除附属订单
+            Order subOrder = orderDao.findByParentOrderNo(order.getOrderNo());
+            if (subOrder != null) orderDao.logicDeleteById(subOrder.getId());
+            return;
+        } else if (order.getType() == 0) {//商品订单
+            if (StringUtils.isNotEmpty(order.getParentOrderNo())) {//优品卡附属订单
+                Order parentOrder = orderDao.findByParentOrderNo(order.getParentOrderNo());
+
+                //父订单存在且没有被删除，子订单不可被删除
+                if (parentOrder != null && SysConstants.DeleteStatus.normal.getCode().equals(parentOrder.getDelFlag())) {
+                    throw BusinessException.create("赠送商品订单不可被单独删除");
+                }
+            }
+        }
         orderDao.logicDeleteById(id);
     }
 

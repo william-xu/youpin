@@ -1,5 +1,6 @@
 package com.hflw.vasp.modules.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hflw.vasp.entity.BaseEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -30,12 +31,14 @@ public class YoupinCard extends BaseEntity {
      * 生效时间
      */
     @Column(name = "effective_date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date effectiveDate;
 
     /**
      * 失效时间
      */
     @Column(name = "expiration_date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date expirationDate;
 
 }

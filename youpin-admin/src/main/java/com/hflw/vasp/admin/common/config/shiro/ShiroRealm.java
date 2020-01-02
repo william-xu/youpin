@@ -8,12 +8,9 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -30,10 +27,7 @@ public class ShiroRealm extends AuthorizingRealm {
         // 自动生成的方法存根
         String username = (String) token.getPrincipal();
         String password = new String((char[]) token.getCredentials());
-        log.info("token带来的数据：  " + username);
-
         SysUser user = userService.findByUsername(username);
-        log.info("user：{}", user);
         SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(
                 user, //用户对象--数据库
                 password, //前端密码

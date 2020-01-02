@@ -1,6 +1,6 @@
 package com.hflw.vasp.eshop.modules.goods.controller;
 
-import com.hflw.vasp.enums.SysContants;
+import com.hflw.vasp.enums.SysConstants;
 import com.hflw.vasp.eshop.modules.AbstractController;
 import com.hflw.vasp.eshop.modules.category.service.CategoryService;
 import com.hflw.vasp.eshop.modules.goods.model.GoodsDetailModel;
@@ -51,8 +51,8 @@ public class GoodsController extends AbstractController {
     @RequestMapping("/difflist")
     public R diffList(@RequestParam Map<String, Object> params) {
         Goods goods = new Goods();
-        goods.setEnableStatus(SysContants.EnableStatus.enable.getCode());
-        goods.setDelFlag(SysContants.DeleteStatus.normal.getCode());
+        goods.setEnableStatus(SysConstants.EnableStatus.enable.getCode());
+        goods.setDelFlag(SysConstants.DeleteStatus.normal.getCode());
 
         List<Goods> list = goodsService.search(goods);
         Map<String, List<Goods>> map = new HashMap<>();

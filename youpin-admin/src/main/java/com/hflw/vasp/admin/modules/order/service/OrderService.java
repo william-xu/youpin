@@ -1,5 +1,6 @@
 package com.hflw.vasp.admin.modules.order.service;
 
+import com.hflw.vasp.admin.common.enums.OrderStatus;
 import com.hflw.vasp.admin.modules.order.dto.OrderSearch;
 import com.hflw.vasp.admin.modules.order.model.OrderDetails;
 import com.hflw.vasp.admin.modules.order.model.OrderListModel;
@@ -72,7 +73,7 @@ public class OrderService {
         sql.append(" left join d_order_logistics ol on ol.order_id = o.id ");
         sql.append(" left join d_customer c on c.id = o.user_id ");
         sql.append(" left join d_youpin_card ypc on ypc.user_id = o.user_id ");
-        sql.append(" where 1 = 1 ");
+        sql.append(" where o.del_flag = 0 ");
 
         if (StringUtils.isNotBlank(search.getMerchantId())) {
             sql.append(" and o.promo_code = '").append(search.getMerchantId()).append("' ");
@@ -206,6 +207,11 @@ public class OrderService {
 
         logistics.setCreateTime(new Date());
         orderLogisticsDao.save(logistics);
+
+        Order order = orderDao.getOne(logistics.getOrderId());
+        order.setStatus(OrderStatus.AD.getValue());
+        order.setUpdateTime(new Date());
+        orderDao.save(order);
     }
 
     /**
@@ -218,7 +224,7 @@ public class OrderService {
         Optional<Order> optional = orderDao.findById(orderId);
         Order order = optional.get();
         if (order.getType() == 1) {
-            // TODO: 2019/12/20 修改优品卡激活状态
+            //2019/12/20 修改优品卡激活状态
             YoupinCard card = youpinCardDao.findByUserId(order.getUserId());
             invalidYoupinCard(card);
         }

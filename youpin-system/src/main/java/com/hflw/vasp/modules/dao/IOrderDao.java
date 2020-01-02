@@ -23,7 +23,7 @@ public interface IOrderDao extends BaseRepository<Order, Long>, JpaSpecification
 
     @Transactional
     @Modifying
-    @Query("update Order o set o.delFlag = 1 where o.id=?1")
+    @Query("update Order o set o.delFlag = -1 where o.id=?1")
     void logicDeleteById(Long id);
 
     @Query("select o from Order o where o.userId=?1 and o.delFlag = 0 and o.type = 1 and o.status = 0 order by o.id desc")

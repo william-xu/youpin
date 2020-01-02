@@ -36,7 +36,7 @@ public abstract class BaseEntity implements Serializable {
      * 启用状态：0启用，1停用，默认启用
      */
     @Column(name = "enable_status", length = 2)
-    @ApiModelProperty(value = "启用状态 1:启用,2:停用")
+    @ApiModelProperty(value = "启用状态 0:启用,1:停用")
     private Integer enableStatus;
 
     /**
