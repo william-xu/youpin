@@ -25,7 +25,10 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -44,43 +47,32 @@ public class OrderService {
     private IOrderLogisticsDao orderLogisticsDao;
 
     @Autowired
-    private IYoupinCardDao youpinCardDao;
+    private ICustomerDao customerDao;
 
     @Autowired
-    private ICustomerDao customerDao;
+    private IYoupinCardDao youpinCardDao;
 
     @Autowired
     private EntityManager entityManager;
 
-    public Pagination<OrderListModel> search(final OrderSearch search) throws Exception {
+    public Pagination<OrderListModel> search(final OrderSearch search, cn.hutool.db.Page page) throws Exception {
         StringBuffer sql = new StringBuffer();
-
         sql.append(" select o.id, ");
         sql.append("         o.user_id userId, ");
         sql.append("         o.order_no orderNo, ");
         sql.append("         o.parent_order_no parentOrderNo, ");
         sql.append("         o.status, ");
         sql.append("         o.pay_amount payAmount, ");
-        sql.append("         o.promo_code promoCode, ");
-//        sql.append("         DATE_FORMAT(o.create_time,'%Y-%m-%d %H:%i:%S') createTime, ");
-        sql.append("         o.create_time createTime, ");
-        sql.append("         case when o.type = 0 then oa.name else c.realname end name, ");
-        sql.append("         case when o.type = 0 then oa.tel else c.phone end tel, ");
-        sql.append("         ol.number, ");
-        sql.append("         ypc.status ypcStatus ");
+        sql.append("         oa.name name, ");
+        sql.append("         oa.tel tel, ");
+        sql.append("         ol.number logisticsNo, ");
+        sql.append("         o.create_time createTime ");
         sql.append(" FROM d_order o ");
         sql.append(" left join d_order_address oa on oa.order_id = o.id ");
         sql.append(" left join d_order_logistics ol on ol.order_id = o.id ");
         sql.append(" left join d_customer c on c.id = o.user_id ");
-        sql.append(" left join d_youpin_card ypc on ypc.user_id = o.user_id ");
-        sql.append(" where o.del_flag = 0 ");
+        sql.append(" where o.del_flag = 0 and o.type= 0 ");
 
-        if (StringUtils.isNotBlank(search.getMerchantId())) {
-            sql.append(" and o.promo_code = '").append(search.getMerchantId()).append("' ");
-        }
-        if (null != search.getOrderType()) {
-            sql.append(" and o.type=").append(search.getOrderType());
-        }
         if (null != search.getOrderStatus()) {
             sql.append(" and o.status=").append(search.getOrderStatus());
         }
@@ -90,16 +82,11 @@ public class OrderService {
         if (StringUtils.isNotBlank(search.getParentOrderNo())) {
             sql.append(" and o.parent_order_no like '%").append(search.getParentOrderNo()).append("%' ");
         }
+        if (StringUtils.isNotBlank(search.getPhone())) {
+            sql.append(" and oa.tel like '%").append(search.getPhone()).append("%' ");
+        }
         if (StringUtils.isNotBlank(search.getSDate()) && StringUtils.isNotBlank(search.getEDate())) {
             sql.append(" and DATE(o.create_time) between '").append(search.getSDate()).append("' and '").append(search.getEDate()).append("' ");
-        }
-        if (null != search.getYpcStatus()) {
-            if (1 == search.getYpcStatus()) {
-                sql.append(" and ypc.status=").append(search.getYpcStatus());
-                sql.append(" and now() between ypc.effective_date and ypc.expiration_date ");
-            } else {
-                sql.append(" and (ypc.status is null or ypc.status <> 1) ");
-            }
         }
         sql.append(" order by o.id desc");
 
@@ -113,38 +100,20 @@ public class OrderService {
         Query query = entityManager.createNativeQuery(sqlStr);
         Query countQuery = entityManager.createNativeQuery(countSql);
 
-        query.setFirstResult((search.getPageNumber() - 1) * 10);
-        query.setMaxResults(search.getPageSize());
+        //设置分页
+        if (page != null) {
+            query.setFirstResult((page.getPageNumber() - 1) * 10);
+            query.setMaxResults(page.getPageSize());
+        }
 
         long total = ((BigInteger) countQuery.getSingleResult()).longValue();
 
         List list = query.getResultList();
 
         List<OrderListModel> modelList = ReflectUtils.castEntity(list, OrderListModel.class);
-        for (OrderListModel model : modelList) {
-            YoupinCard card = youpinCardDao.findByUserId(model.getUserId().longValue());
-            model.setYpcStatus(verifyValid(card) ? (byte) 1 : (byte) 2);
-        }
         return new Pagination<>(total, modelList);
     }
 
-    /**
-     * 验证优品卡是否有效
-     *
-     * @param card
-     * @return
-     */
-    public boolean verifyValid(YoupinCard card) {
-        if (card == null) return false;
-        if (card.getStatus() == null || card.getStatus() != 1) return false;
-
-        Calendar c = Calendar.getInstance();
-        Calendar c1 = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        c1.setTime(card.getEffectiveDate());
-        c2.setTime(card.getExpirationDate());
-        return (c.after(c1) && c.before(c2)); //在权益有效期内
-    }
 
     public OrderDetails getDetailsById(Long id) {
         Optional<Order> optionalOrder = orderDao.findById(id);
@@ -174,15 +143,13 @@ public class OrderService {
      * @param search
      * @return
      */
-    public Page<Order> findOrderCriteria(final OrderSearch search) {
-        Pageable pageable = PageRequest.of(search.getPageNumber() - 1, search.getPageSize(), Sort.Direction.DESC, "id");
+    public Page<Order> findOrderCriteria(final OrderSearch search, cn.hutool.db.Page page) {
+        Pageable pageable = PageRequest.of(page.getPageNumber() - 1, page.getPageSize(), Sort.Direction.DESC, "id");
         Specification<Order> specification = (Specification<Order>) (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> list = new ArrayList<>();
             Join<Order, OrderAddress> addressJoin = root.join("address", JoinType.LEFT);
             Join<Order, OrderLogistics> logisticsJoin = root.join("logistics", JoinType.LEFT);
-            if (null != search.getOrderType()) {
-                list.add(criteriaBuilder.equal(root.get("orderType").as(Integer.class), search.getOrderType()));
-            }
+            list.add(criteriaBuilder.equal(root.get("orderType").as(Integer.class), 0));
             if (StringUtils.isNotEmpty(search.getOrderNo())) {
                 list.add(criteriaBuilder.like(root.get("orderNo").as(String.class), "%" + search.getOrderNo() + "%"));
             }

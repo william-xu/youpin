@@ -1,25 +1,17 @@
 package com.hflw.vasp.admin.modules.order.dto;
 
-import cn.hutool.db.Page;
 import lombok.Data;
 
 @Data
-public final class OrderSearch extends Page {
-
-    private String merchantId;
-
-    private Integer orderType;
+public final class OrderSearch {
 
     private String orderNo;
 
     private String parentOrderNo;
 
-    private Integer orderStatus;
+    private String phone;
 
-    /**
-     * 优品卡状态：1生效，其他失效
-     */
-    private Integer ypcStatus;
+    private Integer orderStatus;
 
     private String name;
 

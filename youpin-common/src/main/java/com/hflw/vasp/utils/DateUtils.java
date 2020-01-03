@@ -20,7 +20,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     /**
      * 时间格式(yyyy-MM-dd HH:mm:ss)
      */
-    public final static String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public final static String NORMAL_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * 时间格式(yyyyMMddHHmmss)
+     */
+    public final static String SERIAL_DATE_TIME_PATTERN = "yyyyMMddHHmmss";
 
     /**
      * 日期格式化 日期格式为：yyyy-MM-dd
@@ -38,8 +43,18 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param date 日期时间
      * @return 返回yyyy-MM-dd HH:mm:ss格式日期
      */
-    public static String formatDateTime(Date date) {
-        return format(date, DATE_TIME_PATTERN);
+    public static String formatNormal(Date date) {
+        return format(date, NORMAL_DATE_TIME_PATTERN);
+    }
+
+    /**
+     * 日期格式化 日期格式为：yyyy-MM-dd HH:mm:ss
+     *
+     * @param date 日期时间
+     * @return 返回yyyy-MM-dd HH:mm:ss格式日期
+     */
+    public static String formatSerial(Date date) {
+        return format(date, SERIAL_DATE_TIME_PATTERN);
     }
 
     /**

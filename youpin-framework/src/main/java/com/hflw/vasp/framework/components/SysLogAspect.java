@@ -167,7 +167,7 @@ public class SysLogAspect {
             jsonObject.put(argName, arg);
         } else if (clazz == Date.class) {
             Date date = (Date) arg;
-            jsonObject.put(argName, DateUtils.formatDateTime(date));
+            jsonObject.put(argName, DateUtils.formatNormal(date));
         } else if (clazz.isArray() || (arg instanceof List) || (arg instanceof Map)) {
             if (clazz.isArray()) {
                 Object[] array = (Object[]) arg;
@@ -224,7 +224,7 @@ public class SysLogAspect {
                 jsonArray.add(o);
             } else if (clazz == Date.class) {
                 Date date = (Date) o;
-                jsonArray.add(DateUtils.formatDateTime(date));
+                jsonArray.add(DateUtils.formatNormal(date));
             } else {
                 String packageName = ClassUtils.getPackageName(clazz);
                 if (packageName.startsWith(packagePrefix)) {

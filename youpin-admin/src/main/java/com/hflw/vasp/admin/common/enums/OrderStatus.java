@@ -41,4 +41,14 @@ public enum OrderStatus {
         this.desc = desc;
     }
 
+    public static String getDesc(int value) {
+        OrderStatus[] statuses = OrderStatus.values();
+        for (OrderStatus status : statuses) {
+            if (status.value == value) {
+                return status.desc;
+            }
+        }
+        return "";
+    }
+
 }
