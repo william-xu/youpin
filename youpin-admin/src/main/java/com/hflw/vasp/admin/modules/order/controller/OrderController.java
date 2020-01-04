@@ -50,7 +50,7 @@ public class OrderController extends AbstractController {
     @Autowired
     private OrderService orderService;
 
-    @GetMapping(value = "/search")
+    @GetMapping(value = "/list")
     public R query(OrderSearch search, Page page) throws Exception {
         Pagination<OrderListModel> pagination = orderService.search(search, page);
         return R.ok().putPageData(pagination);

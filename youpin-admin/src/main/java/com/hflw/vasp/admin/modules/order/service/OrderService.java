@@ -168,14 +168,20 @@ public class OrderService {
      * @param logistics
      */
     public void bindLogistics(OrderLogistics logistics) {
-        OrderLogistics existLogistics = orderLogisticsDao.findByOrderId(logistics.getOrderId());
-        if (existLogistics != null)
-            throw BusinessException.create("该订单已经绑定物流单号，请勿重复绑定！");
+        Order order = orderDao.getOne(logistics.getOrderId());
+        if (order.getStatus() == OrderStatus.WP.getValue())
+            throw BusinessException.create("未付款订单无法绑定物流信息！");
 
+        OrderLogistics existLogistics = orderLogisticsDao.findByOrderId(logistics.getOrderId());
+
+        //删除旧物流
+        if (existLogistics != null) orderLogisticsDao.logicDeleteById(existLogistics.getId());
+
+        //绑定新物流
         logistics.setCreateTime(new Date());
         orderLogisticsDao.save(logistics);
 
-        Order order = orderDao.getOne(logistics.getOrderId());
+        //更新订单状态
         order.setStatus(OrderStatus.AD.getValue());
         order.setUpdateTime(new Date());
         orderDao.save(order);

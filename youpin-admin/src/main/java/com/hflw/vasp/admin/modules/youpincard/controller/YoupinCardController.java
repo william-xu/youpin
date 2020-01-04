@@ -38,7 +38,7 @@ public class YoupinCardController extends AbstractController {
     @Autowired
     private YoupinCardService youpinCardService;
 
-    @GetMapping(value = "/search")
+    @GetMapping(value = "/list")
     public R query(YoupinCardSearch search, Page page) throws Exception {
         Pagination<YoupinCardListModel> pagination = youpinCardService.search(search, page);
         return R.ok().putPageData(pagination);

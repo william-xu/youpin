@@ -103,6 +103,7 @@ public class OrderService {
 
     public OrderDetails getDetailsById(Long id) {
         Optional<Order> optionalOrder = orderDao.findById(id);
+        //订单
         Order order = optionalOrder.get();
         //商品
         List<OrderGoods> orderGoods = orderGoodsDao.findAllByOrderId(order.getId());
