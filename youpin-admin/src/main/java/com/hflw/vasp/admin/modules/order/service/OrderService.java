@@ -69,7 +69,7 @@ public class OrderService {
         sql.append("         o.create_time createTime ");
         sql.append(" FROM d_order o ");
         sql.append(" left join d_order_address oa on oa.order_id = o.id ");
-        sql.append(" left join d_order_logistics ol on ol.order_id = o.id ");
+        sql.append(" left join d_order_logistics ol on ol.order_id = o.id and ol.del_flag = 0 ");
         sql.append(" left join d_customer c on c.id = o.user_id ");
         sql.append(" where o.del_flag = 0 and o.type= 0 ");
 

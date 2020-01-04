@@ -40,7 +40,6 @@ public class YoupinCardService {
         sql.append("         c.phone tel, ");
         sql.append("         o.create_time createTime ");
         sql.append(" FROM d_order o ");
-        sql.append(" left join d_order_address oa on oa.order_id = o.id ");
         sql.append(" left join d_customer c on c.id = o.user_id ");
         sql.append(" left join d_youpin_card ypc on ypc.user_id = o.user_id ");
         sql.append(" where o.del_flag = 0 and o.type= 1 ");
