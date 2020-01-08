@@ -1,6 +1,5 @@
 package com.hflw.vasp.eshop.modules.weixin.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
@@ -161,7 +160,7 @@ public class WeiXinController extends AbstractController {
         if (model.getType() == 1) {
             tradeFlowNo = "YP" + SnowFlake.nextSerialNumber();
         } else {
-            tradeFlowNo = SnowFlake.nextSerialNumber();
+            tradeFlowNo = "B" + SnowFlake.nextSerialNumber();
         }
 
         WxPayMpOrderResult result = unifiedOrder(user.getWxOpenId(), tradeFlowNo, model);
@@ -277,6 +276,9 @@ public class WeiXinController extends AbstractController {
                     log.info("更新订单{}状态为已支付", order.getOrderNo());
                     order.setStatus(1);
                     orderService.update(order);
+
+                    tradingFlow.setStatus(1);
+                    tradingService.save(tradingFlow);
                 }
                 resultCode = "SUCCESS";
                 resultMsg = "成功";
